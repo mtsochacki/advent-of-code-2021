@@ -1,63 +1,52 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class day1 {
-    public static int part1() {
-        int counter = 0;
-        BufferedReader in = null;
+    public static ArrayList<Integer> readInput(String filename) {
+        BufferedReader in;
+        ArrayList<Integer> nums = new ArrayList<>();
+
         try {
             in = new BufferedReader(new FileReader("data.txt"));
-            String l;
-            String previous;
-            previous = in.readLine();
-
-            while ((l = in.readLine()) != null) {
-                if (Integer.parseInt(l) > Integer.parseInt(previous))
-                    counter++;
-                previous = l;
-            }
+            nums = in.lines()
+                    .mapToInt(Integer::parseInt)
+                    .boxed()
+                    .collect(Collectors.toCollection(ArrayList::new));
         } catch (IOException e) {
-            System.out.println("Something went horribly wrong");
+            System.out.println("Something went horribly wrong: " + e);
         }
-        return counter;
+
+        return nums;
+    }
+
+    public static int part1() {
+        ArrayList<Integer> nums = readInput("data.txt");
+
+        int prev = nums.get(0);
+        int count = 0;
+        for (int val: nums) {
+            if (prev < val) {
+                count++;
+            }
+            prev = val;
+        }
+
+        return count;
     }
 
     public static int part2() {
-
         int counter = 0;
-        int total = 0;
-        int previous = 0;
-        int x = 0;
-        Queue<Integer> q = new LinkedList<Integer>();
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new FileReader("data.txt"));
-            String l;
-            x = Integer.parseInt(in.readLine());
-            q.add(x);
-            total = total + x;
-            x = Integer.parseInt(in.readLine());
-            q.add(x);
-            total = total + x;
-            x = Integer.parseInt(in.readLine());
-            q.add(x);
-            total = total + x;
-            previous = total;
-            while ((l = in.readLine()) != null) {
-                x = Integer.parseInt(l);
-                q.add(x);
-                total = total + x - q.remove();
-                if (total > previous) {
-                    counter++;
-                }
-                previous = total;
+        ArrayList<Integer> nums = readInput("data.txt");
+
+        for (int i = 0; i + 3 < nums.size(); ++i) {
+            if (nums.get(i) < nums.get(i + 3)) {
+                counter++;
             }
-        } catch (IOException e) {
-            System.out.println("Something went horribly wrong");
         }
+
         return counter;
     }
 

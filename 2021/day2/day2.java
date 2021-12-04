@@ -9,7 +9,7 @@ public class day2 {
         int vertical = 0;
         BufferedReader in = null;
         try {
-            in = new BufferedReader(new FileReader("data.txt"));
+            in = new BufferedReader(new FileReader("2021/data.txt"));
             String l;
             while ((l = in.readLine()) != null) {
                 String[] parts = l.split(" ");
@@ -41,7 +41,7 @@ public class day2 {
         int depth = 0;
         BufferedReader in = null;
         try {
-            in = new BufferedReader(new FileReader("data.txt"));
+            in = new BufferedReader(new FileReader("2021/data.txt"));
             String l;
             while ((l = in.readLine()) != null) {
                 String[] parts = l.split(" ");
