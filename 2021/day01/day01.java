@@ -10,38 +10,35 @@ import java.util.Scanner;
 
 public class day01 {
 
-    public static ArrayList<Integer> readInput(String filename){
+    public static ArrayList<Integer> readInput(String filename) {
         Scanner sc = null;
         ArrayList<Integer> input = new ArrayList<>();
 
-        try{
+        try {
             sc = new Scanner(new File(filename));
-            while(sc.hasNextInt())
+            while (sc.hasNextInt())
                 input.add(sc.nextInt());
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Something went horribly wrong: " + e);
         }
         return input;
     }
-
-    public static int part1() {
+    // Counts the number of times a depth measurement
+    // increases from the previous measurement
+    public static void part1() {
+        ArrayList<Integer> report = readInput("data.txt");
+        int currentDepth = 0;
         int counter = 0;
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new FileReader("data.txt"));
-            String l;
-            String previous;
-            previous = in.readLine();
+        int previousDepth = report.get(0);
 
-            while ((l = in.readLine()) != null) {
-                if (Integer.parseInt(l) > Integer.parseInt(previous))
-                    counter++;
-                previous = l;
-            }
-        } catch (IOException e) {
-            System.out.println("Something went horribly wrong");
+        for (int i = 1; i < report.size(); i++) {
+            currentDepth = report.get(i);
+            if (currentDepth > previousDepth)
+                counter++;
+            previousDepth = currentDepth;
         }
-        return counter;
+
+        System.out.println(counter);
     }
 
     public static int part2() {
@@ -81,7 +78,7 @@ public class day01 {
     }
 
     public static void main(String[] args) {
-        System.out.println(part1());
+        part1();
         System.out.println(part2());
     }
 }
