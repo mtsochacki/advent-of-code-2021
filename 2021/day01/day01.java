@@ -1,10 +1,29 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Scanner;
 
-public class day1 {
+public class day01 {
+
+    public static ArrayList<Integer> readInput(String filename){
+        Scanner sc = null;
+        ArrayList<Integer> input = new ArrayList<>();
+
+        try{
+            sc = new Scanner(new File(filename));
+            while(sc.hasNextInt())
+                input.add(sc.nextInt());
+        } catch (Exception e){
+            System.out.println("Something went horribly wrong: " + e);
+        }
+        return input;
+    }
+
     public static int part1() {
         int counter = 0;
         BufferedReader in = null;
