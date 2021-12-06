@@ -6,61 +6,54 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class day02 {
-    public static class Command{
+    public static class Command {
         String direction = null;
         int value = 0;
 
-        Command(String d, int v){
+        Command(String d, int v) {
             direction = d;
             value = v;
         }
     }
 
-    public static ArrayList<Command> readInput(String filename){
+    public static ArrayList<Command> readInput(String filename) {
         Scanner sc = null;
         ArrayList<Command> listOfCommands = new ArrayList<>();
 
-        try{
+        try {
             sc = new Scanner(new File(filename));
-            while(sc.hasNextLine()){
+            while (sc.hasNextLine()) {
                 listOfCommands.add(new Command(sc.next(), sc.nextInt()));
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Something went horribly wrong: " + e);
         }
 
         return listOfCommands;
     }
-    
-    public static int part1_1() {
-        int result = 0;
+
+    public static int part1() {
+        ArrayList<Command> input = readInput("data.txt");
         int forward = 0;
         int vertical = 0;
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new FileReader("data.txt"));
-            String l;
-            while ((l = in.readLine()) != null) {
-                String[] parts = l.split(" ");
-                switch (parts[0]) {
-                    case "forward":
-                        forward = forward + Integer.parseInt(parts[1]);
-                        break;
-                    case "down":
-                        vertical = vertical + Integer.parseInt(parts[1]);
-                        break;
-                    case "up":
-                        vertical = vertical - Integer.parseInt(parts[1]);
-                        break;
-                    default:
-                        break;
-                }
+
+        for (int i = 0; i < input.size(); i++) {
+            switch (input.get(i).direction) {
+                case "forward":
+                    forward += input.get(i).value;
+                    break;
+                case "down":
+                    vertical += input.get(i).value;
+                    break;
+                case "up":
+                    vertical -= input.get(i).value;
+                    break;
+                default:
+                    break;
             }
-        } catch (IOException e) {
-            System.out.println("Something went horribly wrong");
         }
-        result = forward * vertical;
-        return result;
+
+        return forward * vertical;
     }
 
     public static int part2() {
@@ -97,7 +90,7 @@ public class day02 {
     }
 
     public static void main(String[] args) {
-        System.out.println(part1_1());
+        System.out.println(part1());
         System.out.println(part2());
     }
 }
