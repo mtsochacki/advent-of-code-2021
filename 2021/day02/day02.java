@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -57,36 +54,29 @@ public class day02 {
     }
 
     public static int part2() {
-        int result = 0;
+        ArrayList<Command> input = readInput("data.txt");
         int forward = 0;
         int aim = 0;
         int depth = 0;
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new FileReader("data.txt"));
-            String l;
-            while ((l = in.readLine()) != null) {
-                String[] parts = l.split(" ");
-                switch (parts[0]) {
-                    case "forward":
-                        forward = forward + Integer.parseInt(parts[1]);
-                        depth = depth + aim * Integer.parseInt(parts[1]);
-                        break;
-                    case "down":
-                        aim = aim + Integer.parseInt(parts[1]);
-                        break;
-                    case "up":
-                        aim = aim - Integer.parseInt(parts[1]);
-                        break;
-                    default:
-                        break;
-                }
+
+        for (int i = 0; i < input.size(); i++) {
+            switch (input.get(i).direction) {
+                case "forward":
+                    forward += input.get(i).value;
+                    depth += aim * input.get(i).value;
+                    break;
+                case "down":
+                    aim += input.get(i).value;
+                    break;
+                case "up":
+                    aim -= input.get(i).value;
+                    break;
+                default:
+                    break;
             }
-        } catch (IOException e) {
-            System.out.println("Something went horribly wrong");
         }
-        result = forward * depth;
-        return result;
+        
+        return forward * depth;
     }
 
     public static void main(String[] args) {
