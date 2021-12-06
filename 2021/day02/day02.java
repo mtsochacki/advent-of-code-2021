@@ -1,10 +1,11 @@
+package day02;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class day2 {
+public class day02 {
     static class Instruction {
         String command;
         int value;

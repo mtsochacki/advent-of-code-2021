@@ -1,16 +1,18 @@
+package day01;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class day1 {
+public class day01 {
     public static ArrayList<Integer> readInput(String filename) {
         BufferedReader in;
         ArrayList<Integer> nums = new ArrayList<>();
 
         try {
-            in = new BufferedReader(new FileReader("data.txt"));
+            in = new BufferedReader(new FileReader(filename));
             nums = in.lines()
                     .mapToInt(Integer::parseInt)
                     .boxed()
