@@ -1,9 +1,38 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
-public class day2 {
-    public static int part1() {
+public class day02 {
+    public static class Command{
+        String direction = null;
+        int value = 0;
+
+        Command(String d, int v){
+            direction = d;
+            value = v;
+        }
+    }
+
+    public static ArrayList<Command> readInput(String filename){
+        Scanner sc = null;
+        ArrayList<Command> listOfCommands = new ArrayList<>();
+
+        try{
+            sc = new Scanner(new File(filename));
+            while(sc.hasNextLine()){
+                listOfCommands.add(new Command(sc.next(), sc.nextInt()));
+            }
+        }catch(Exception e){
+            System.out.println("Something went horribly wrong: " + e);
+        }
+
+        return listOfCommands;
+    }
+    
+    public static int part1_1() {
         int result = 0;
         int forward = 0;
         int vertical = 0;
@@ -68,7 +97,7 @@ public class day2 {
     }
 
     public static void main(String[] args) {
-        System.out.println(part1());
+        System.out.println(part1_1());
         System.out.println(part2());
     }
 }
