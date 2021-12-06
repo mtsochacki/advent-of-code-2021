@@ -28,8 +28,8 @@ public class day03 {
 
     public static int part1() {
         ArrayList<String> input = readInput("data.txt");
-        int[] gammaRate = new int[12];
-        int[] epsilonRate = new int[12];
+        int[] gammaRate = new int[input.get(0).length()];
+        int[] epsilonRate = new int[input.get(0).length()];
 
         for (int i = 0; i < input.size(); i++) {
             for (int j = 0; j < gammaRate.length; j++) {
@@ -37,7 +37,7 @@ public class day03 {
             }
         }
         for (int i = 0; i < gammaRate.length; i++) {
-            if (gammaRate[i] >= 500) {
+            if (gammaRate[i] >= (input.size() / 2)) {
                 gammaRate[i] = 1;
                 epsilonRate[i] = 0;
             } else {
@@ -55,7 +55,7 @@ public class day03 {
         int amountOfZeros = 0;
         char dominantNumber = '0';
 
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < input.get(0).length(); i++) {
             for (int j = 0; j < input.size(); j++) {
                 if (input.get(j).charAt(i) == '1')
                     amountOfOnes++;
@@ -84,7 +84,7 @@ public class day03 {
         int amountOfZeros = 0;
         char dominantNumber = '0';
 
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < input.get(0).length(); i++) {
             for (int j = 0; j < input.size(); j++) {
                 if (input.get(j).charAt(i) == '1')
                     amountOfOnes++;
