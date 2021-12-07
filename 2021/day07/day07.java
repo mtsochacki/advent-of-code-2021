@@ -20,6 +20,10 @@ public class day07 {
         return input;
     }
 
+    public static double arithmeticSequence(double start, double end) {
+        return (Math.abs(end - start)) / 2 * (Math.abs(end - start) + 1);
+    }
+
     public static void part1() {
         ArrayList<Integer> input = readInput("data.txt");
         Collections.sort(input);
@@ -34,10 +38,29 @@ public class day07 {
         for (int i = 0; i < input.size(); i++) {
             fuel += Math.abs((double) input.get(i) - median);
         }
-        System.out.println("We need " + fuel + " fuel to move all the crabs to position " + median);
+        System.out.println("We need " + fuel + " fuel to move all the crabs to position " + median + ".");
+    }
+
+    public static void part2() {
+        ArrayList<Integer> input = readInput("data.txt");
+        double fuel = 100000000;
+        double currentFuel = 0;
+        int max = Collections.max(input);
+        for (int i = 0; i < max; i++) {
+            for (int j = 0; j < input.size(); j++) {
+                currentFuel += arithmeticSequence(input.get(j), i);
+            }
+            if (currentFuel < fuel)
+            {
+                fuel = currentFuel;
+            }
+            currentFuel = 0;
+        }
+        System.out.println("We need " + fuel + " fuel to move all the crabs to the place that we need to move them to.");
     }
 
     public static void main(String[] args) {
         part1();
+        part2();
     }
 }
