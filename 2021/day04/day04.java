@@ -62,7 +62,7 @@ public class day04 {
 
     public static Winner countWin(int[] board, int[] drawn) {
         int counter = 0;
-        boolean flag = false;   // used to break out of double nested loop
+        boolean flag = false; // used to break out of double nested loop
         Winner x = new Winner();
         Boolean[] boardState = new Boolean[25];
         Arrays.fill(boardState, Boolean.FALSE);
@@ -85,22 +85,32 @@ public class day04 {
         return x;
     }
 
-    public static int part1() {
+    public static int part1(boolean isWinner) {
         // first element of input is int array with drawn numbers
         // all other elements of input are int arrays of boards
         ArrayList<int[]> input = readInput("data.txt");
         int winningBoard[] = new int[25];
         Boolean[] winningBoardState = new Boolean[25];
         int currentCounter = 0;
-        int winnersCounter = 999999;
+        int winnersCounter;
+        // if we are looking for winning board, then
+        // we assign 999999, if not then 0
+        winnersCounter = isWinner ? 999999 : 0;
         int score = 0;
         // ...for all the boards in play...
         for (int i = 1; i < input.size(); i++) {
             // ...check when the board has won...
             currentCounter = countWin(input.get(i), input.get(0)).counter;
             // ...and if it won after lower number of draws than
-            // currently winning board, update the winning board 
-            if (currentCounter < winnersCounter) {
+            // currently winning board, update the winning board...
+            if ((currentCounter < winnersCounter) && isWinner) {
+                winningBoard = input.get(i);
+                winningBoardState = countWin(input.get(i), input.get(0)).boardState;
+                winnersCounter = currentCounter;
+            }
+            // ...unless of course we are looking for loosing board
+            // then it's better to update it in different situations
+            else if ((currentCounter > winnersCounter) && !isWinner) {
                 winningBoard = input.get(i);
                 winningBoardState = countWin(input.get(i), input.get(0)).boardState;
                 winnersCounter = currentCounter;
@@ -115,6 +125,7 @@ public class day04 {
     }
 
     public static void main(String[] args) {
-        System.out.println(part1());
+        System.out.println("Winning board final score is " + part1(true));
+        System.out.println("Loosing board final score is " + part1(false));
     }
 }
