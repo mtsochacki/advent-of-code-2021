@@ -38,18 +38,6 @@ public class day09 {
         return input;
     }
 
-    public static ArrayList<ArrayList<Boolean>> generateState() {
-        ArrayList<ArrayList<Boolean>> state = new ArrayList<>();
-        for (int i = 0; i < 102; i++) {
-            ArrayList<Boolean> line = new ArrayList<>();
-            for (int j = 0; j < 102; j++) {
-                line.add(false);
-            }
-            state.add(line);
-        }
-        return state;
-    }
-
     public static void part1() {
         ArrayList<ArrayList<Integer>> input = readInput("data.txt");
         int riskLevel = 0;
@@ -66,32 +54,8 @@ public class day09 {
         System.out.println(riskLevel);
     }
 
-    public static void floodFill(ArrayList<ArrayList<Boolean>> state, ArrayList<ArrayList<Integer>> input, int x,
-            int y) {
-        if (input.get(x).get(y) == 9)
-            return;
-        state.get(x).set(y, true);
-        floodFill(state, input, x + 1, y);
-        floodFill(state, input, x - 1, y);
-        floodFill(state, input, x, y + 1);
-        floodFill(state, input, x, y - 1);
-        return;
-    }
-
-    public static void part2() {
-        ArrayList<ArrayList<Integer>> input = readInput("data.txt");
-        ArrayList<ArrayList<Boolean>> state = generateState();
-        for (int i = 1; i < input.size() - 1; i++) {
-            for (int j = 1; j < input.get(i).size() - 1; j++) {
-                if (state.get(i).get(j) == false)
-                    floodFill(state, input, i, j);
-            }
-        }
-    }
-
     public static void main(String[] args) {
         part1();
-        part2();
     }
 
 }
