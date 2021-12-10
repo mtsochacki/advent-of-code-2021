@@ -21,42 +21,41 @@ public class day07 {
     }
 
     public static double arithmeticSequence(double start, double end) {
-        return (Math.abs(end - start)) / 2 * (Math.abs(end - start) + 1);
+        return (Math.abs(end - start)) * (Math.abs(end - start) + 1) / 2;
     }
 
     public static void part1() {
-        ArrayList<Integer> input = readInput("data.txt");
-        Collections.sort(input);
-        int median = 0;
-        int fuel = 0;
+        ArrayList<Integer> listOfPositions = readInput("data.txt");
+        Collections.sort(listOfPositions);
         // calculate median
-        if (input.size() % 2 == 0)
-            median = (input.get((input.size()) / 2) + input.get(input.size() / 2 - 1)) / 2;
+        int median;
+        if (listOfPositions.size() % 2 == 0)
+            median = (listOfPositions.get((listOfPositions.size()) / 2)
+                    + listOfPositions.get(listOfPositions.size() / 2 - 1)) / 2;
         else
-            median = input.get(input.size() / 2);
+            median = listOfPositions.get(listOfPositions.size() / 2);
         // calculate fuel
-        for (int i = 0; i < input.size(); i++) {
-            fuel += Math.abs((double) input.get(i) - median);
-        }
-        System.out.println("We need " + fuel + " fuel to move all the crabs to position " + median + ".");
+        int totalFuel = 0;
+        for (Integer position : listOfPositions)
+            totalFuel += Math.abs(position - median);
+
+        System.out.println("We need " + totalFuel + " fuel to move all the crabs to position " + median + ".");
     }
 
     public static void part2() {
-        ArrayList<Integer> input = readInput("data.txt");
-        double fuel = 100000000;
-        double currentFuel = 0;
-        int max = Collections.max(input);
-        for (int i = 0; i < max; i++) {
-            for (int j = 0; j < input.size(); j++) {
-                currentFuel += arithmeticSequence(input.get(j), i);
-            }
+        ArrayList<Integer> listOfPositions = readInput("data.txt");
+        int fuel = 100000000;
+        // Chceck each point between min and max of all the positions
+        int max = Collections.max(listOfPositions);
+        int min = Collections.min(listOfPositions);
+        for (int testedAlignment = min; testedAlignment <= max; testedAlignment++) {
+            int currentFuel = 0;
+            for (Integer position : listOfPositions)
+                currentFuel += arithmeticSequence(position, testedAlignment);
             if (currentFuel < fuel)
-            {
                 fuel = currentFuel;
-            }
-            currentFuel = 0;
         }
-        System.out.println("We need " + fuel + " fuel to move all the crabs to the place that we need to move them to.");
+        System.out.println("We need " + fuel + " fuel to move the crabs where they need to go.");
     }
 
     public static void main(String[] args) {
