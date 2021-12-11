@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 import java.io.File;
 
@@ -9,6 +10,7 @@ public class day09 {
         ArrayList<ArrayList<Integer>> input = new ArrayList<>();
         ArrayList<Integer> lineOfNines = new ArrayList<>();
         for (int index = 0; index < 102; index++) {
+            // for (int index = 0; index < 12; index++) {
             lineOfNines.add(9);
         }
         Scanner sc = null;
@@ -54,8 +56,37 @@ public class day09 {
         System.out.println(riskLevel);
     }
 
-    public static void main(String[] args) {
-        part1();
+    // 9 is a border of basin, -1 means we already visited this tile
+    public static int calculateBasin(ArrayList<ArrayList<Integer>> map, int y, int x) {
+        int size = 0;
+        if (map.get(y).get(x) == 9 || map.get(y).get(x) == -1) {
+            return 0;
+        } else {
+            size++;
+            map.get(y).set(x, -1);
+        }
+        size += calculateBasin(map, y, x - 1); // north
+        size += calculateBasin(map, y + 1, x); // east
+        size += calculateBasin(map, y, x + 1); // south
+        size += calculateBasin(map, y - 1, x); // west
+        return size;
     }
 
+    public static int part2() {
+        ArrayList<ArrayList<Integer>> input = readInput("data.txt");
+        ArrayList<Integer> result = new ArrayList<>();
+        for (int y = 1; y < input.size() - 1; y++) {
+            for (int x = 1; x < input.get(1).size() - 1; x++) {
+                if (input.get(y).get(x) != -1 && input.get(y).get(x) != 9)
+                    result.add(calculateBasin(input, y, x));
+            }
+        }
+        Collections.sort(result);
+        return result.get(result.size() - 1) * result.get(result.size() - 2) * result.get(result.size() - 3);
+    }
+
+    public static void main(String[] args) {
+        part1();
+        System.out.println(part2());
+    }
 }
