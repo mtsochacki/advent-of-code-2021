@@ -18,31 +18,8 @@ public class day06 {
         }
         return input;
     }
-
-    // Part2 is also a solution to part1, but this is going
-    // to stay here as a testimony on how not to solve
-    // such problems
-    public static int part1() {
-        ArrayList<Integer> input = readInput("data.txt");
-        int size = 0;
-        // for each day...
-        for (int i = 0; i < 80; i++) {
-            // ... and for each fish...
-            size = input.size();
-            for (int j = 0; j < size; j++) {
-                // ...decrease the timer...
-                input.set(j, (input.get(j)) - 1);
-                // ...and check if new fish is born...
-                if (input.get(j) == -1) {
-                    input.set(j, 6);
-                    input.add(8);
-                }
-            }
-        }
-        return input.size();
-    }
-
-    public static long part2(int days) {
+    
+    public static long calculatePopulation(int days) {
         ArrayList<Integer> listOfFish = readInput("data.txt");
         ArrayList<Long> popNumbers = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
@@ -64,7 +41,7 @@ public class day06 {
     }
 
     public static void main(String[] args) {
-        System.out.println(part1());
-        System.out.println(part2(256));
+        System.out.println(calculatePopulation(80));
+        System.out.println(calculatePopulation(256));
     }
 }
