@@ -38,46 +38,51 @@ public class day10 {
         return input;
     }
 
-    public static HashMap<Character, Integer> initiateScores() {
-        HashMap<Character, Integer> map = new HashMap<>();
-        map.put(')', 3);
-        map.put(']', 57);
-        map.put('}', 1197);
-        map.put('>', 25137);
-        map.put('(', 1);
-        map.put('[', 2);
-        map.put('{', 3);
-        map.put('<', 4);
-        return map;
+    private static final HashMap<Character, Integer> openingScores = new HashMap<>();
+    static {
+        openingScores.put('(', 1);
+        openingScores.put('[', 2);
+        openingScores.put('{', 3);
+        openingScores.put('<', 4);
+    }
+
+    private static final HashMap<Character, Integer> closingScores = new HashMap<>();
+    static {
+        closingScores.put(')', 3);
+        closingScores.put(']', 57);
+        closingScores.put('}', 1197);
+        closingScores.put('>', 25137);
     }
 
     public static Scores syntaxScoring() {
         ArrayList<ArrayList<Character>> input = readInput("data.txt");
         ArrayList<Long> autocompleteScores = new ArrayList<>();
-        ArrayList<Character> openingChar = new ArrayList<Character>(Arrays.asList('<', '(', '[', '{'));
-        ArrayList<Character> closingChar = new ArrayList<Character>(Arrays.asList('>', ')', ']', '}'));
-        HashMap<Character, Integer> charScore = initiateScores();
+        ArrayList<Character> openingChars =
+        new ArrayList<Character>(Arrays.asList('<', '(', '[', '{'));
+        ArrayList<Character> closingChars =
+        new ArrayList<Character>(Arrays.asList('>', ')', ']', '}'));
         int syntaxScore = 0;
         for (ArrayList<Character> line : input) {
             LinkedList<Character> stack = new LinkedList<>();
             Boolean isCorrupted = false;
             long autoTmpScore = 0;
             for (Character syntaxChar : line) {
-                if (openingChar.contains(syntaxChar)) {
+                if (openingChars.contains(syntaxChar)) {
                     stack.addFirst(syntaxChar);
-                } else if (stack.peek() == syntaxChar - 2 || stack.peek() == syntaxChar - 1) {
+                } else if (stack.peek() == syntaxChar - 2
+                        || stack.peek() == syntaxChar - 1) {
                     stack.removeFirst();
                 } else {
                     isCorrupted = true;
-                    if (closingChar.contains(syntaxChar)) {
-                        syntaxScore += charScore.get(syntaxChar);
+                    if (closingChars.contains(syntaxChar)) {
+                        syntaxScore += closingScores.get(syntaxChar);
                         break;
                     }
                 }
             }
             if (!isCorrupted) {
                 for (Character element : stack) {
-                    autoTmpScore = autoTmpScore * 5 + charScore.get(element);
+                    autoTmpScore = autoTmpScore * 5 + openingScores.get(element);
                 }
                 autocompleteScores.add(autoTmpScore);
             }
