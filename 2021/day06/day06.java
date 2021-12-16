@@ -18,6 +18,7 @@ public class day06 {
         }
         return input;
     }
+
     // Part2 is also a solution to part1, but this is going
     // to stay here as a testimony on how not to solve
     // such problems
@@ -41,32 +42,29 @@ public class day06 {
         return input.size();
     }
 
-    public static long part2() {
+    public static long part2(int days) {
         ArrayList<Integer> listOfFish = readInput("data.txt");
-        long[] popNum = new long[9];
-        for (Integer fish : listOfFish) {
-            popNum[fish] += 1;
+        ArrayList<Long> popNumbers = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            popNumbers.add(0L);
         }
-        long tmp = 0;
-        for (int i = 0; i < 256; i++) {
-            tmp = popNum[0];
-            popNum[0] = popNum[1];
-            popNum[1] = popNum[2];
-            popNum[2] = popNum[3];
-            popNum[3] = popNum[4];
-            popNum[4] = popNum[5];
-            popNum[5] = popNum[6];
-            popNum[6] = popNum[7] + tmp;
-            popNum[7] = popNum[8];
-            popNum[8] = tmp;
+        long totalPopulation = 0;
+        for (Integer fish : listOfFish)
+            popNumbers.set(fish, popNumbers.get(fish) + 1);
+        for (int i = 0; i < days; i++) {
+            long tmp = popNumbers.get(0);
+            for (int j = 0; j < popNumbers.size() - 1; j++)
+                popNumbers.set(j, popNumbers.get(j + 1));
+            popNumbers.set(6, popNumbers.get(6) + tmp);
+            popNumbers.set(8, tmp);
         }
-        return popNum[0] + popNum[1] + popNum[2] + popNum[3]
-                + popNum[4] + popNum[5] + popNum[6] + popNum[7]
-                + popNum[8];
+        for (Long number : popNumbers)
+            totalPopulation += number;
+        return totalPopulation;
     }
 
     public static void main(String[] args) {
         System.out.println(part1());
-        System.out.println(part2());
+        System.out.println(part2(256));
     }
 }
