@@ -5,12 +5,14 @@ import java.util.Scanner;
 import java.io.File;
 
 public class day09 {
-    /*  Creates array of arrays surrounded by a border of nines
-                             9999999
-                             9123459
-                             9234569
-                             9123459
-                             9999999                            */
+    /*
+     * Creates array of arrays surrounded by a border of nines, example:
+     * 9999999
+     * 9123459
+     * 9234569
+     * 9123459
+     * 9999999
+     */
     public static ArrayList<ArrayList<Integer>> readInput(String filename) {
         ArrayList<ArrayList<Integer>> input = new ArrayList<>();
         ArrayList<Integer> emptyLine = new ArrayList<>();
@@ -44,22 +46,27 @@ public class day09 {
         return input;
     }
 
-    public static void part1() {
+    public static boolean isLowPoint(ArrayList<ArrayList<Integer>> input, int x, int y) {
+        if (input.get(x).get(y) < input.get(x).get(y - 1) &&
+                input.get(x).get(y) < input.get(x).get(y + 1) &&
+                input.get(x).get(y) < input.get(x - 1).get(y) &&
+                input.get(x).get(y) < input.get(x + 1).get(y)) {
+            return true;
+        } else
+            return false;
+    }
+
+    public static int part1() {
         ArrayList<ArrayList<Integer>> input = readInput("data.txt");
         int riskLevel = 0;
         for (int i = 1; i < input.size() - 1; i++) {
             for (int j = 1; j < input.get(i).size() - 1; j++) {
-                if (input.get(i).get(j) < input.get(i).get(j - 1) &&
-                        input.get(i).get(j) < input.get(i).get(j + 1) &&
-                        input.get(i).get(j) < input.get(i - 1).get(j) &&
-                        input.get(i).get(j) < input.get(i + 1).get(j)) {
+                if (isLowPoint(input, i, j))
                     riskLevel += (input.get(i).get(j) + 1);
-                }
             }
         }
-        System.out.println(riskLevel);
+        return riskLevel;
     }
-
     // 9 is a border of basin, -1 means we already visited this tile
     public static int calculateBasin(ArrayList<ArrayList<Integer>> map, int y, int x) {
         int size = 0;
@@ -90,7 +97,7 @@ public class day09 {
     }
 
     public static void main(String[] args) {
-        part1();
+        System.out.println(part1());
         System.out.println(part2());
     }
 }
