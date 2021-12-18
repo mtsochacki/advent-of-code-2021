@@ -5,20 +5,20 @@ import java.util.Scanner;
 import java.io.File;
 
 public class day09 {
-    // create array of arrays surrounded by border of 99999999
+    /*  Creates array of arrays surrounded by a border of nines
+                             9999999
+                             9123459
+                             9234569
+                             9123459
+                             9999999                            */
     public static ArrayList<ArrayList<Integer>> readInput(String filename) {
         ArrayList<ArrayList<Integer>> input = new ArrayList<>();
-        ArrayList<Integer> lineOfNines = new ArrayList<>();
-        for (int index = 0; index < 102; index++) {
-            // for (int index = 0; index < 12; index++) {
-            lineOfNines.add(9);
-        }
+        ArrayList<Integer> emptyLine = new ArrayList<>();
         Scanner sc = null;
-
         try {
             sc = new Scanner(new File(filename));
             sc.useDelimiter("");
-            input.add(lineOfNines);
+            input.add(emptyLine);
             while (sc.hasNextLine()) {
                 ArrayList<Integer> line = new ArrayList<>();
                 line.add(9);
@@ -30,8 +30,12 @@ public class day09 {
                 if (sc.hasNextLine())
                     sc.nextLine();
             }
-            input.add(lineOfNines);
-
+            input.add(emptyLine);
+            // Add enough nines to the first and last empty lines
+            for (int i = 0; i < input.get(1).size(); i++) {
+                input.get(0).add(9);
+                input.get(input.size() - 1).add(9);
+            }
         } catch (Exception e) {
             System.out.println("Something went wrong" + e);
         } finally {
