@@ -16,7 +16,6 @@ public class day02 {
     public static ArrayList<Command> readInput(String filename) {
         Scanner sc = null;
         ArrayList<Command> listOfCommands = new ArrayList<>();
-
         try {
             sc = new Scanner(new File(filename));
             while (sc.hasNextLine()) {
@@ -24,8 +23,9 @@ public class day02 {
             }
         } catch (Exception e) {
             System.out.println("Something went horribly wrong: " + e);
+        } finally {
+            sc.close();
         }
-
         return listOfCommands;
     }
 
@@ -49,7 +49,6 @@ public class day02 {
                     break;
             }
         }
-
         return forward * vertical;
     }
 
@@ -75,7 +74,6 @@ public class day02 {
                     break;
             }
         }
-        
         return forward * depth;
     }
 
