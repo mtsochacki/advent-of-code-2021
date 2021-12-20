@@ -31,7 +31,7 @@ public class day14 {
          */
     public static ArrayList<Rule> readRules(String filename) {
         Scanner sc = null;
-        ArrayList<Rule> input = new ArrayList<>();
+        ArrayList<Rule> ruleList = new ArrayList<>();
         try {
             sc = new Scanner(new File(filename));
             sc.useDelimiter("\\n| -> ");
@@ -39,14 +39,14 @@ public class day14 {
                 Rule rule = new Rule();
                 rule.pair = sc.next();
                 rule.outcome = sc.next();
-                input.add(rule);
+                ruleList.add(rule);
             }
         } catch (Exception e) {
             System.out.println("Something went wrong" + e);
         } finally {
             sc.close();
         }
-        return input;
+        return ruleList;
     }
 
     /*
@@ -85,12 +85,12 @@ public class day14 {
 
     public static Long calculatePolymers(int steps) {
         String template = readTemplate("data.txt");
-        ArrayList<Rule> input = readRules("data.txt");
+        ArrayList<Rule> ruleList = readRules("data.txt");
         HashMap<String, Long> chunks = splitToChunks(template);
         HashMap<String, Long> letters = countLetters(template);
         for (int i = 0; i < steps; i++) {
             HashMap<String, Long> newChunks = new HashMap<>();
-            for (Rule rule : input) {
+            for (Rule rule : ruleList) {
                 if (chunks.containsKey(rule.pair)) {
                     letters.merge(rule.outcome, chunks.get(rule.pair), Long::sum);
                     String leftPair = rule.pair.substring(0, 1) + rule.outcome;
