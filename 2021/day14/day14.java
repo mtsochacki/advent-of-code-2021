@@ -9,7 +9,7 @@ public class day14 {
         String pair;
         String outcome;
     }
-    // Read polymer template e.g. NCNBCHB
+
     public static String readTemplate(String filename) {
         String template = null;
         Scanner sc = null;
@@ -23,7 +23,12 @@ public class day14 {
         }
         return template;
     }
-    // Read list of rules e.g. CH -> B
+
+        /*
+         * Given the name of a file containing a list of rules for creating
+         * new elements in the form of arrow-delimited strings, e.g. "CH -> B",
+         * read and transform them into a list of `Rule`s
+         */
     public static ArrayList<Rule> readRules(String filename) {
         Scanner sc = null;
         ArrayList<Rule> input = new ArrayList<>();
@@ -31,10 +36,10 @@ public class day14 {
             sc = new Scanner(new File(filename));
             sc.useDelimiter("\\n| -> ");
             while (sc.hasNext()) {
-                Rule line = new Rule();
-                line.pair = sc.next();
-                line.outcome = sc.next();
-                input.add(line);
+                Rule rule = new Rule();
+                rule.pair = sc.next();
+                rule.outcome = sc.next();
+                input.add(rule);
             }
         } catch (Exception e) {
             System.out.println("Something went wrong" + e);
@@ -43,7 +48,16 @@ public class day14 {
         }
         return input;
     }
-    // Split template into two-letter chunks NCNBCHB -> NC, CN, NB, BC, CH...
+
+    /*
+     * Split the template into two-letter chunks and count
+     * the occurrences of them in the template.
+     *
+     * E.g. given a template
+     * NCCNC
+     * Transform it into a map
+     * {"NC": 2, "CN": 1, "CC": 1}
+     */
     public static HashMap<String, Long> splitToChunks(String template) {
         HashMap<String, Long> chunks = new HashMap<>();
         for (int i = 0; i < template.length() - 1; i++) {
@@ -51,7 +65,16 @@ public class day14 {
         }
         return chunks;
     }
-    // Count how many times each letter occurs in initial template
+
+    /*
+     * Split the template into individual letters and count the occurrences
+     * of them in the template.
+     *
+     * E.g. given a template
+     * NCNBCHB
+     * Transform it into a map
+     * {"N":2, "C":2, "B":2, "H":1}
+     */
     public static HashMap<String, Long> countLetters(String template) {
         HashMap<String, Long> lettersCount = new HashMap<>();
         for (char letter : template.toCharArray()) {
