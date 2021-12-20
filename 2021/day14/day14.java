@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.io.File;
 
 public class day14 {
-    public static class Rules {
+    public static class Rule {
         String pair;
-        String single;
+        String outcome;
     }
-
+    // Read polymer template e.g. NCNBCHB
     public static String readTemplate(String filename) {
         String template = null;
         Scanner sc = null;
@@ -23,17 +23,17 @@ public class day14 {
         }
         return template;
     }
-
-    public static ArrayList<Rules> readRules(String filename) {
+    // Read list of rules e.g. CH -> B
+    public static ArrayList<Rule> readRules(String filename) {
         Scanner sc = null;
-        ArrayList<Rules> input = new ArrayList<>();
+        ArrayList<Rule> input = new ArrayList<>();
         try {
             sc = new Scanner(new File(filename));
             sc.useDelimiter("\\n| -> ");
             while (sc.hasNext()) {
-                Rules line = new Rules();
+                Rule line = new Rule();
                 line.pair = sc.next();
-                line.single = sc.next();
+                line.outcome = sc.next();
                 input.add(line);
             }
         } catch (Exception e) {
@@ -43,16 +43,15 @@ public class day14 {
         }
         return input;
     }
-
+    // Split template into two-letter chunks NCNBCHB -> NC, CN, NB, BC, CH...
     public static HashMap<String, Long> splitToChunks(String template) {
         HashMap<String, Long> chunks = new HashMap<>();
         for (int i = 0; i < template.length() - 1; i++) {
-            chunks.merge(String.valueOf(template.charAt(i))
-                    + String.valueOf(template.charAt(i + 1)), 1L, Long::sum);
+            chunks.merge(template.substring(i, i + 2), 1L, Long::sum);
         }
         return chunks;
     }
-
+    // Count how many times each letter occurs in initial template
     public static HashMap<String, Long> countLetters(String template) {
         HashMap<String, Long> lettersCount = new HashMap<>();
         for (char letter : template.toCharArray()) {
@@ -61,20 +60,20 @@ public class day14 {
         return lettersCount;
     }
 
-    public static Long calculatePolymers(int steps){
+    public static Long calculatePolymers(int steps) {
         String template = readTemplate("data.txt");
-        ArrayList<Rules> input = readRules("data.txt");
+        ArrayList<Rule> input = readRules("data.txt");
         HashMap<String, Long> chunks = splitToChunks(template);
         HashMap<String, Long> letters = countLetters(template);
         for (int i = 0; i < steps; i++) {
             HashMap<String, Long> newChunks = new HashMap<>();
-            for (Rules rule : input) {
+            for (Rule rule : input) {
                 if (chunks.containsKey(rule.pair)) {
-                    letters.merge(rule.single, chunks.get(rule.pair), Long::sum);
-                    newChunks.merge(String.valueOf(rule.pair.charAt(0))
-                            + rule.single, chunks.get(rule.pair), Long::sum);
-                    newChunks.merge(String.valueOf(rule.single
-                            + rule.pair.charAt(1)), chunks.get(rule.pair), Long::sum);
+                    letters.merge(rule.outcome, chunks.get(rule.pair), Long::sum);
+                    String leftPair = rule.pair.substring(0, 1) + rule.outcome;
+                    String rightPair = rule.outcome + rule.pair.substring(1, 2);
+                    newChunks.merge(leftPair, chunks.get(rule.pair), Long::sum);
+                    newChunks.merge(rightPair, chunks.get(rule.pair), Long::sum);
                 }
             }
             chunks = newChunks;
