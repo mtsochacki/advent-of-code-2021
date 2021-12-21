@@ -24,7 +24,6 @@ public class day13 {
         } finally {
             sc.close();
         }
-       // printAll(input);
         return input;
     }
 
@@ -42,10 +41,9 @@ public class day13 {
         for (ArrayList<Integer> line : input) {
             if (line.get(0) > x) {
                 int distance = line.get(0) - x;
-                line.set(0, Math.abs(x - distance));
+                line.set(0, x - distance);
                 output.add(line);
-            }
-            else if (line.get(0) < x){
+            } else if (line.get(0) < x) {
                 output.add(line);
             }
         }
@@ -62,8 +60,7 @@ public class day13 {
                 int distance = line.get(1) - y;
                 line.set(1, y - distance);
                 output.add(line);
-            }
-            else if (line.get(1) < y){
+            } else if (line.get(1) < y) {
                 output.add(line);
             }
         }
@@ -87,16 +84,14 @@ public class day13 {
         input = foldY(input, 27);
         input = foldY(input, 13);
         input = foldY(input, 6);
-        System.out.println("");
-       // printAll(input);
-       char escCode = 0x1B;
-       for (ArrayList<Integer> line : input) {
-           int row = line.get(1)+1;
-           int column = line.get(0)+1;
-           System.out.print(String.format("%c[%d;%dH#", escCode, row, column));
-       }
-       System.out.println(input.size());
-
+        System.out.println("\033[2J"); // clears screen
+        for (ArrayList<Integer> line : input) {
+            int row = line.get(1) + 1;
+            int column = line.get(0) + 1;
+            System.out.print(String.format("%c[%d;%dH#", 0x1B, row, column));
+        }
+        System.out.print(String.format("%c[%d;H", 0x1B, 7));
+        System.out.println(input.size());
     }
 
     public static void main(String[] args) {
