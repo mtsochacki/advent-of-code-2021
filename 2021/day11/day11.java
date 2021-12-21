@@ -3,30 +3,40 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class day11 {
+    /*
+     * Creates a grid surrounded by a border of nines, e.g.:
+     * 999999
+     * 1234 912349
+     * 5678 --> 956789
+     * 9999 999999
+     * 999999
+     */
     public static ArrayList<ArrayList<Integer>> readInput(String filename) {
         ArrayList<ArrayList<Integer>> input = new ArrayList<>();
-        ArrayList<Integer> lineOfNines = new ArrayList<>();
-        for (int index = 0; index < 12; index++) {
-            // for (int index = 0; index < 12; index++) {
-            lineOfNines.add(9);
-        }
+        ArrayList<Integer> emptyLine = new ArrayList<>();
         Scanner sc = null;
         try {
             sc = new Scanner(new File(filename));
             sc.useDelimiter("");
-            input.add(lineOfNines);
+            input.add(emptyLine);
             while (sc.hasNextLine()) {
                 ArrayList<Integer> line = new ArrayList<>();
-                line.add(-1);
+                line.add(9);
                 while (sc.hasNextInt()) {
                     line.add(sc.nextInt());
                 }
-                line.add(-1);
+                line.add(9);
                 input.add(line);
                 if (sc.hasNextLine())
                     sc.nextLine();
             }
-            input.add(lineOfNines);
+
+            input.add(emptyLine);
+            for (int i = 0; i < input.get(1).size(); i++) {
+                input.get(0).add(9);
+                input.get(input.size() - 1).add(9);
+            }
+
         } catch (Exception e) {
             System.out.println("Something went wrong " + e);
         } finally {
@@ -43,29 +53,20 @@ public class day11 {
         }
     }
 
-    public static void printAll(ArrayList<ArrayList<Integer>> input) {
-        for (int i = 1; i < input.size() - 1; i++) {
-            for (int j = 1; j < input.get(0).size() - 1; j++) {
-                System.out.print(input.get(i).get(j));
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-    public static void increaseOctopus(ArrayList<ArrayList<Integer>> input, int x, int y) {
+    public static void increaseOctopus(ArrayList<ArrayList<Integer>> input,
+            int x, int y) {
         if (input.get(y).get(x) != 0)
             input.get(y).set(x, input.get(y).get(x) + 1);
     }
 
-    public static Boolean processExplosions(ArrayList<ArrayList<Integer>> input) {
+    public static Boolean processFlashes(ArrayList<ArrayList<Integer>> input) {
         boolean explosionStatus = false;
         for (int j = 1; j < input.size() - 1; j++) {
             for (int k = 1; k < input.get(j).size() - 1; k++) {
                 if (input.get(j).get(k) > 9) {
                     input.get(j).set(k, 0);
-                    increaseOctopus(input, k - 1, j); // left
-                    increaseOctopus(input, k + 1, j); // right
+                    increaseOctopus(input, k - 1, j);
+                    increaseOctopus(input, k + 1, j);
                     increaseOctopus(input, k + 1, j - 1);
                     increaseOctopus(input, k + 1, j + 1);
                     increaseOctopus(input, k - 1, j - 1);
@@ -73,10 +74,14 @@ public class day11 {
                     increaseOctopus(input, k, j - 1);
                     increaseOctopus(input, k, j + 1);
                 }
-                if (input.get(j).get(k + 1) > 9 || input.get(j + 1).get(k + 1) > 9 || input.get(j + 1).get(k) > 9
-                        || input.get(j + 1).get(k - 1) > 9 || input.get(j - 1).get(k + 1) > 9
+                if (input.get(j).get(k + 1) > 9
+                        || input.get(j + 1).get(k + 1) > 9
+                        || input.get(j + 1).get(k) > 9
+                        || input.get(j + 1).get(k - 1) > 9
+                        || input.get(j - 1).get(k + 1) > 9
                         || input.get(j - 1).get(k) > 9
-                        || input.get(j - 1).get(k - 1) > 9 || input.get(j).get(k - 1) > 9) {
+                        || input.get(j - 1).get(k - 1) > 9
+                        || input.get(j).get(k - 1) > 9) {
                     explosionStatus = true;
                 }
             }
@@ -84,12 +89,10 @@ public class day11 {
         return explosionStatus;
     }
 
-    public static boolean isExplosionReady(ArrayList<ArrayList<Integer>> input) {
-
+    public static boolean isFlashReady(ArrayList<ArrayList<Integer>> input) {
         for (int j = 1; j < input.size() - 1; j++) {
             for (int k = 1; k < input.get(j).size() - 1; k++) {
                 if (input.get(j).get(k) > 9) {
-
                     return true;
                 }
             }
@@ -97,7 +100,7 @@ public class day11 {
         return false;
     }
 
-    public static int countExplosions(ArrayList<ArrayList<Integer>> input) {
+    public static int countFlashes(ArrayList<ArrayList<Integer>> input) {
         int counter = 0;
         for (int j = 1; j < input.size() - 1; j++) {
             for (int k = 1; k < input.get(j).size() - 1; k++) {
@@ -108,7 +111,7 @@ public class day11 {
         return counter;
     }
 
-    public static boolean allFlash(ArrayList<ArrayList<Integer>> input) {
+    public static boolean areAllFlashing(ArrayList<ArrayList<Integer>> input) {
         for (int j = 1; j < input.size() - 1; j++) {
             for (int k = 1; k < input.get(j).size() - 1; k++) {
                 if (input.get(j).get(k) != 0)
@@ -118,29 +121,28 @@ public class day11 {
         return true;
     }
 
-    public static void part1() {
-        int days = 500;
-        int counterExplosions = 0;
-        boolean explosionReady = true;
+    public static void inspectOctopuses(int days) {
+        int flashCounter = 0;
+        boolean isAnyReadyToFlash = true;
         ArrayList<ArrayList<Integer>> input = readInput("data.txt");
-        for (int i = 0; i < days && !allFlash(input); i++) {
+        for (int i = 0; i < days; i++) {
             initialIncrease(input);
-            explosionReady = true;
-            while (explosionReady) {
-                processExplosions(input);
-                explosionReady = isExplosionReady(input);
+            isAnyReadyToFlash = true;
+            while (isAnyReadyToFlash) {
+                processFlashes(input);
+                isAnyReadyToFlash = isFlashReady(input);
             }
-            counterExplosions += countExplosions(input);
-            if (allFlash(input)) {
-                System.out.println(i);
+            flashCounter += countFlashes(input);
+            if (areAllFlashing(input)) {
+                System.out.println(i + 1);
                 break;
             }
         }
-        printAll(input);
-        System.out.println(counterExplosions);
+        System.out.println(flashCounter);
     }
 
     public static void main(String[] args) {
-        part1();
+        inspectOctopuses(100);
+        inspectOctopuses(500);
     }
 }
