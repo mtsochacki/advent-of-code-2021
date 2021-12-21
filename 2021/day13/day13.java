@@ -5,13 +5,18 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class day13 {
+    public static class Instruction {
+        int line;
+        String dimension;
+    }
+
     public static ArrayList<ArrayList<Integer>> readCoordinates(String filename) {
         ArrayList<ArrayList<Integer>> coordinates = new ArrayList<>();
         Scanner sc = null;
         try {
             sc = new Scanner(new File(filename));
             sc.useDelimiter(",|\n");
-            while (sc.hasNext()) {
+            while (sc.hasNextInt()) {
                 ArrayList<Integer> line = new ArrayList<>();
                 for (int j = 0; j < 2; j++) {
                     line.add(sc.nextInt());
@@ -26,9 +31,35 @@ public class day13 {
         return coordinates;
     }
 
-    public static ArrayList<ArrayList<Integer>> foldPaper(ArrayList<ArrayList<Integer>> input, int x, boolean isX) {
+    public static ArrayList<Instruction> readInstructions(String filename) {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        Scanner sc = null;
+        try {
+            sc = new Scanner(new File(filename));
+            while (sc.nextLine().length() != 0) {
+            }
+            sc.useDelimiter("fold along |=|\\n");
+            while (sc.hasNextLine()) {
+                Instruction instruction = new Instruction();
+                instruction.dimension = sc.next();
+                instruction.line = sc.nextInt();
+                if (sc.hasNextLine()) {
+                    sc.nextLine();
+                }
+                instructions.add(instruction);
+            }
+        } catch (Exception e) {
+            System.out.println("Something went horribly wrong " + e);
+        } finally {
+            sc.close();
+        }
+        return instructions;
+    }
+
+    public static ArrayList<ArrayList<Integer>> foldOnce(
+            ArrayList<ArrayList<Integer>> input, int x, String isX) {
         ArrayList<ArrayList<Integer>> output = new ArrayList<>();
-        int z = isX ? 0 : 1;
+        int z = (isX.equals("x")) ? 0 : 1;
         for (ArrayList<Integer> line : input) {
             if (line.get(z) > x) {
                 int distance = line.get(z) - x;
@@ -38,6 +69,7 @@ public class day13 {
                 output.add(line);
             }
         }
+
         Set<ArrayList<Integer>> set = new HashSet<>(output);
         output.clear();
         output.addAll(set);
@@ -46,29 +78,30 @@ public class day13 {
 
     public static void part1() {
         ArrayList<ArrayList<Integer>> input = readCoordinates("data.txt");
-        input = foldPaper(input, 655, true);
-        input = foldPaper(input, 447, false);
-        input = foldPaper(input, 327, true);
-        input = foldPaper(input, 223, false);
-        input = foldPaper(input, 163, true);
-        input = foldPaper(input, 111, false);
-        input = foldPaper(input, 81, true);
-        input = foldPaper(input, 55, false);
-        input = foldPaper(input, 40, true);
-        input = foldPaper(input, 27, false);
-        input = foldPaper(input, 13, false);
-        input = foldPaper(input, 6, false);
+        ArrayList<Instruction> instructions = readInstructions("data.txt");
+        input = foldOnce(input, instructions.get(0).line,
+                            instructions.get(0).dimension);
+        System.out.println("There are " + input.size()
+                            + " dots visible after the first fold");
+    }
+
+    public static void part2() {
+        ArrayList<ArrayList<Integer>> input = readCoordinates("data.txt");
+        ArrayList<Instruction> instructions = readInstructions("data.txt");
+        for (Instruction instruction : instructions) {
+            input = foldOnce(input, instruction.line, instruction.dimension);
+        }
         System.out.println("\033[2J"); // clears screen
         for (ArrayList<Integer> line : input) {
             int row = line.get(1) + 1;
             int column = line.get(0) + 1;
             System.out.print(String.format("%c[%d;%dH#", 0x1B, row, column));
         }
-        System.out.print(String.format("%c[%d;H", 0x1B, 7));
-        System.out.println(input.size());
+        System.out.print(String.format("%c[%d;%dH", 0x1B, 8, 0));
     }
 
     public static void main(String[] args) {
+        part2();
         part1();
     }
 }
