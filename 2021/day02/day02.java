@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class day02 {
     public static class Command {
-        String direction = null;
-        int value = 0;
+        String direction;
+        int value;
 
         Command(String d, int v) {
             direction = d;
@@ -13,7 +13,7 @@ public class day02 {
         }
     }
 
-    public static ArrayList<Command> readInput(String filename) {
+    public static ArrayList<Command> readCommands(String filename) {
         Scanner sc = null;
         ArrayList<Command> listOfCommands = new ArrayList<>();
         try {
@@ -29,21 +29,21 @@ public class day02 {
         return listOfCommands;
     }
 
-    public static int part1() {
-        ArrayList<Command> input = readInput("data.txt");
+    public static int calculatePosition() {
+        ArrayList<Command> commands = readCommands("data.txt");
         int forward = 0;
         int vertical = 0;
 
-        for (int i = 0; i < input.size(); i++) {
-            switch (input.get(i).direction) {
+        for (Command command : commands) {
+            switch (command.direction) {
                 case "forward":
-                    forward += input.get(i).value;
+                    forward += command.value;
                     break;
                 case "down":
-                    vertical += input.get(i).value;
+                    vertical += command.value;
                     break;
                 case "up":
-                    vertical -= input.get(i).value;
+                    vertical -= command.value;
                     break;
                 default:
                     break;
@@ -52,23 +52,23 @@ public class day02 {
         return forward * vertical;
     }
 
-    public static int part2() {
-        ArrayList<Command> input = readInput("data.txt");
+    public static int calculateAdvancedPosition() {
+        ArrayList<Command> commands = readCommands("data.txt");
         int forward = 0;
         int aim = 0;
         int depth = 0;
 
-        for (int i = 0; i < input.size(); i++) {
-            switch (input.get(i).direction) {
+        for (Command command : commands) {
+            switch (command.direction) {
                 case "forward":
-                    forward += input.get(i).value;
-                    depth += aim * input.get(i).value;
+                    forward += command.value;
+                    depth += aim * command.value;
                     break;
                 case "down":
-                    aim += input.get(i).value;
+                    aim += command.value;
                     break;
                 case "up":
-                    aim -= input.get(i).value;
+                    aim -= command.value;
                     break;
                 default:
                     break;
@@ -78,7 +78,9 @@ public class day02 {
     }
 
     public static void main(String[] args) {
-        System.out.println(part1());
-        System.out.println(part2());
+        System.out.println("Position before reading the submarine manual: "
+                + calculatePosition());
+        System.out.println("Position after reading the submarine manual: "
+                + calculateAdvancedPosition());
     }
 }
