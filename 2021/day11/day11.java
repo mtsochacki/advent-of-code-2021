@@ -12,29 +12,30 @@ public class day11 {
      * 999999
      */
     public static ArrayList<ArrayList<Integer>> readInput(String filename) {
-        ArrayList<ArrayList<Integer>> input = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> octoGrid = new ArrayList<>();
         ArrayList<Integer> emptyLine = new ArrayList<>();
         Scanner sc = null;
         try {
             sc = new Scanner(new File(filename));
             sc.useDelimiter("");
-            input.add(emptyLine);
-            while (sc.hasNextLine()) {
-                ArrayList<Integer> line = new ArrayList<>();
-                line.add(9);
+            octoGrid.add(emptyLine);
+            while (sc.hasNextInt()) {
+                ArrayList<Integer> octoRow = new ArrayList<>();
+                octoRow.add(9);
                 while (sc.hasNextInt()) {
-                    line.add(sc.nextInt());
+                    octoRow.add(sc.nextInt());
                 }
-                line.add(9);
-                input.add(line);
-                if (sc.hasNextLine())
+                octoRow.add(9);
+                octoGrid.add(octoRow);
+                if (sc.hasNextLine()) {
                     sc.nextLine();
+                }
             }
 
-            input.add(emptyLine);
-            for (int i = 0; i < input.get(1).size(); i++) {
-                input.get(0).add(9);
-                input.get(input.size() - 1).add(9);
+            octoGrid.add(emptyLine);
+            for (int i = 0; i < octoGrid.get(1).size(); i++) {
+                octoGrid.get(0).add(9);
+                octoGrid.get(octoGrid.size() - 1).add(9);
             }
 
         } catch (Exception e) {
@@ -42,57 +43,46 @@ public class day11 {
         } finally {
             sc.close();
         }
-        return input;
+        return octoGrid;
     }
 
-    public static void initialIncrease(ArrayList<ArrayList<Integer>> input) {
-        for (int j = 1; j < input.size() - 1; j++) {
-            for (int k = 1; k < input.get(j).size() - 1; k++) {
-                input.get(j).set(k, input.get(j).get(k) + 1);
+    public static void increaseAll(ArrayList<ArrayList<Integer>> octoGrid) {
+        for (int j = 1; j < octoGrid.size() - 1; j++) {
+            for (int k = 1; k < octoGrid.get(j).size() - 1; k++) {
+                octoGrid.get(j).set(k, octoGrid.get(j).get(k) + 1);
             }
         }
     }
 
-    public static void increaseOctopus(ArrayList<ArrayList<Integer>> input,
+    public static void increaseOne(ArrayList<ArrayList<Integer>> octoGrid,
             int x, int y) {
-        if (input.get(y).get(x) != 0)
-            input.get(y).set(x, input.get(y).get(x) + 1);
+        if (octoGrid.get(y).get(x) != 0) {
+            octoGrid.get(y).set(x, octoGrid.get(y).get(x) + 1);
+        }
     }
 
-    public static Boolean processFlashes(ArrayList<ArrayList<Integer>> input) {
-        boolean explosionStatus = false;
-        for (int j = 1; j < input.size() - 1; j++) {
-            for (int k = 1; k < input.get(j).size() - 1; k++) {
-                if (input.get(j).get(k) > 9) {
-                    input.get(j).set(k, 0);
-                    increaseOctopus(input, k - 1, j);
-                    increaseOctopus(input, k + 1, j);
-                    increaseOctopus(input, k + 1, j - 1);
-                    increaseOctopus(input, k + 1, j + 1);
-                    increaseOctopus(input, k - 1, j - 1);
-                    increaseOctopus(input, k - 1, j + 1);
-                    increaseOctopus(input, k, j - 1);
-                    increaseOctopus(input, k, j + 1);
-                }
-                if (input.get(j).get(k + 1) > 9
-                        || input.get(j + 1).get(k + 1) > 9
-                        || input.get(j + 1).get(k) > 9
-                        || input.get(j + 1).get(k - 1) > 9
-                        || input.get(j - 1).get(k + 1) > 9
-                        || input.get(j - 1).get(k) > 9
-                        || input.get(j - 1).get(k - 1) > 9
-                        || input.get(j).get(k - 1) > 9) {
-                    explosionStatus = true;
+    public static void processFlashes(ArrayList<ArrayList<Integer>> octoGrid) {
+        for (int j = 1; j < octoGrid.size() - 1; j++) {
+            for (int k = 1; k < octoGrid.get(j).size() - 1; k++) {
+                if (octoGrid.get(j).get(k) > 9) {
+                    octoGrid.get(j).set(k, 0);
+                    increaseOne(octoGrid, k - 1, j);
+                    increaseOne(octoGrid, k + 1, j);
+                    increaseOne(octoGrid, k + 1, j - 1);
+                    increaseOne(octoGrid, k + 1, j + 1);
+                    increaseOne(octoGrid, k - 1, j - 1);
+                    increaseOne(octoGrid, k - 1, j + 1);
+                    increaseOne(octoGrid, k, j - 1);
+                    increaseOne(octoGrid, k, j + 1);
                 }
             }
         }
-        return explosionStatus;
     }
 
-    public static boolean isFlashReady(ArrayList<ArrayList<Integer>> input) {
-        for (int j = 1; j < input.size() - 1; j++) {
-            for (int k = 1; k < input.get(j).size() - 1; k++) {
-                if (input.get(j).get(k) > 9) {
+    public static boolean isFlashReady(ArrayList<ArrayList<Integer>> octoGrid) {
+        for (int j = 1; j < octoGrid.size() - 1; j++) {
+            for (int k = 1; k < octoGrid.get(j).size() - 1; k++) {
+                if (octoGrid.get(j).get(k) > 9) {
                     return true;
                 }
             }
@@ -100,21 +90,21 @@ public class day11 {
         return false;
     }
 
-    public static int countFlashes(ArrayList<ArrayList<Integer>> input) {
+    public static int countFlashes(ArrayList<ArrayList<Integer>> octoGrid) {
         int counter = 0;
-        for (int j = 1; j < input.size() - 1; j++) {
-            for (int k = 1; k < input.get(j).size() - 1; k++) {
-                if (input.get(j).get(k) == 0)
+        for (int j = 1; j < octoGrid.size() - 1; j++) {
+            for (int k = 1; k < octoGrid.get(j).size() - 1; k++) {
+                if (octoGrid.get(j).get(k) == 0)
                     counter++;
             }
         }
         return counter;
     }
 
-    public static boolean areAllFlashing(ArrayList<ArrayList<Integer>> input) {
-        for (int j = 1; j < input.size() - 1; j++) {
-            for (int k = 1; k < input.get(j).size() - 1; k++) {
-                if (input.get(j).get(k) != 0)
+    public static boolean areAllFlashing(ArrayList<ArrayList<Integer>> octoGrid) {
+        for (int j = 1; j < octoGrid.size() - 1; j++) {
+            for (int k = 1; k < octoGrid.get(j).size() - 1; k++) {
+                if (octoGrid.get(j).get(k) != 0)
                     return false;
             }
         }
@@ -123,17 +113,16 @@ public class day11 {
 
     public static void inspectOctopuses(int days) {
         int flashCounter = 0;
-        boolean isAnyReadyToFlash = true;
-        ArrayList<ArrayList<Integer>> input = readInput("data.txt");
+        ArrayList<ArrayList<Integer>> octoGrid = readInput("data.txt");
         for (int i = 0; i < days; i++) {
-            initialIncrease(input);
-            isAnyReadyToFlash = true;
+            increaseAll(octoGrid);
+            boolean isAnyReadyToFlash = isFlashReady(octoGrid);
             while (isAnyReadyToFlash) {
-                processFlashes(input);
-                isAnyReadyToFlash = isFlashReady(input);
+                processFlashes(octoGrid);
+                isAnyReadyToFlash = isFlashReady(octoGrid);
             }
-            flashCounter += countFlashes(input);
-            if (areAllFlashing(input)) {
+            flashCounter += countFlashes(octoGrid);
+            if (areAllFlashing(octoGrid)) {
                 System.out.println(i + 1);
                 break;
             }
