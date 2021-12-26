@@ -3,14 +3,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class day11 {
-    /*
-     * Creates a grid surrounded by a border of nines, e.g.:
-     * 999999
-     * 1234 912349
-     * 5678 --> 956789
-     * 9999 999999
-     * 999999
-     */
+
     public static ArrayList<ArrayList<Integer>> readInput(String filename) {
         ArrayList<ArrayList<Integer>> octoGrid = new ArrayList<>();
         ArrayList<Integer> emptyLine = new ArrayList<>();
@@ -111,27 +104,38 @@ public class day11 {
         return true;
     }
 
-    public static void inspectOctopuses(int days) {
+    public static int processStep(ArrayList<ArrayList<Integer>> octoGrid) {
         int flashCounter = 0;
+        increaseAll(octoGrid);
+        while (isFlashReady(octoGrid)) {
+            processFlashes(octoGrid);
+        }
+        flashCounter += countFlashes(octoGrid);
+        return flashCounter;
+    }
+
+    public static int countAllFlashes(int step) {
         ArrayList<ArrayList<Integer>> octoGrid = readInput("data.txt");
-        for (int i = 0; i < days; i++) {
-            increaseAll(octoGrid);
-            boolean isAnyReadyToFlash = isFlashReady(octoGrid);
-            while (isAnyReadyToFlash) {
-                processFlashes(octoGrid);
-                isAnyReadyToFlash = isFlashReady(octoGrid);
-            }
-            flashCounter += countFlashes(octoGrid);
+        int flashes = 0;
+        for (int i = 0; i < step; i++) {
+            flashes += processStep(octoGrid);
+        }
+        return flashes;
+    }
+
+    public static int findSyncStep(int step) {
+        ArrayList<ArrayList<Integer>> octoGrid = readInput("data.txt");
+        for (int i = 0; i < step; i++) {
+            processStep(octoGrid);
             if (areAllFlashing(octoGrid)) {
-                System.out.println(i + 1);
-                break;
+                return i + 1;
             }
         }
-        System.out.println(flashCounter);
+        return -1;
     }
 
     public static void main(String[] args) {
-        inspectOctopuses(100);
-        inspectOctopuses(500);
+        System.out.println(countAllFlashes(100));
+        System.out.println(findSyncStep(500));
     }
 }
