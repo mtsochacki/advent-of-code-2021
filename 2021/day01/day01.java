@@ -35,13 +35,10 @@ public class day01 {
     public static int CountTripleDescents() {
         ArrayList<Integer> report = readReport("data.txt");
         int counter = 0;
-        int previousMeasurement = report.get(0);
         for (int i = 0; i < report.size() - 3; i++) {
-            int currentMeasurement = report.get(i + 3);
-            if (currentMeasurement > previousMeasurement) {
+            if (report.get(i) < report.get(i+3)){
                 counter++;
             }
-            previousMeasurement = report.get(i + 1);
         }
         return counter;
     }
