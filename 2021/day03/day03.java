@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class day03 {
-    public static ArrayList<String> readInput(String filename) {
+    public static ArrayList<String> readReport(String filename) {
         Scanner sc = null;
         ArrayList<String> diagnosticReport = new ArrayList<>();
 
@@ -28,18 +28,19 @@ public class day03 {
         return dec;
     }
 
-    public static int part1() {
-        ArrayList<String> input = readInput("data.txt");
-        int[] gammaRate = new int[input.get(0).length()];
-        int[] epsilonRate = new int[input.get(0).length()];
+    public static int calculatePower() {
+        ArrayList<String> report = readReport("data.txt");
+        int[] gammaRate = new int[report.get(0).length()];
+        int[] epsilonRate = new int[report.get(0).length()];
 
-        for (int i = 0; i < input.size(); i++) {
-            for (int j = 0; j < gammaRate.length; j++) {
-                gammaRate[j] += input.get(i).charAt(j) - 48;
+        for (String number : report) {
+            for (int i = 0; i < epsilonRate.length; i++) {
+                gammaRate[i] += number.charAt(i) - 48;
             }
         }
+
         for (int i = 0; i < gammaRate.length; i++) {
-            if (gammaRate[i] >= (input.size() / 2)) {
+            if (gammaRate[i] >= report.size() / 2) {
                 gammaRate[i] = 1;
                 epsilonRate[i] = 0;
             } else {
@@ -47,70 +48,46 @@ public class day03 {
                 epsilonRate[i] = 1;
             }
         }
-
         return binToDec(gammaRate) * binToDec(epsilonRate);
     }
 
-    public static int calculateOxygen() {
-        ArrayList<String> input = readInput("data.txt");
-        int amountOfOnes = 0;
-        int amountOfZeros = 0;
+    public static int calculateSupport(boolean isOxygen) {
+        ArrayList<String> report = readReport("data.txt");
         char dominantNumber = '0';
 
-        for (int i = 0; i < input.get(0).length(); i++) {
-            for (int j = 0; j < input.size(); j++) {
-                if (input.get(j).charAt(i) == '1')
+        for (int i = 0; i < report.get(0).length(); i++) {
+            int amountOfOnes = 0;
+            int amountOfZeros = 0;
+            for (String number : report) {
+                if (number.charAt(i) == '1') {
                     amountOfOnes++;
-                else
+                } else {
                     amountOfZeros++;
+                }
             }
-            if (amountOfOnes >= amountOfZeros)
-                dominantNumber = '1';
-            else
-                dominantNumber = '0';
-            for (int j = input.size() - 1; j >= 0; j--) {
-                if (input.get(j).charAt(i) != dominantNumber)
-                    input.remove(j);
-            }
-            amountOfOnes = 0;
-            amountOfZeros = 0;
-            if (input.size() == 1)
-                break;
-        }
-        return Integer.parseInt(input.get(0), 2);
-    }
 
-    public static int calculateCO2() {
-        ArrayList<String> input = readInput("data.txt");
-        int amountOfOnes = 0;
-        int amountOfZeros = 0;
-        char dominantNumber = '0';
+            if (amountOfOnes >= amountOfZeros) {
+                dominantNumber = isOxygen ? '1' : '0';
+            } else {
+                dominantNumber = isOxygen ? '0' : '1';
+            }
 
-        for (int i = 0; i < input.get(0).length(); i++) {
-            for (int j = 0; j < input.size(); j++) {
-                if (input.get(j).charAt(i) == '1')
-                    amountOfOnes++;
-                else
-                    amountOfZeros++;
+            ArrayList<String> tmpReport = new ArrayList<>();
+            for (String number : report) {
+                if (number.charAt(i) == dominantNumber) {
+                    tmpReport.add(number);
+                }
             }
-            if (amountOfOnes >= amountOfZeros)
-                dominantNumber = '0';
-            else
-                dominantNumber = '1';
-            for (int j = input.size() - 1; j >= 0; j--) {
-                if (input.get(j).charAt(i) != dominantNumber)
-                    input.remove(j);
-            }
-            amountOfOnes = 0;
-            amountOfZeros = 0;
-            if (input.size() == 1)
+            report = tmpReport;
+            if (report.size() == 1) {
                 break;
+            }
         }
-        return Integer.parseInt(input.get(0), 2);
+        return Integer.parseInt(report.get(0), 2);
     }
 
     public static void main(String[] args) {
-        System.out.println(part1());
-        System.out.println(calculateOxygen() * calculateCO2());
+        System.out.println(calculatePower());
+        System.out.println(calculateSupport(true) * calculateSupport(false));
     }
 }
