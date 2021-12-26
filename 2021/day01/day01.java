@@ -3,14 +3,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class day01 {
-    // Takes report file and converts it to ArrayList
-    public static ArrayList<Integer> readInput(String filename) {
+    public static ArrayList<Integer> readReport(String filename) {
         Scanner sc = null;
         ArrayList<Integer> input = new ArrayList<>();
         try {
             sc = new Scanner(new File(filename));
-            while (sc.hasNextInt())
+            while (sc.hasNextInt()) {
                 input.add(sc.nextInt());
+            }
         } catch (Exception e) {
             System.out.println("Something went horribly wrong: " + e);
         } finally {
@@ -18,40 +18,38 @@ public class day01 {
         }
         return input;
     }
-    // Counts the number of times a depth measurement
-    // increases from the previous measurement
-    public static void part1() {
-        ArrayList<Integer> report = readInput("data.txt");
+
+    public static int CountSingleDescents() {
+        ArrayList<Integer> report = readReport("data.txt");
         int counter = 0;
-        int currentDepth = 0;
-        int previousDepth = report.get(0);
-        for (int i = 1; i < report.size(); i++) {
-            currentDepth = report.get(i);
-            if (currentDepth > previousDepth)
+        int previousMeasurement = report.get(0);
+        for (Integer currentMeasurement : report) {
+            if (currentMeasurement > previousMeasurement) {
                 counter++;
-            previousDepth = currentDepth;
+            }
+            previousMeasurement = currentMeasurement;
         }
-        System.out.println(counter);
+        return counter;
     }
-    // Counts the number of times a depth measurement
-    // increases from the previous measurement in a
-    // three-measurement sliding window
-    public static void part2() {
-        ArrayList<Integer> report = readInput("data.txt");
+
+    public static int CountTripleDescents() {
+        ArrayList<Integer> report = readReport("data.txt");
         int counter = 0;
-        int currentDepth = 0;
-        int previousDepth = report.get(0);
+        int previousMeasurement = report.get(0);
         for (int i = 0; i < report.size() - 3; i++) {
-            currentDepth = report.get(i + 3);
-            if (currentDepth > previousDepth)
+            int currentMeasurement = report.get(i + 3);
+            if (currentMeasurement > previousMeasurement) {
                 counter++;
-            previousDepth = report.get(i + 1);
+            }
+            previousMeasurement = report.get(i + 1);
         }
-        System.out.println(counter);
+        return counter;
     }
-    
+
     public static void main(String[] args) {
-        part1();
-        part2();
+        System.out.println("There are " + CountSingleDescents()
+           + " measurements that are larger than the previous measurement.");
+        System.out.println("There are " + CountTripleDescents()
+           + " \"triple measurements\" that are larger than the previous one.");
     }
 }
