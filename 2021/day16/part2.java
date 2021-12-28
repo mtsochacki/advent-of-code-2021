@@ -1,6 +1,5 @@
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -51,147 +50,100 @@ public class part2 {
     }
 
     public static Long makeCalculations(int packetType, ArrayList<Long> values) {
-        System.out.println(Arrays.toString(values.toArray()));
         switch (packetType) {
             case 0:
                 Long sum = 0L;
-                for (Long element : values) {
-                    sum += element;
+                for (Long num : values) {
+                    sum += num;
                 }
-                System.out.println(sum);
                 return sum;
             case 1:
-                Long result = 1L;
-                for (Long element : values) {
-                    result *= element;
+                Long product = 1L;
+                for (Long num : values) {
+                    product *= num;
                 }
-                System.out.println(result);
-                return result;
+                return product;
             case 2:
-                Long result2 = Collections.min(values);
-                System.out.println(result2);
-                return result2;
+                return Collections.min(values);
             case 3:
-                Long result3 = Collections.max(values);
-                System.out.println(result3);
-                return result3;
+                return Collections.max(values);
             case 5:
-                if (values.get(0) > values.get(1))
-                    return 1L;
-                else
-                    return 0L;
+                return values.get(0) > values.get(1) ? 1L : 0L;
             case 6:
-                if (values.get(0) < values.get(1))
-                    return 1L;
-                else
-                    return 0L;
+                return values.get(0) < values.get(1) ? 1L : 0L;
             case 7:
-                if (values.get(0).equals(values.get(1))) {
-                    System.out.println("takie same");
-                    return 1L;
-                } else {
-
-                    return 0L;
-                }
+                return values.get(0).equals(values.get(1)) ? 1L : 0L;
             default:
-                return 1L;
+                System.out.println("Error in switch statement");
+                return -1L;
         }
     }
 
     public static Packet calculateLiterallValue(Packet packet) {
         int i = 6;
-        Packet tmpPacket = new Packet();
-        String transmissions = packet.content;
-        Long value;
-        String actualValue = "";
-        while (transmissions.substring(i, i + 1).equals("1")) {
-            actualValue += transmissions.substring(i + 1, i + 5);
+        String literallBinValue = "";
+        while (packet.content.substring(i, i + 1).equals("1")) {
+            literallBinValue += packet.content.substring(i + 1, i + 5);
             i += 5;
         }
-        actualValue += transmissions.substring(i + 1, i + 5);
+        literallBinValue += packet.content.substring(i + 1, i + 5);
         i += 5;
-        transmissions = transmissions.substring(i);
-        value = Long.parseLong(actualValue, 2);
-        System.out.println("Literal num " + value);
-        // System.out.println(transmissions);
-        tmpPacket.content = transmissions;
-        tmpPacket.length = i;
-        tmpPacket.value = value;
-        return tmpPacket;
+        packet.content = packet.content.substring(i);
+        packet.value = Long.parseLong(literallBinValue, 2);
+        packet.length = i;
+        return packet;
+    }
+
+    public static Packet calculateOperatorZero(Packet packet, int packetTypeID) {
+        int subLength = Integer.parseInt(packet.content.substring(7, 22), 2);
+        int packetLength = 22;
+        packet.content = packet.content.substring(22);;
+        ArrayList<Long> results = new ArrayList<>();
+
+        while (subLength > 0) {
+            packet = processPacket(packet);
+            packetLength += packet.length;
+            subLength -= packet.length;
+            results.add(packet.value);
+        }
+        packet.length = packetLength;
+        packet.value = makeCalculations(packetTypeID, results);
+        return packet;
+    }
+
+    public static Packet calculateOperatorOne(Packet packet, int packetTypeID) {
+        int subAmount = Integer.parseInt(packet.content.substring(7, 18), 2);
+        int packetLength = 18;
+        packet.content = packet.content.substring(18);
+        ArrayList<Long> result = new ArrayList<>();
+
+        for (int j = 0; j < subAmount; j++) {
+            packet = processPacket(packet);
+            packetLength += packet.length;
+            result.add(packet.value);
+        }
+        packet.length = packetLength;
+        packet.value = makeCalculations(packetTypeID, result);
+        return packet;
     }
 
     public static Packet processPacket(Packet packet) {
-        Packet tmpPacket = new Packet();
-        /* sprawdź czy pakiet się skończył czy nie, i jeśli tak to go zwróć */
-        if (!packet.content.contains("1")) {
-            return packet;
-        }
-        /* Odczytaj typ pakietu */
         int packetTypeID = Integer.parseInt(packet.content.substring(3, 6), 2);
-        System.out.println("type_id " + packetTypeID);
-        /* Oblicz literall Value pakietu i zwróć */
         if (packetTypeID == 4) {
             return calculateLiterallValue(packet);
         } else {
-            /* Jeśli to operational packet z Length ID 0 */
             if (packet.content.substring(6, 7).equals("0")) {
-                /* Odczytaj długość subpakietu */
-                int subLength = Integer.parseInt(packet.content.substring(7, 22), 2);
-                int packetLength = 22;
-                /* Przypisz do stringa ztrimowany subpakiet */
-                String subpacket = packet.content.substring(22);
-                packet.content = subpacket;
-                /* Stwórz ArrayLista na przechowywanie wyników subpakietów */
-                ArrayList<Long> result = new ArrayList<>();
-
-                /* aż nie przerobisz wszystkich bitów to przerabiaj kolejne subpakiety */
-                while (subLength > 0) {
-                    tmpPacket = processPacket(packet);
-                    packetLength += tmpPacket.length;
-                    subLength -= tmpPacket.length;
-                    result.add(tmpPacket.value);
-                    packet = tmpPacket;
-                }
-                tmpPacket = packet;
-                tmpPacket.length = packetLength;
-                // System.out.println(Arrays.toString(result.toArray()));
-                packet.value = makeCalculations(packetTypeID, result);
-                // System.out.println("Calculated value is " + packet.value);
-                return tmpPacket;
+                return calculateOperatorZero(packet, packetTypeID);
             } else {
-                /* Odczytaj ile jest subpakietów */
-                int amountOfBits = Integer.parseInt(packet.content.substring(7, 18), 2);
-                int packetLength = 18;
-                /* Przypisz do stringa ztrimowany subpakiet */
-                String subpacket = packet.content.substring(18);
-                packet.content = subpacket;
-                /* Stwórz ArrayLista na przechowywanie wyników */
-                ArrayList<Long> result = new ArrayList<>();
-                /* Przerób x kolejnych subpakietów */
-                for (int j = 0; j < amountOfBits; j++) {
-                    tmpPacket = processPacket(packet);
-                    packetLength += tmpPacket.length;
-                    result.add(tmpPacket.value);
-                    packet = tmpPacket;
-                }
-                tmpPacket = packet;
-                tmpPacket.length = packetLength;
-                // System.out.println(Arrays.toString(result.toArray()));
-                packet.value = makeCalculations(packetTypeID, result);
-                // System.out.println("Calculated value is " + packet.value);
-                return tmpPacket;
+                return calculateOperatorOne(packet, packetTypeID);
             }
         }
     }
 
     public static void main(String[] args) {
-        String bits = readInput("data.txt");
-        Packet x = new Packet();
-        x.content = bits;
-        x.value = 0L;
-        x = processPacket(x);
-        System.out.println("Output is " + x.value);
-        System.out.println("Output is " + x.content);
-
+        Packet transmission = new Packet();
+        transmission.content = readInput("data.txt");
+        transmission = processPacket(transmission);
+        System.out.println("Output is " + transmission.value);
     }
 }
