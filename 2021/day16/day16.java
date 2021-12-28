@@ -4,11 +4,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class part2 {
+public class day16 {
     public static class Packet {
         Long value;
         int length;
-        String content;
+        int versionSum;
+        String binData;
     }
 
     public static String readInput(String filename) {
@@ -82,24 +83,23 @@ public class part2 {
     public static Packet calculateLiterallValue(Packet packet) {
         int i = 6;
         String literallBinValue = "";
-        while (packet.content.substring(i, i + 1).equals("1")) {
-            literallBinValue += packet.content.substring(i + 1, i + 5);
+        while (packet.binData.substring(i, i + 1).equals("1")) {
+            literallBinValue += packet.binData.substring(i + 1, i + 5);
             i += 5;
         }
-        literallBinValue += packet.content.substring(i + 1, i + 5);
+        literallBinValue += packet.binData.substring(i + 1, i + 5);
         i += 5;
-        packet.content = packet.content.substring(i);
+        packet.binData = packet.binData.substring(i);
         packet.value = Long.parseLong(literallBinValue, 2);
         packet.length = i;
         return packet;
     }
 
     public static Packet calculateOperatorZero(Packet packet, int packetTypeID) {
-        int subLength = Integer.parseInt(packet.content.substring(7, 22), 2);
+        int subLength = Integer.parseInt(packet.binData.substring(7, 22), 2);
         int packetLength = 22;
-        packet.content = packet.content.substring(22);;
+        packet.binData = packet.binData.substring(22);
         ArrayList<Long> results = new ArrayList<>();
-
         while (subLength > 0) {
             packet = processPacket(packet);
             packetLength += packet.length;
@@ -112,9 +112,9 @@ public class part2 {
     }
 
     public static Packet calculateOperatorOne(Packet packet, int packetTypeID) {
-        int subAmount = Integer.parseInt(packet.content.substring(7, 18), 2);
+        int subAmount = Integer.parseInt(packet.binData.substring(7, 18), 2);
         int packetLength = 18;
-        packet.content = packet.content.substring(18);
+        packet.binData = packet.binData.substring(18);
         ArrayList<Long> result = new ArrayList<>();
 
         for (int j = 0; j < subAmount; j++) {
@@ -128,11 +128,12 @@ public class part2 {
     }
 
     public static Packet processPacket(Packet packet) {
-        int packetTypeID = Integer.parseInt(packet.content.substring(3, 6), 2);
+        packet.versionSum += Integer.parseInt(packet.binData.substring(0, 3),2);
+        int packetTypeID = Integer.parseInt(packet.binData.substring(3, 6), 2);
         if (packetTypeID == 4) {
             return calculateLiterallValue(packet);
         } else {
-            if (packet.content.substring(6, 7).equals("0")) {
+            if (packet.binData.substring(6, 7).equals("0")) {
                 return calculateOperatorZero(packet, packetTypeID);
             } else {
                 return calculateOperatorOne(packet, packetTypeID);
@@ -142,8 +143,9 @@ public class part2 {
 
     public static void main(String[] args) {
         Packet transmission = new Packet();
-        transmission.content = readInput("data.txt");
+        transmission.binData = readInput("data.txt");
         transmission = processPacket(transmission);
-        System.out.println("Output is " + transmission.value);
+        System.out.println("Sum of packet versions " + transmission.versionSum);
+        System.out.println("Evaluated expression is " + transmission.value);
     }
 }
