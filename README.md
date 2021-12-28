@@ -9,6 +9,11 @@
 
 Read more on official Advent of Code website: https://adventofcode.com/2021/about
 
-## My goals
+## Goals:
+1. To have all of the puzzles solved by the end January.
+2. To write my own solutions to all the problems (no [/r/adventofcode](https://www.reddit.com/r/adventofcode/) peeking!).
+3. To improve my understanding of Java and Version Control.
+4. Make code as readable and easy to understand as possible.
+
 ## Roadmap
 ## Current progress
