@@ -3,15 +3,15 @@ import java.util.*;
 import java.util.stream.LongStream;
 
 public class day16 {
-    static Pack initialisePacket(String binData) {
-        if (Pack.getTypeID(binData) == 4) {
+    static Packet initialisePacket(String binData) {
+        if (Packet.getTypeID(binData) == 4) {
             return new LiteralPacket(binData);
         } else {
             return new OperatorPacket(binData);
         }
     }
 
-    public static abstract class Pack {
+    public static abstract class Packet {
         protected final int HEADER_LENGTH = 6;
         long value;
         int versionID;
@@ -19,7 +19,7 @@ public class day16 {
         int length;
         String binContent;
 
-        Pack(String binData) {
+        Packet(String binData) {
             this.versionID = Integer.parseInt(binData.substring(0, 3), 2);
             this.typeID = Integer.parseInt(binData.substring(3, 6), 2);
             this.binContent = binData.substring(6);
@@ -33,7 +33,7 @@ public class day16 {
         abstract int getVersionIdSum();
     }
 
-    public static class LiteralPacket extends Pack {
+    public static class LiteralPacket extends Packet {
         LiteralPacket(String binData) {
             super(binData);
         }
@@ -59,9 +59,9 @@ public class day16 {
         }
     }
 
-    public static class OperatorPacket extends Pack {
+    public static class OperatorPacket extends Packet {
         private final int OP_HEADER_LENGTH;
-        ArrayList<Pack> subpackets;
+        ArrayList<Packet> subpackets;
         int lengthTypeID;
 
         OperatorPacket(String binData) {
@@ -90,7 +90,7 @@ public class day16 {
         int parseSubpacketsByLength(int lengthOfPackets) {
             int subpacketsLength = 0;
             while (subpacketsLength < lengthOfPackets) {
-                Pack packet = initialisePacket(this.binContent.substring(16 + subpacketsLength));
+                Packet packet = initialisePacket(this.binContent.substring(16 + subpacketsLength));
                 packet.parsePacket();
                 subpacketsLength += packet.length;
                 subpackets.add(packet);
@@ -102,7 +102,7 @@ public class day16 {
             int num = 0;
             int subpacketsLength = 0;
             while (num < numberOfPackets) {
-                Pack packet = initialisePacket(this.binContent.substring(12 + subpacketsLength));
+                Packet packet = initialisePacket(this.binContent.substring(12 + subpacketsLength));
                 packet.parsePacket();
                 subpacketsLength += packet.length;
                 num += 1;
@@ -134,7 +134,7 @@ public class day16 {
         }
 
         int getVersionIdSum() {
-            return this.versionID + this.subpackets.stream().mapToInt(Pack::getVersionIdSum).sum();
+            return this.versionID + this.subpackets.stream().mapToInt(Packet::getVersionIdSum).sum();
         }
     }
 
@@ -162,9 +162,9 @@ public class day16 {
     }
 
     public static void main(String[] args) {
-        Pack pack = initialisePacket(readInput("data.txt"));
-        pack.parsePacket();
-        System.out.println(pack.getVersionIdSum());
-        System.out.println(pack.value);
+        Packet packet = initialisePacket(readInput("data.txt"));
+        packet.parsePacket();
+        System.out.println(packet.getVersionIdSum());
+        System.out.println(packet.value);
     }
 }
