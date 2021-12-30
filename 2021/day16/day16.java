@@ -1,10 +1,136 @@
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.LongStream;
 
 public class day16 {
+    static Pack initialisePacket(String binData) {
+        if (Pack.getTypeID(binData) == 4) {
+            return new LiteralPacket(binData);
+        } else {
+            return new OperatorPacket(binData);
+        }
+    }
+
+    public static abstract class Pack {
+        long value;
+        int versionID;
+        int typeID;
+        String binContent;
+
+        Pack(String binData) {
+            this.versionID = Integer.parseInt(binData.substring(0, 3), 2);
+            this.typeID = Integer.parseInt(binData.substring(3, 6), 2);
+            this.binContent = binData.substring(6);
+        }
+
+        static int getTypeID(String binData) {
+            return Integer.parseInt(binData.substring(3, 6), 2);
+        }
+
+        abstract int parsePacket();
+        abstract int getVersionIdSum();
+    }
+
+    public static class LiteralPacket extends Pack {
+        LiteralPacket(String binData) {
+            super(binData);
+        }
+
+        int parsePacket() {
+            int idx = 0;
+            for (; idx < this.binContent.length(); idx += 5) {
+                String binGroupValue = this.binContent.substring(idx + 1, idx + 5);
+                this.value *= 16;
+                this.value += Integer.parseInt(binGroupValue, 2);
+                char binGroupControl = this.binContent.charAt(idx);
+                if (binGroupControl == '0') {
+                    idx += 5;
+                    break;
+                }
+            }
+
+            return idx + 6;
+        }
+
+        int getVersionIdSum() {
+            return this.versionID;
+        }
+    }
+
+    public static class OperatorPacket extends Pack {
+        ArrayList<Pack> subpackets;
+        int lengthTypeID;
+
+        OperatorPacket(String binData) {
+            super(binData);
+            this.subpackets = new ArrayList<>();
+            this.lengthTypeID = Integer.parseInt(this.binContent.substring(0, 1), 2);
+        }
+
+        int parsePacket() {
+            if (this.lengthTypeID == 0) {
+                int lengthOfPackets = Integer.parseInt(this.binContent.substring(1, 16), 2);
+                int packetsLength = this.parsePacketsByLength(lengthOfPackets);
+                this.calculatePacketValue();
+                return packetsLength + 22;
+            } else {
+                int numberOfPackets = Integer.parseInt(this.binContent.substring(1, 12), 2);
+                int packetsLength = this.parsePacketsByNumber(numberOfPackets);
+                this.calculatePacketValue();
+                return packetsLength + 18;
+            }
+        }
+
+        void calculatePacketValue() {
+            LongStream packetValues = this.subpackets.stream().mapToLong(p -> p.value);
+            switch (this.typeID) {
+                case 0 -> this.value = packetValues.sum();
+                case 1 -> this.value = packetValues.reduce(1, (p, acc) -> p * acc);
+                case 2 -> this.value = packetValues.min().orElseThrow();
+                case 3 -> this.value = packetValues.max().orElseThrow();
+                case 5 -> {
+                    List<Long> values = packetValues.boxed().toList();
+                    this.value = values.get(0) > values.get(1) ? 1L : 0L;
+                }
+                case 6 -> {
+                    List<Long> values = packetValues.boxed().toList();
+                    this.value = values.get(0) < values.get(1) ? 1L : 0L;
+                }
+                case 7 -> {
+                    List<Long> values = packetValues.boxed().toList();
+                    this.value = Objects.equals(values.get(0), values.get(1)) ? 1L : 0L;
+                }
+            }
+        }
+
+        int parsePacketsByLength(int lengthOfPackets) {
+            int idx = 0;
+            while (idx < lengthOfPackets) {
+                Pack packet = initialisePacket(this.binContent.substring(16 + idx));
+                int packetLength = packet.parsePacket();
+                idx += packetLength;
+                subpackets.add(packet);
+            }
+            return idx;
+        }
+
+        int parsePacketsByNumber(int numberOfPackets) {
+            int num = 0;
+            int idx = 0;
+            while (num < numberOfPackets) {
+                Pack packet = initialisePacket(this.binContent.substring(idx + 12));
+                int packetLength = packet.parsePacket();
+                idx += packetLength;
+                num += 1;
+                subpackets.add(packet);
+            }
+            return idx;
+        }
+
+        int getVersionIdSum() {
+            return this.versionID + this.subpackets.stream().mapToInt(Pack::getVersionIdSum).sum();
+        }
+    }
     public static class Packet {
         Long value;
         int length;
@@ -13,14 +139,14 @@ public class day16 {
     }
 
     public static String readInput(String filename) {
-        String s = "";
+        String s;
         String result = "";
         Scanner sc = null;
         try {
             sc = new Scanner(new File(filename));
             s = sc.next();
             for (char c : s.toCharArray()) {
-                result += hexToBin.get(String.valueOf(c));
+                result += hexToBin(String.valueOf(c));
             }
         } catch (Exception e) {
             System.out.println("Something went wrong " + e);
@@ -30,24 +156,9 @@ public class day16 {
         return result;
     }
 
-    private static final HashMap<String, String> hexToBin = new HashMap<>();
-    static {
-        hexToBin.put("0", "0000");
-        hexToBin.put("1", "0001");
-        hexToBin.put("2", "0010");
-        hexToBin.put("3", "0011");
-        hexToBin.put("4", "0100");
-        hexToBin.put("5", "0101");
-        hexToBin.put("6", "0110");
-        hexToBin.put("7", "0111");
-        hexToBin.put("8", "1000");
-        hexToBin.put("9", "1001");
-        hexToBin.put("A", "1010");
-        hexToBin.put("B", "1011");
-        hexToBin.put("C", "1100");
-        hexToBin.put("D", "1101");
-        hexToBin.put("E", "1110");
-        hexToBin.put("F", "1111");
+    private static String hexToBin(String hex) {
+        String bin = Integer.toBinaryString(Integer.parseInt(hex, 16));
+        return String.format("%4s", bin).replace(' ', '0');
     }
 
     public static Long makeCalculations(int packetType, ArrayList<Long> values) {
@@ -80,17 +191,17 @@ public class day16 {
         }
     }
 
-    public static Packet calculateLiterallValue(Packet packet) {
+    public static Packet calculateLiteralValue(Packet packet) {
         int i = 6;
-        String literallBinValue = "";
-        while (packet.binData.substring(i, i + 1).equals("1")) {
-            literallBinValue += packet.binData.substring(i + 1, i + 5);
+        String literalBinValue = "";
+        while (packet.binData.charAt(i) == '1') {
+            literalBinValue += packet.binData.substring(i + 1, i + 5);
             i += 5;
         }
-        literallBinValue += packet.binData.substring(i + 1, i + 5);
+        literalBinValue += packet.binData.substring(i + 1, i + 5);
         i += 5;
         packet.binData = packet.binData.substring(i);
-        packet.value = Long.parseLong(literallBinValue, 2);
+        packet.value = Long.parseLong(literalBinValue, 2);
         packet.length = i;
         return packet;
     }
@@ -131,9 +242,9 @@ public class day16 {
         packet.versionSum += Integer.parseInt(packet.binData.substring(0, 3),2);
         int packetTypeID = Integer.parseInt(packet.binData.substring(3, 6), 2);
         if (packetTypeID == 4) {
-            return calculateLiterallValue(packet);
+            return calculateLiteralValue(packet);
         } else {
-            if (packet.binData.substring(6, 7).equals("0")) {
+            if (packet.binData.charAt(6) == '0') {
                 return calculateOperatorZero(packet, packetTypeID);
             } else {
                 return calculateOperatorOne(packet, packetTypeID);
@@ -142,10 +253,9 @@ public class day16 {
     }
 
     public static void main(String[] args) {
-        Packet transmission = new Packet();
-        transmission.binData = readInput("data.txt");
-        transmission = processPacket(transmission);
-        System.out.println("Sum of packet versions " + transmission.versionSum);
-        System.out.println("Evaluated expression is " + transmission.value);
+        Pack pack = initialisePacket(readInput("data.txt"));
+        pack.parsePacket();
+        System.out.println(pack.getVersionIdSum());
+        System.out.println(pack.value);
     }
 }
