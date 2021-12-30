@@ -90,7 +90,7 @@ public class day16 {
         int parseSubpacketsByLength(int lengthOfPackets) {
             int subpacketsLength = 0;
             while (subpacketsLength < lengthOfPackets) {
-                Packet packet = initialisePacket(this.binContent.substring(16 + subpacketsLength));
+                Packet packet = initialisePacket(this.binContent.substring(this.OP_HEADER_LENGTH + subpacketsLength));
                 packet.parsePacket();
                 subpacketsLength += packet.length;
                 subpackets.add(packet);
@@ -102,7 +102,7 @@ public class day16 {
             int num = 0;
             int subpacketsLength = 0;
             while (num < numberOfPackets) {
-                Packet packet = initialisePacket(this.binContent.substring(12 + subpacketsLength));
+                Packet packet = initialisePacket(this.binContent.substring(this.OP_HEADER_LENGTH + subpacketsLength));
                 packet.parsePacket();
                 subpacketsLength += packet.length;
                 num += 1;
