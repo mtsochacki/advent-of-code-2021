@@ -11,17 +11,11 @@ public class day05 {
     }
 
     public static Boolean isVertical(LineOfVents line) {
-        if (line.xStart == line.xEnd)
-            return true;
-        else
-            return false;
+        return line.xStart == line.xEnd; 
     }
 
     public static Boolean isHorizontal(LineOfVents line) {
-        if (line.yStart == line.yEnd)
-            return true;
-        else
-            return false;
+        return line.yStart == line.yEnd;
     }
 
     public static ArrayList<LineOfVents> readInput(String filename) {
@@ -51,31 +45,31 @@ public class day05 {
         int[][] diagram = new int[1000][1000];
         int count = 0;
 
-        for (int i = 0; i < input.size(); i++) {
-            if (isVertical(input.get(i))) {
-                for (int j = Integer.min(input.get(i).yStart, input.get(i).yEnd); j <= Integer.max(input.get(i).yStart,
-                        input.get(i).yEnd); j++) {
-                    diagram[j][input.get(i).xEnd] += 1;
+        for (LineOfVents lineOfVents : input) {
+            if (isVertical(lineOfVents)) {
+                for (int j = Integer.min(lineOfVents.yStart, lineOfVents.yEnd); j <= Integer.max(lineOfVents.yStart,
+                        lineOfVents.yEnd); j++) {
+                    diagram[j][lineOfVents.xEnd] += 1;
                 }
-            } else if (isHorizontal(input.get(i))) {
-                for (int j = Integer.min(input.get(i).xStart, input.get(i).xEnd); j <= Integer.max(input.get(i).xStart,
-                        input.get(i).xEnd); j++) {
-                    diagram[input.get(i).yEnd][j] += 1;
+            } else if (isHorizontal(lineOfVents)) {
+                for (int j = Integer.min(lineOfVents.xStart, lineOfVents.xEnd); j <= Integer.max(lineOfVents.xStart,
+                        lineOfVents.xEnd); j++) {
+                    diagram[lineOfVents.yEnd][j] += 1;
                 }
-                // check if we event want to calculate part2
+                // check if we even want to calculate part2
             } else if (includePart2) {
-                int lineLength = Math.abs(input.get(i).xStart - input.get(i).xEnd);
-                int x = Integer.min(input.get(i).xStart, input.get(i).xEnd);
-                // if both coordinates increase or decrerase
-                if ((input.get(i).xStart < input.get(i).xEnd) && (input.get(i).yStart < input.get(i).yEnd)
-                        || (input.get(i).xStart > input.get(i).xEnd) && (input.get(i).yStart > input.get(i).yEnd)) {
-                    int y = Integer.min(input.get(i).yStart, input.get(i).yEnd);
+                int lineLength = Math.abs(lineOfVents.xStart - lineOfVents.xEnd);
+                int x = Integer.min(lineOfVents.xStart, lineOfVents.xEnd);
+                // if both coordinates increase or decrease
+                if ((lineOfVents.xStart < lineOfVents.xEnd) && (lineOfVents.yStart < lineOfVents.yEnd)
+                        || (lineOfVents.xStart > lineOfVents.xEnd) && (lineOfVents.yStart > lineOfVents.yEnd)) {
+                    int y = Integer.min(lineOfVents.yStart, lineOfVents.yEnd);
                     for (int j = 0; j <= lineLength; j++) {
                         diagram[y + j][x + j] += 1;
                     }
                     // if one coordinate increase and the other one decreases
                 } else {
-                    int y = Integer.max(input.get(i).yStart, input.get(i).yEnd);
+                    int y = Integer.max(lineOfVents.yStart, lineOfVents.yEnd);
                     for (int j = 0; j <= lineLength; j++) {
                         diagram[y - j][x + j] += 1;
                     }
