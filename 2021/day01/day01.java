@@ -11,10 +11,9 @@ public class day01 {
             while (sc.hasNextInt()) {
                 input.add(sc.nextInt());
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong: " + e);
-        } finally {
-            sc.close();
         }
         return input;
     }

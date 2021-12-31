@@ -21,10 +21,9 @@ public class day02 {
             while (sc.hasNextLine()) {
                 listOfCommands.add(new Command(sc.next(), sc.nextInt()));
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong: " + e);
-        } finally {
-            sc.close();
         }
         return listOfCommands;
     }

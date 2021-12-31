@@ -12,10 +12,9 @@ public class day03 {
             while (sc.hasNext()) {
                 diagnosticReport.add(sc.next());
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong: " + e);
-        } finally {
-            sc.close();
         }
         return diagnosticReport;
     }

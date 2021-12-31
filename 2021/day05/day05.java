@@ -19,7 +19,7 @@ public class day05 {
     }
 
     public static ArrayList<LineOfVents> readInput(String filename) {
-        Scanner sc = null;
+        Scanner sc;
         ArrayList<LineOfVents> input = new ArrayList<>();
         try {
             sc = new Scanner(new File(filename));
@@ -32,10 +32,9 @@ public class day05 {
                 line.yEnd = sc.nextInt();
                 input.add(line);
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong" + e);
-        } finally {
-            sc.close();
         }
         return input;
     }

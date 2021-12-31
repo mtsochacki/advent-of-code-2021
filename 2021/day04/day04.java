@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class day04 {
     public static ArrayList<Integer> readDrawnNumbers(String filename) {
-        Scanner sc = null;
+        Scanner sc;
         ArrayList<Integer> drawnNumbers = new ArrayList<>();
         try {
             sc = new Scanner(new File(filename));
@@ -12,6 +12,7 @@ public class day04 {
             while (sc.hasNextInt()) {
                 drawnNumbers.add(sc.nextInt());
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong drawing numbers" + e);
         }
@@ -19,7 +20,7 @@ public class day04 {
     }
 
     public static ArrayList<ArrayList<ArrayList<Integer>>> readBoards(String filename) {
-        Scanner sc = null;
+        Scanner sc;
         ArrayList<ArrayList<ArrayList<Integer>>> boards = new ArrayList<>();
         ArrayList<ArrayList<Integer>> board;
         try {
@@ -37,10 +38,9 @@ public class day04 {
                 }
                 boards.add(board);
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong " + e);
-        } finally {
-            sc.close();
         }
         return boards;
     }
