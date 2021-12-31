@@ -56,18 +56,15 @@ public class day05 {
                         lineOfVents.xEnd); j++) {
                     diagram[lineOfVents.yEnd][j] += 1;
                 }
-                // check if we even want to calculate part2
             } else if (includePart2) {
                 int lineLength = Math.abs(lineOfVents.xStart - lineOfVents.xEnd);
                 int x = Integer.min(lineOfVents.xStart, lineOfVents.xEnd);
-                // if both coordinates increase or decrease
                 if ((lineOfVents.xStart < lineOfVents.xEnd) && (lineOfVents.yStart < lineOfVents.yEnd)
                         || (lineOfVents.xStart > lineOfVents.xEnd) && (lineOfVents.yStart > lineOfVents.yEnd)) {
                     int y = Integer.min(lineOfVents.yStart, lineOfVents.yEnd);
                     for (int j = 0; j <= lineLength; j++) {
                         diagram[y + j][x + j] += 1;
                     }
-                    // if one coordinate increase and the other one decreases
                 } else {
                     int y = Integer.max(lineOfVents.yStart, lineOfVents.yEnd);
                     for (int j = 0; j <= lineLength; j++) {
@@ -76,9 +73,9 @@ public class day05 {
                 }
             }
         }
-        for (int i = 0; i < 1000; i++) {
-            for (int j = 0; j < 1000; j++) {
-                if (diagram[i][j] >= 2) {
+        for (int[] line : diagram){
+            for (int cell : line){
+                if (cell >= 2){
                     count++;
                 }
             }
