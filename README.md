@@ -15,7 +15,7 @@ Read more on official Advent of Code website: https://adventofcode.com/2021/abou
 3. To improve my understanding of Java and Version Control.
 4. Make code as readable and easy to understand as possible.
 
-## Current progress: 15/25
+## Current progress:
 ### Puzzles solved
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16
 
@@ -38,7 +38,7 @@ Read more on official Advent of Code website: https://adventofcode.com/2021/abou
 | [15](https://adventofcode.com/2021/day/15) | Under review |
 | [16](https://adventofcode.com/2021/day/16) | Under review |
 
-[^1]: Puzzle links only lead to part 1 of the daily challange. Part 2 is displayed only after user provides correct solution to part 1.
+[^1]: Puzzle links only to part 1 of the daily challange. Part 2 is displayed only after user provides correct solution to part 1.
 
 ## Roadmap
 
