@@ -86,7 +86,7 @@ public class day08 {
     // Two is 5 segments long and is neither 3 nor 5
     public static void deduceTwo(String[] signals, SignalPattern pattern) {
         for (int i = 0; i < 10; i++) {
-            if (signals[i].length() == 5 && !signals[i].equals(pattern.three
+            if (signals[i].length() == 5 && !signals[i].equals(pattern.three)
                                          && !signals[i].equals(pattern.five))
                 pattern.two = signals[i];
         }
