@@ -14,7 +14,7 @@ public class day02 {
     }
 
     public static ArrayList<Command> readCommands(String filename) {
-        Scanner sc = null;
+        Scanner sc;
         ArrayList<Command> listOfCommands = new ArrayList<>();
         try {
             sc = new Scanner(new File(filename));

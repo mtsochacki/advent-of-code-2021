@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Scanner;
 import java.io.File;
@@ -16,7 +15,7 @@ public class day09 {
     public static ArrayList<ArrayList<Integer>> readInput(String filename) {
         ArrayList<ArrayList<Integer>> input = new ArrayList<>();
         ArrayList<Integer> emptyLine = new ArrayList<>();
-        Scanner sc = null;
+        Scanner sc;
         try {
             sc = new Scanner(new File(filename));
             sc.useDelimiter("");
@@ -38,22 +37,18 @@ public class day09 {
                 input.get(0).add(9);
                 input.get(input.size() - 1).add(9);
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong" + e);
-        } finally {
-            sc.close();
         }
         return input;
     }
 
     public static boolean isLowPoint(ArrayList<ArrayList<Integer>> input, int x, int y) {
-        if (input.get(x).get(y) < input.get(x).get(y - 1) &&
+        return input.get(x).get(y) < input.get(x).get(y - 1) &&
                 input.get(x).get(y) < input.get(x).get(y + 1) &&
                 input.get(x).get(y) < input.get(x - 1).get(y) &&
-                input.get(x).get(y) < input.get(x + 1).get(y)) {
-            return true;
-        } else
-            return false;
+                input.get(x).get(y) < input.get(x + 1).get(y);
     }
 
     public static int part1() {

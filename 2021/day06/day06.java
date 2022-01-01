@@ -11,8 +11,8 @@ public class day06 {
             sc = new Scanner(new File(filename)).useDelimiter(",");
             while (sc.hasNextInt()) {
                 input.add(sc.nextInt());
-            sc.close();
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong" + e);
         }

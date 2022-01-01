@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class day01 {
     public static ArrayList<Integer> readReport(String filename) {
-        Scanner sc = null;
+        Scanner sc;
         ArrayList<Integer> input = new ArrayList<>();
         try {
             sc = new Scanner(new File(filename));

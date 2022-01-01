@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class day03 {
     public static ArrayList<String> readReport(String filename) {
-        Scanner sc = null;
+        Scanner sc;
         ArrayList<String> diagnosticReport = new ArrayList<>();
 
         try {
@@ -52,7 +52,7 @@ public class day03 {
 
     public static int calculateSupport(boolean isOxygen) {
         ArrayList<String> report = readReport("data.txt");
-        char dominantNumber = '0';
+        char dominantNumber;
 
         for (int i = 0; i < report.get(0).length(); i++) {
             int amountOfOnes = 0;

@@ -12,14 +12,13 @@ public class day14 {
 
     public static String readTemplate(String filename) {
         String template = null;
-        Scanner sc = null;
+        Scanner sc;
         try {
             sc = new Scanner(new File(filename));
             template = sc.next();
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong" + e);
-        } finally {
-            sc.close();
         }
         return template;
     }
@@ -30,7 +29,7 @@ public class day14 {
          * read and transform them into a list of `Rule`s
          */
     public static ArrayList<Rule> readRules(String filename) {
-        Scanner sc = null;
+        Scanner sc;
         ArrayList<Rule> ruleList = new ArrayList<>();
         try {
             sc = new Scanner(new File(filename));
@@ -41,10 +40,9 @@ public class day14 {
                 rule.outcome = sc.next();
                 ruleList.add(rule);
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong" + e);
-        } finally {
-            sc.close();
         }
         return ruleList;
     }
@@ -93,8 +91,8 @@ public class day14 {
             for (Rule rule : ruleList) {
                 if (chunks.containsKey(rule.pair)) {
                     letters.merge(rule.outcome, chunks.get(rule.pair), Long::sum);
-                    String leftPair = rule.pair.substring(0, 1) + rule.outcome;
-                    String rightPair = rule.outcome + rule.pair.substring(1, 2);
+                    String leftPair = rule.pair.charAt(0) + rule.outcome;
+                    String rightPair = rule.outcome + rule.pair.charAt(1);
                     newChunks.merge(leftPair, chunks.get(rule.pair), Long::sum);
                     newChunks.merge(rightPair, chunks.get(rule.pair), Long::sum);
                 }

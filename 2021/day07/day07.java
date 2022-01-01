@@ -6,16 +6,15 @@ import java.util.Scanner;
 public class day07 {
     public static ArrayList<Integer> readInput(String filename) {
         ArrayList<Integer> input = new ArrayList<>();
-        Scanner sc = null;
+        Scanner sc;
         try {
             sc = new Scanner(new File(filename)).useDelimiter(",");
             while (sc.hasNextInt()) {
                 input.add(sc.nextInt());
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong" + e);
-        } finally {
-            sc.close();
         }
         return input;
     }
@@ -45,7 +44,7 @@ public class day07 {
     public static void part2() {
         ArrayList<Integer> listOfPositions = readInput("data.txt");
         int fuel = 100000000;
-        // Chceck each point between min and max of all the positions
+        // Check each point between min and max of all the positions
         int max = Collections.max(listOfPositions);
         int min = Collections.min(listOfPositions);
         for (int testedAlignment = min; testedAlignment <= max; testedAlignment++) {
