@@ -54,8 +54,7 @@ public class day09 {
     }
 
     public static boolean isLowPoint(ArrayList<ArrayList<Integer>> map, int x, int y) {
-        ArrayList<Point> neighbours = getNeighbours(x, y, map.get(y).size(), map.size());
-        for (Point point : neighbours) {
+        for (Point point : getNeighbours(x, y, map.get(y).size(), map.size())) {
             if (map.get(x).get(y) >= map.get(point.x).get(point.y)) {
                 return false;
             }
