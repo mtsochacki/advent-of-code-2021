@@ -48,8 +48,8 @@ public class day08 {
         ArrayList<String[]> input = readInput("data.txt");
         for (String[] strings : input) {
             for (int j = 10; j < input.get(0).length; j++) {
-                if (strings[j].length() == 2 || strings[j].length() == 4 || strings[j].length() == 3
-                        || strings[j].length() == 7)
+                if (strings[j].length() == 2 || strings[j].length() == 4 ||
+                    strings[j].length() == 3 || strings[j].length() == 7)
                     counter++;
             }
         }
@@ -76,40 +76,29 @@ public class day08 {
             }
         }
     }
-
-    // Six is 6 segments long and contains only one segment of 1
-    public static void deduceSix(String[] signals, SignalPattern pattern) {
-        char[] tokens = pattern.one.toCharArray();
+    // Zero i 6 segments long and is not a 6 or a 9
+    public static void deduceZero(String[] signals, SignalPattern pattern) {
+        for (int i = 0; i < 10; i++)
+            if (signals[i].length() == 6 && signals[i] != pattern.six
+                                         && signals[i] != pattern.nine)
+                pattern.zero = signals[i];
+    }
+    // Two is 5 segments long and is neither 3 nor 5
+    public static void deduceTwo(String[] signals, SignalPattern pattern) {
         for (int i = 0; i < 10; i++) {
-            if (signals[i].length() == 6 && (!signals[i].contains(String.valueOf(tokens[0]))
-                    || !signals[i].contains(String.valueOf(tokens[1]))))
-                pattern.six = signals[i];
+            if (signals[i].length() == 5 && !signals[i].equals(pattern.three
+                                         && !signals[i].equals(pattern.five))
+                pattern.two = signals[i];
         }
     }
     // Three is 5 segments long and contains both segments of 1
     public static void deduceThree(String[] signals, SignalPattern pattern) {
         char[] tokens = pattern.one.toCharArray();
         for (int i = 0; i < 10; i++) {
-            if (signals[i].length() == 5 && signals[i].contains(String.valueOf(tokens[0]))
+            if (signals[i].length() == 5 &&signals[i].contains(String.valueOf(tokens[0]))
                     && signals[i].contains(String.valueOf(tokens[1])))
                 pattern.three = signals[i];
         }
-    }
-    // Nine is 6 segments long and contains all segments of 3
-    public static void deduceNine(String[] signals, SignalPattern pattern) {
-        char[] tokens = pattern.three.toCharArray();
-        for (int i = 0; i < 10; i++) {
-            if (signals[i].length() == 6 && signals[i].contains(String.valueOf(tokens[0]))
-                    && signals[i].contains(String.valueOf(tokens[1])) && signals[i].contains(String.valueOf(tokens[2]))
-                    && signals[i].contains(String.valueOf(tokens[3])) && signals[i].contains(String.valueOf(tokens[4])))
-                pattern.nine = signals[i];
-        }
-    }
-    // Zero i 6 segments long and is not a 6 or a 9
-    public static void deduceZero(String[] signals, SignalPattern pattern) {
-        for (int i = 0; i < 10; i++)
-            if (signals[i].length() == 6 && signals[i] != pattern.six && signals[i] != pattern.nine)
-                pattern.zero = signals[i];
     }
     // Five is 5 segments long and all its segments are part of 9 and is not 3
     public static void deduceFive(String[] signals, SignalPattern pattern) {
@@ -124,11 +113,25 @@ public class day08 {
                 pattern.five = signals[j];  
         }
     }
-    // Two is 5 segments long and is neither 3 nor 5
-    public static void deduceTwo(String[] signals, SignalPattern pattern) {
+    // Six is 6 segments long and contains only one segment of 1
+    public static void deduceSix(String[] signals, SignalPattern pattern) {
+        char[] tokens = pattern.one.toCharArray();
         for (int i = 0; i < 10; i++) {
-            if (signals[i].length() == 5 && !signals[i].equals(pattern.three) && !signals[i].equals(pattern.five))
-                pattern.two = signals[i];
+            if (signals[i].length() == 6 && (!signals[i].contains(String.valueOf(tokens[0]))
+                    || !signals[i].contains(String.valueOf(tokens[1]))))
+                pattern.six = signals[i];
+        }
+    }
+    // Nine is 6 segments long and contains all segments of 3
+    public static void deduceNine(String[] signals, SignalPattern pattern) {
+        char[] tokens = pattern.three.toCharArray();
+        for (int i = 0; i < 10; i++) {
+            if (signals[i].length() == 6 && signals[i].contains(String.valueOf(tokens[0]))
+                    && signals[i].contains(String.valueOf(tokens[1]))
+                    && signals[i].contains(String.valueOf(tokens[2]))
+                    && signals[i].contains(String.valueOf(tokens[3]))
+                    && signals[i].contains(String.valueOf(tokens[4])))
+                pattern.nine = signals[i];
         }
     }
 
