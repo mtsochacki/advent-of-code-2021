@@ -23,7 +23,7 @@ public class day07 {
         return (Math.abs(end - start)) * (Math.abs(end - start) + 1) / 2;
     }
 
-    public static void part1() {
+    public static int part1() {
         ArrayList<Integer> listOfPositions = readInput("data.txt");
         Collections.sort(listOfPositions);
         // calculate median
@@ -37,11 +37,10 @@ public class day07 {
         int totalFuel = 0;
         for (Integer position : listOfPositions)
             totalFuel += Math.abs(position - median);
-
-        System.out.println("We need " + totalFuel + " fuel to move all the crabs to position " + median + ".");
+        return totalFuel;
     }
 
-    public static void part2() {
+    public static int part2() {
         ArrayList<Integer> listOfPositions = readInput("data.txt");
         int fuel = 100000000;
         // Check each point between min and max of all the positions
@@ -54,11 +53,11 @@ public class day07 {
             if (currentFuel < fuel)
                 fuel = currentFuel;
         }
-        System.out.println("We need " + fuel + " fuel to move the crabs where they need to go.");
+        return fuel;
     }
 
     public static void main(String[] args) {
-        part1();
-        part2();
+        System.out.println(part1());
+        System.out.println(part2());
     }
 }

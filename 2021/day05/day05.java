@@ -39,7 +39,7 @@ public class day05 {
         return input;
     }
 
-    public static void calculateOverlap(Boolean includePart2) {
+    public static int calculateOverlap(Boolean includePart2) {
         ArrayList<LineOfVents> input = readInput("data.txt");
         int[][] diagram = new int[1000][1000];
         int count = 0;
@@ -79,11 +79,11 @@ public class day05 {
                 }
             }
         }
-        System.out.println(count);
+        return count;
     }
 
     public static void main(String[] args) {
-        calculateOverlap(false);
-        calculateOverlap(true);
+        System.out.println(calculateOverlap(false));
+        System.out.println(calculateOverlap(true));
     }
 }
