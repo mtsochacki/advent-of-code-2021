@@ -11,6 +11,22 @@ public class day10 {
         boolean isCorrupted;
         private String lineStr;
 
+        private static final HashMap<Character, Integer> openingScores = new HashMap<>();
+        static {
+            openingScores.put('(', 1);
+            openingScores.put('[', 2);
+            openingScores.put('{', 3);
+            openingScores.put('<', 4);
+        }
+
+        private static final HashMap<Character, Integer> closingScores = new HashMap<>();
+        static {
+            closingScores.put(')', 3);
+            closingScores.put(']', 57);
+            closingScores.put('}', 1197);
+            closingScores.put('>', 25137);
+        }
+
         Chunk(String line) {
             this.lineStr = line;
             this.parseLine();
@@ -39,22 +55,6 @@ public class day10 {
                     score = score * 5 + openingScores.get(element);
                 }
             }
-        }
-
-        private static final HashMap<Character, Integer> openingScores = new HashMap<>();
-        static {
-            openingScores.put('(', 1);
-            openingScores.put('[', 2);
-            openingScores.put('{', 3);
-            openingScores.put('<', 4);
-        }
-
-        private static final HashMap<Character, Integer> closingScores = new HashMap<>();
-        static {
-            closingScores.put(')', 3);
-            closingScores.put(']', 57);
-            closingScores.put('}', 1197);
-            closingScores.put('>', 25137);
         }
     }
 
