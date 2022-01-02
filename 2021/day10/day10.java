@@ -8,17 +8,17 @@ import java.util.LinkedList;
 
 public class day10 {
     public static class Scores {
-        int totalSyntaxScore;
-        Long middleScore;
+        int corruptedScore;
+        Long incompleteScore;
 
         public Scores(int x, Long y) {
-            totalSyntaxScore = x;
-            middleScore = y;
+            corruptedScore = x;
+            incompleteScore = y;
         }
     }
 
     public static ArrayList<ArrayList<Character>> readInput(String filename) {
-        ArrayList<ArrayList<Character>> input = new ArrayList<>();
+        ArrayList<ArrayList<Character>> linesOfChunks = new ArrayList<>();
         Scanner sc = null;
         try {
             sc = new Scanner(new File(filename));
@@ -28,14 +28,13 @@ public class day10 {
                 for (int i = 0; i < s.length(); i++) {
                     line.add(s.charAt(i));
                 }
-                input.add(line);
+                linesOfChunks.add(line);
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong" + e);
-        } finally {
-            sc.close();
         }
-        return input;
+        return linesOfChunks;
     }
 
     private static final HashMap<Character, Integer> openingScores = new HashMap<>();
@@ -54,45 +53,57 @@ public class day10 {
         closingScores.put('>', 25137);
     }
 
-    public static Scores syntaxScoring() {
-        ArrayList<ArrayList<Character>> input = readInput("data.txt");
-        ArrayList<Long> autocompleteScores = new ArrayList<>();
-        ArrayList<Character> openingChars =
-        new ArrayList<Character>(Arrays.asList('<', '(', '[', '{'));
-        ArrayList<Character> closingChars =
-        new ArrayList<Character>(Arrays.asList('>', ')', ']', '}'));
-        int syntaxScore = 0;
-        for (ArrayList<Character> line : input) {
-            LinkedList<Character> stack = new LinkedList<>();
-            Boolean isCorrupted = false;
-            long autoTmpScore = 0;
-            for (Character syntaxChar : line) {
-                if (openingChars.contains(syntaxChar)) {
-                    stack.addFirst(syntaxChar);
-                } else if (stack.peek() == syntaxChar - 2
-                        || stack.peek() == syntaxChar - 1) {
-                    stack.removeFirst();
-                } else {
-                    isCorrupted = true;
-                    if (closingChars.contains(syntaxChar)) {
-                        syntaxScore += closingScores.get(syntaxChar);
-                        break;
-                    }
+    public static Scores scoreLine(ArrayList<Character> line) {
+        int corruptedScore = 0;
+        Long incompleteScore = 0L;
+        Boolean isCorrupted = false;
+        LinkedList<Character> stack = new LinkedList<>();
+        for (Character syntaxChar : line) {
+            if (openingScores.containsKey(syntaxChar)) {
+                stack.addFirst(syntaxChar);
+                /*
+                 * ASCII codes for opening and closing pairs differ
+                 * either by 1 ('(' and ')') or 2 (the others)
+                 */
+            } else if (stack.peek() == syntaxChar - 2
+                    || stack.peek() == syntaxChar - 1) {
+                stack.removeFirst();
+            } else {
+                isCorrupted = true;
+                if (closingScores.containsKey(syntaxChar)) {
+                    corruptedScore += closingScores.get(syntaxChar);
+                    break;
                 }
-            }
-            if (!isCorrupted) {
-                for (Character element : stack) {
-                    autoTmpScore = autoTmpScore * 5 + openingScores.get(element);
-                }
-                autocompleteScores.add(autoTmpScore);
             }
         }
-        Collections.sort(autocompleteScores);
-        Scores result = new Scores(syntaxScore, autocompleteScores.get(autocompleteScores.size() / 2));
+        if (!isCorrupted) {
+            for (Character element : stack) {
+                incompleteScore = incompleteScore * 5 + openingScores.get(element);
+            }
+            System.out.println(incompleteScore);
+        }
+        Scores score = new Scores(corruptedScore, incompleteScore);
+        return score;
+    }
+
+    public static Scores syntaxScoring() {
+        ArrayList<ArrayList<Character>> linesOfChunks = readInput("data.txt");
+        int totalCorruptedScore = 0;
+        ArrayList<Long> allScores = new ArrayList<>();
+        for (ArrayList<Character> line : linesOfChunks) {
+            Scores score = scoreLine(line);
+            totalCorruptedScore += score.corruptedScore;
+            if (!score.incompleteScore.equals(0L)) {
+                allScores.add(score.incompleteScore);
+            }
+        }
+        Collections.sort(allScores);
+        Scores result = new Scores(totalCorruptedScore, allScores.get(allScores.size() / 2));
         return result;
     }
 
     public static void main(String[] args) {
-        System.out.println("Part1 = " + syntaxScoring().totalSyntaxScore + " Part2 = " + syntaxScoring().middleScore);
+        System.out.println("Part1 = " + syntaxScoring().corruptedScore +
+                " Part2 = " + syntaxScoring().incompleteScore);
     }
 }
