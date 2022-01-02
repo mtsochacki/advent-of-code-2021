@@ -80,7 +80,6 @@ public class day10 {
             for (Character element : stack) {
                 incompleteScore = incompleteScore * 5 + openingScores.get(element);
             }
-            System.out.println(incompleteScore);
         }
         Scores score = new Scores(corruptedScore, incompleteScore);
         return score;
