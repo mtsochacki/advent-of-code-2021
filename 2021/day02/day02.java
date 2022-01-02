@@ -14,17 +14,16 @@ public class day02 {
     }
 
     public static ArrayList<Command> readCommands(String filename) {
-        Scanner sc = null;
+        Scanner sc;
         ArrayList<Command> listOfCommands = new ArrayList<>();
         try {
             sc = new Scanner(new File(filename));
             while (sc.hasNextLine()) {
                 listOfCommands.add(new Command(sc.next(), sc.nextInt()));
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong: " + e);
-        } finally {
-            sc.close();
         }
         return listOfCommands;
     }

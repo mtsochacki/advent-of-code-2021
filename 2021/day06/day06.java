@@ -6,23 +6,22 @@ import java.util.Scanner;
 public class day06 {
     public static ArrayList<Integer> readInput(String filename) {
         ArrayList<Integer> input = new ArrayList<>();
-        Scanner sc = null;
+        Scanner sc;
         try {
             sc = new Scanner(new File(filename)).useDelimiter(",");
             while (sc.hasNextInt()) {
                 input.add(sc.nextInt());
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong" + e);
-        } finally {
-            sc.close();
         }
         return input;
     }
 
     public static long calculatePopulation(int days) {
         ArrayList<Integer> listOfFish = readInput("data.txt");
-        ArrayList<Long> popNumbers = new ArrayList<Long>(Collections.nCopies(9, 0L));
+        ArrayList<Long> popNumbers = new ArrayList<>(Collections.nCopies(9, 0L));
 
         for (Integer fish : listOfFish) {
             popNumbers.set(fish, popNumbers.get(fish) + 1);

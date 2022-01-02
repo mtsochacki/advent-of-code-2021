@@ -4,17 +4,16 @@ import java.util.Scanner;
 
 public class day01 {
     public static ArrayList<Integer> readReport(String filename) {
-        Scanner sc = null;
+        Scanner sc;
         ArrayList<Integer> input = new ArrayList<>();
         try {
             sc = new Scanner(new File(filename));
             while (sc.hasNextInt()) {
                 input.add(sc.nextInt());
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong: " + e);
-        } finally {
-            sc.close();
         }
         return input;
     }

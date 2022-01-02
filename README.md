@@ -1,5 +1,5 @@
 <p align="center">
-   <img src="https://github.com/mtsochacki/advent-of-code/blob/wip-readme/2021/extras/aoc2021.gif" />
+   <img src="https://github.com/mtsochacki/advent-of-code/blob/master/2021/assets/aoc2021.gif" />
 </p>
 
 # Advent of Code 2021
@@ -15,7 +15,7 @@ Read more on official Advent of Code website: https://adventofcode.com/2021/abou
 3. To improve my understanding of Java and Version Control.
 4. Make code as readable and easy to understand as possible.
 
-## Current progress: 15/25
+## Current progress:
 ### Puzzles solved
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16
 
@@ -39,6 +39,7 @@ Read more on official Advent of Code website: https://adventofcode.com/2021/abou
 | [Packet Decoder](https://adventofcode.com/2021/day/16) | Under review |
 
 [^1]: Puzzle links lead to part 1 of the daily challange. Part 2 is displayed only after user provides correct solution to part 1.
+
 
 ## Roadmap
 

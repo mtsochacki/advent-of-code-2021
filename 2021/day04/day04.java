@@ -1,131 +1,124 @@
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class day04 {
-
-    // this class exists purely so that countWin
-    // method can return "multiple" variables
-    public static class Winner {
-        int counter;
-        Boolean[] boardState = new Boolean[25];
-    };
-
-    public static ArrayList<int[]> readInput(String filename) {
-        Scanner sc = null;
-        ArrayList<int[]> gameBoards = new ArrayList<int[]>();
-        int drawnNumbers[] = new int[100];
-        int currentBoard[] = new int[25];
-
+    public static ArrayList<Integer> readDrawnNumbers(String filename) {
+        Scanner sc;
+        ArrayList<Integer> drawnNumbers = new ArrayList<>();
         try {
-            sc = new Scanner(new File(filename)).useDelimiter(",|\\n");
-
-            // scan first line of input aka "randomly drawn numbers"
-            for (int i = 0; i < drawnNumbers.length; i++) {
-                drawnNumbers[i] = sc.nextInt();
+            sc = new Scanner(new File(filename));
+            sc.useDelimiter(",|\n");
+            while (sc.hasNextInt()) {
+                drawnNumbers.add(sc.nextInt());
             }
-            gameBoards.add(drawnNumbers);
-            // reset delimiter since commas are no longer used
-            sc.reset();
-            // scan the rest of the input aka "all game boards"
-            while (sc.hasNext()) {
-                for (int j = 0; j < 25; j++) {
-                    currentBoard[j] = sc.nextInt();
-                }
-                gameBoards.add(currentBoard.clone());
-            }
-        } catch (Exception e) {
-            System.out.println("Something went wrong" + e);
-        } finally {
             sc.close();
+        } catch (Exception e) {
+            System.out.println("Something went wrong drawing numbers" + e);
         }
-        return gameBoards;
+        return drawnNumbers;
     }
 
-    public static boolean boardHasWon(Boolean[] boardState) {
-        // first check if there is horizontal bingo...
-        for (int j = 0; j < 21; j += 5) {
-            if ((boardState[j] == true) && (boardState[j + 1] == true) && (boardState[j + 2] == true)
-                    && (boardState[j + 3] == true)
-                    && (boardState[j + 4] == true))
-                return true;
+    public static ArrayList<ArrayList<ArrayList<Integer>>> readBoards(String filename) {
+        Scanner sc;
+        ArrayList<ArrayList<ArrayList<Integer>>> boards = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> board;
+        try {
+            sc = new Scanner(new File(filename));
+            sc.nextLine();
+            while (sc.hasNext()) {
+                sc.nextLine();
+                board = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    ArrayList<Integer> row = new ArrayList<>();
+                    for (int j = 0; j < 5; j++) {
+                        row.add(sc.nextInt());
+                    }
+                    board.add(row);
+                }
+                boards.add(board);
+            }
+            sc.close();
+        } catch (Exception e) {
+            System.out.println("Something went wrong " + e);
         }
-        // ...then check if there is a vertical one
-        for (int i = 0; i < 5; i++) {
-            if ((boardState[i] == true) && (boardState[i + 5] == true) && (boardState[i + 10] == true)
-                    && (boardState[i + 15] == true) && (boardState[i + 20] == true))
+        return boards;
+    }
+
+    public static boolean boardHasWon(ArrayList<ArrayList<Integer>> board) {
+        for (ArrayList<Integer> row : board) {
+            boolean won = true;
+            for (int col = 0; col < 5; col++) {
+                if (row.get(col) != 0) {
+                    won = false;
+                    break;
+                }
+            }
+            if (won) {
                 return true;
+            }
+        }
+        for (int col = 0; col < 5; col++) {
+            boolean won = true;
+            for (ArrayList<Integer> row : board) {
+                if (row.get(col) != 0) {
+                    won = false;
+                    break;
+                }
+            }
+            if (won) {
+                return true;
+            }
         }
         return false;
     }
 
-    public static Winner countWin(int[] board, int[] drawn) {
+    public static int countWin(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> drawn) {
         int counter = 0;
-        boolean flag = false; // used to break out of double nested loop
-        Winner x = new Winner();
-        Boolean[] boardState = new Boolean[25];
-        Arrays.fill(boardState, Boolean.FALSE);
-
-        // simulate "drawing" items and checking for bingo
-        for (int i = 0; i < drawn.length && !flag; i++) {
+        for (int number : drawn) {
             counter++;
-            for (int j = 0; j < board.length; j++) {
-                if (board[j] == drawn[i])
-                    boardState[j] = true;
-                if (boardHasWon(boardState)) {
-                    flag = true;
-                    break;
+            for (int row = 0; row < 5; ++row) {
+                for (int col = 0; col < 5; ++col) {
+                    if (board.get(col).get(row) == number) {
+                        board.get(col).set(row, 0);
+                    }
                 }
             }
+            if (boardHasWon(board)) {
+                break;
+            }
         }
-        // update the winner
-        x.boardState = boardState;
-        x.counter = counter;
-        return x;
+        return counter;
     }
 
-    public static int part1(boolean isWinner) {
-        // first element of input is int array with drawn numbers
-        // all other elements of input are int arrays of boards
-        ArrayList<int[]> input = readInput("data.txt");
-        int winningBoard[] = new int[25];
-        Boolean[] winningBoardState = new Boolean[25];
-        int currentCounter = 0;
+    public static int calculateBoard(boolean isWinner) {
+        ArrayList<Integer> drawn = readDrawnNumbers("data.txt");
+        ArrayList<ArrayList<ArrayList<Integer>>> boards = readBoards("data.txt");
+        ArrayList<ArrayList<Integer>> winningBoard = new ArrayList<>();
+        int currentCounter;
         int winnersCounter;
-        // if we are looking for winning board, then
-        // we assign 999999, if not then 0
         winnersCounter = isWinner ? 999999 : 0;
-        int score = 0;
-        // ...for all the boards in play...
-        for (int i = 1; i < input.size(); i++) {
-            // ...check when the board has won...
-            currentCounter = countWin(input.get(i), input.get(0)).counter;
-            // ...and if it won after lower number of draws than
-            // currently winning board, update the winning board...
+        for (ArrayList<ArrayList<Integer>> board : boards) {
+            currentCounter = countWin(board, drawn);
             if ((currentCounter < winnersCounter) && isWinner) {
-                winningBoard = input.get(i);
-                winningBoardState = countWin(input.get(i), input.get(0)).boardState;
+                winningBoard = board;
                 winnersCounter = currentCounter;
-            }
-            // ...unless of course we are looking for loosing board
-            // then it's better to update it in different situations
-            else if ((currentCounter > winnersCounter) && !isWinner) {
-                winningBoard = input.get(i);
-                winningBoardState = countWin(input.get(i), input.get(0)).boardState;
+            } else if ((currentCounter > winnersCounter) && !isWinner) {
+                winningBoard = board;
                 winnersCounter = currentCounter;
             }
         }
-        // calculate final score
-        for (int i = 0; i < winningBoardState.length; i++) {
-            if (!winningBoardState[i])
-                score += winningBoard[i];
+        int score = 0;
+        for (ArrayList<Integer> row : winningBoard) {
+            for (int i = 0; i < 5; i++) {
+                score += row.get(i);
+            }
         }
-        return score * input.get(0)[winnersCounter - 1];
+        return score * drawn.get(winnersCounter - 1);
     }
 
     public static void main(String[] args) {
-        System.out.println("Winning board final score is " + part1(true));
-        System.out.println("Loosing board final score is " + part1(false));
+        System.out.println("Winning board final score is " + calculateBoard(true));
+        System.out.println("Loosing board final score is " + calculateBoard(false));
     }
 }
