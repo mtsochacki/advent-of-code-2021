@@ -6,13 +6,12 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 public class day10 {
-    public static class Line {
+    public static class Chunk {
         long score;
         boolean isCorrupted;
-
         private String lineStr;
 
-        Line(String line) {
+        Chunk(String line) {
             this.lineStr = line;
             this.parseLine();
         }
@@ -41,6 +40,22 @@ public class day10 {
                 }
             }
         }
+
+        private static final HashMap<Character, Integer> openingScores = new HashMap<>();
+        static {
+            openingScores.put('(', 1);
+            openingScores.put('[', 2);
+            openingScores.put('{', 3);
+            openingScores.put('<', 4);
+        }
+
+        private static final HashMap<Character, Integer> closingScores = new HashMap<>();
+        static {
+            closingScores.put(')', 3);
+            closingScores.put(']', 57);
+            closingScores.put('}', 1197);
+            closingScores.put('>', 25137);
+        }
     }
 
     public static ArrayList<String> readLines(String filename) {
@@ -58,27 +73,11 @@ public class day10 {
         return lines;
     }
 
-    private static final HashMap<Character, Integer> openingScores = new HashMap<>();
-    static {
-        openingScores.put('(', 1);
-        openingScores.put('[', 2);
-        openingScores.put('{', 3);
-        openingScores.put('<', 4);
-    }
-
-    private static final HashMap<Character, Integer> closingScores = new HashMap<>();
-    static {
-        closingScores.put(')', 3);
-        closingScores.put(']', 57);
-        closingScores.put('}', 1197);
-        closingScores.put('>', 25137);
-    }
-
     public static void main(String[] args) {
         long score = 0;
         ArrayList<Long> incompleteLineScores = new ArrayList<>();
         for (String line : readLines("data.txt")) {
-            Line chunk = new Line(line);
+            Chunk chunk = new Chunk(line);
             if (chunk.isCorrupted) {
                 score += chunk.score;
             } else {
