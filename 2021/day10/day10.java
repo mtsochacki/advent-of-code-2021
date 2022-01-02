@@ -1,40 +1,52 @@
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 public class day10 {
-    public static class Scores {
-        int corruptedScore;
-        Long incompleteScore;
+    public static class Line {
+        long score;
+        Boolean isCorrupted = false;
 
-        public Scores(int x, Long y) {
-            corruptedScore = x;
-            incompleteScore = y;
+        Line(String line) {
+            LinkedList<Character> stack = new LinkedList<>();
+            for (char c : line.toCharArray()) {
+                if (openingScores.containsKey(c)) {
+                    stack.addFirst(c);
+                    /*
+                     * ASCII codes for opening and closing pairs differ
+                     * either by 1 ('(' and ')') or 2 (the others)
+                     */
+                } else if (stack.peek() == c - 2 || stack.peek() == c - 1) {
+                    stack.removeFirst();
+                } else {
+                    isCorrupted = true;
+                    score += closingScores.get(c);
+                }
+            }
+            if (!isCorrupted) {
+                for (Character element : stack) {
+                    score = score * 5 + openingScores.get(element);
+                }
+            }
         }
     }
 
-    public static ArrayList<ArrayList<Character>> readInput(String filename) {
-        ArrayList<ArrayList<Character>> linesOfChunks = new ArrayList<>();
-        Scanner sc = null;
+    public static ArrayList<Line> readChunks(String filename) {
+        ArrayList<Line> listOfChunks = new ArrayList<>();
+        Scanner sc;
         try {
             sc = new Scanner(new File(filename));
             while (sc.hasNextLine()) {
-                ArrayList<Character> line = new ArrayList<>();
-                String s = sc.next();
-                for (int i = 0; i < s.length(); i++) {
-                    line.add(s.charAt(i));
-                }
-                linesOfChunks.add(line);
+                listOfChunks.add(new Line(sc.nextLine()));
             }
             sc.close();
         } catch (Exception e) {
-            System.out.println("Something went wrong" + e);
+            System.out.println("Something went wrong " + e);
         }
-        return linesOfChunks;
+        return listOfChunks;
     }
 
     private static final HashMap<Character, Integer> openingScores = new HashMap<>();
@@ -53,56 +65,18 @@ public class day10 {
         closingScores.put('>', 25137);
     }
 
-    public static Scores scoreLine(ArrayList<Character> line) {
-        int corruptedScore = 0;
-        Long incompleteScore = 0L;
-        Boolean isCorrupted = false;
-        LinkedList<Character> stack = new LinkedList<>();
-        for (Character syntaxChar : line) {
-            if (openingScores.containsKey(syntaxChar)) {
-                stack.addFirst(syntaxChar);
-                /*
-                 * ASCII codes for opening and closing pairs differ
-                 * either by 1 ('(' and ')') or 2 (the others)
-                 */
-            } else if (stack.peek() == syntaxChar - 2
-                    || stack.peek() == syntaxChar - 1) {
-                stack.removeFirst();
-            } else {
-                isCorrupted = true;
-                if (closingScores.containsKey(syntaxChar)) {
-                    corruptedScore += closingScores.get(syntaxChar);
-                    break;
-                }
-            }
-        }
-        if (!isCorrupted) {
-            for (Character element : stack) {
-                incompleteScore = incompleteScore * 5 + openingScores.get(element);
-            }
-        }
-        Scores score = new Scores(corruptedScore, incompleteScore);
-        return score;
-    }
-
-    public static Scores syntaxScoring() {
-        ArrayList<ArrayList<Character>> linesOfChunks = readInput("data.txt");
-        int totalCorruptedScore = 0;
+    public static void main(String[] args) {
+        long score = 0;
         ArrayList<Long> allScores = new ArrayList<>();
-        for (ArrayList<Character> line : linesOfChunks) {
-            Scores score = scoreLine(line);
-            totalCorruptedScore += score.corruptedScore;
-            if (!score.incompleteScore.equals(0L)) {
-                allScores.add(score.incompleteScore);
+        for (Line line : readChunks("data.txt")) {
+            if (line.isCorrupted) {
+                score += line.score;
+            } else {
+                allScores.add(line.score);
             }
         }
         Collections.sort(allScores);
-        Scores result = new Scores(totalCorruptedScore, allScores.get(allScores.size() / 2));
-        return result;
-    }
-
-    public static void main(String[] args) {
-        System.out.println("Part1 = " + syntaxScoring().corruptedScore +
-                " Part2 = " + syntaxScoring().incompleteScore);
+        System.out.println(score);
+        System.out.println(allScores.get(allScores.size() / 2));
     }
 }
