@@ -3,46 +3,72 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class day11 {
+    public static class Point {
+        int x;
+        int y;
+
+        Point(int horizontal, int vertical) {
+            x = horizontal;
+            y = vertical;
+        }
+    }
 
     public static ArrayList<ArrayList<Integer>> readInput(String filename) {
         ArrayList<ArrayList<Integer>> octoGrid = new ArrayList<>();
-        ArrayList<Integer> emptyLine = new ArrayList<>();
-        Scanner sc = null;
+        Scanner sc;
         try {
             sc = new Scanner(new File(filename));
             sc.useDelimiter("");
-            octoGrid.add(emptyLine);
             while (sc.hasNextInt()) {
                 ArrayList<Integer> octoRow = new ArrayList<>();
-                octoRow.add(9);
                 while (sc.hasNextInt()) {
                     octoRow.add(sc.nextInt());
                 }
-                octoRow.add(9);
                 octoGrid.add(octoRow);
                 if (sc.hasNextLine()) {
                     sc.nextLine();
                 }
             }
-
-            octoGrid.add(emptyLine);
-            for (int i = 0; i < octoGrid.get(1).size(); i++) {
-                octoGrid.get(0).add(9);
-                octoGrid.get(octoGrid.size() - 1).add(9);
-            }
-
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong " + e);
-        } finally {
-            sc.close();
         }
         return octoGrid;
     }
 
+    public static ArrayList<Point> getNeighbours(int x, int y, int width, int height) {
+        ArrayList<Point> neighbours = new ArrayList<>();
+        if (x > 0) {
+            neighbours.add(new Point(x - 1, y));
+            if (y > 0) {
+                neighbours.add(new Point(x - 1, y - 1));
+            }
+            if (y < height - 1) {
+                neighbours.add(new Point(x - 1, y + 1));
+            }
+        }
+        if (x < width - 1) {
+            neighbours.add(new Point(x + 1, y));
+            if (y > 0) {
+                neighbours.add(new Point(x + 1, y - 1));
+            }
+            if (y < height - 1) {
+                neighbours.add(new Point(x + 1, y + 1));
+            }
+        }
+        if (y > 0) {
+            neighbours.add(new Point(x, y - 1));
+        }
+        if (y < height - 1) {
+            neighbours.add(new Point(x, y + 1));
+        }
+        return neighbours;
+    }
+
     public static void increaseAll(ArrayList<ArrayList<Integer>> octoGrid) {
-        for (int j = 1; j < octoGrid.size() - 1; j++) {
-            for (int k = 1; k < octoGrid.get(j).size() - 1; k++) {
-                octoGrid.get(j).set(k, octoGrid.get(j).get(k) + 1);
+        for (ArrayList<Integer> octoRow : octoGrid) {
+            for (int i = 0; i < octoRow.size(); i++) {
+                octoRow.set(i, octoRow.get(i) + 1);
             }
         }
     }
@@ -55,27 +81,22 @@ public class day11 {
     }
 
     public static void processFlashes(ArrayList<ArrayList<Integer>> octoGrid) {
-        for (int j = 1; j < octoGrid.size() - 1; j++) {
-            for (int k = 1; k < octoGrid.get(j).size() - 1; k++) {
+        for (int j = 0; j < octoGrid.size(); j++) {
+            for (int k = 0; k < octoGrid.get(j).size(); k++) {
                 if (octoGrid.get(j).get(k) > 9) {
                     octoGrid.get(j).set(k, 0);
-                    increaseOne(octoGrid, k - 1, j);
-                    increaseOne(octoGrid, k + 1, j);
-                    increaseOne(octoGrid, k + 1, j - 1);
-                    increaseOne(octoGrid, k + 1, j + 1);
-                    increaseOne(octoGrid, k - 1, j - 1);
-                    increaseOne(octoGrid, k - 1, j + 1);
-                    increaseOne(octoGrid, k, j - 1);
-                    increaseOne(octoGrid, k, j + 1);
+                    for (Point point : getNeighbours(k, j, octoGrid.size(), octoGrid.size())) {
+                        increaseOne(octoGrid, point.x, point.y);
+                    }
                 }
             }
         }
     }
 
     public static boolean isFlashReady(ArrayList<ArrayList<Integer>> octoGrid) {
-        for (int j = 1; j < octoGrid.size() - 1; j++) {
-            for (int k = 1; k < octoGrid.get(j).size() - 1; k++) {
-                if (octoGrid.get(j).get(k) > 9) {
+        for (ArrayList<Integer> octoRow : octoGrid) {
+            for (Integer octopus : octoRow) {
+                if (octopus > 9) {
                     return true;
                 }
             }
@@ -85,20 +106,22 @@ public class day11 {
 
     public static int countFlashes(ArrayList<ArrayList<Integer>> octoGrid) {
         int counter = 0;
-        for (int j = 1; j < octoGrid.size() - 1; j++) {
-            for (int k = 1; k < octoGrid.get(j).size() - 1; k++) {
-                if (octoGrid.get(j).get(k) == 0)
+        for (ArrayList<Integer> octoRow : octoGrid) {
+            for (Integer octopus : octoRow) {
+                if (octopus == 0) {
                     counter++;
+                }
             }
         }
         return counter;
     }
 
     public static boolean areAllFlashing(ArrayList<ArrayList<Integer>> octoGrid) {
-        for (int j = 1; j < octoGrid.size() - 1; j++) {
-            for (int k = 1; k < octoGrid.get(j).size() - 1; k++) {
-                if (octoGrid.get(j).get(k) != 0)
+        for (ArrayList<Integer> octoRow : octoGrid) {
+            for (Integer octopus : octoRow) {
+                if (octopus != 0) {
                     return false;
+                }
             }
         }
         return true;
@@ -114,18 +137,18 @@ public class day11 {
         return flashCounter;
     }
 
-    public static int countAllFlashes(int step) {
+    public static int countAllFlashes(int steps) {
         ArrayList<ArrayList<Integer>> octoGrid = readInput("data.txt");
         int flashes = 0;
-        for (int i = 0; i < step; i++) {
+        for (int i = 0; i < steps; i++) {
             flashes += processStep(octoGrid);
         }
         return flashes;
     }
 
-    public static int findSyncStep(int step) {
+    public static int findSyncStep(int steps) {
         ArrayList<ArrayList<Integer>> octoGrid = readInput("data.txt");
-        for (int i = 0; i < step; i++) {
+        for (int i = 0; i < steps; i++) {
             processStep(octoGrid);
             if (areAllFlashing(octoGrid)) {
                 return i + 1;
