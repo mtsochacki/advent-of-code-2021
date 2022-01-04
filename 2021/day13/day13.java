@@ -5,13 +5,13 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class day13 {
-    public enum Dimension {
+    public enum Axis {
         X, Y
     }
 
     public static class Fold {
         int line;
-        Dimension dimension;
+        Axis dimension;
     }
 
     public static class Point {
@@ -56,7 +56,7 @@ public class day13 {
     }
 
     public static ArrayList<Fold> readFolds(String filename) {
-        ArrayList<Fold> instructions = new ArrayList<>();
+        ArrayList<Fold> folds = new ArrayList<>();
         Scanner sc;
         try {
             sc = new Scanner(new File(filename));
@@ -64,30 +64,30 @@ public class day13 {
             }
             sc.useDelimiter("fold along |=|\\n");
             while (sc.hasNextLine()) {
-                Fold instruction = new Fold();
-                instruction.dimension = sc.next().equals("x") ? Dimension.X : Dimension.Y;
-                instruction.line = sc.nextInt();
+                Fold fold = new Fold();
+                fold.dimension = sc.next().equals("x") ? Axis.X : Axis.Y;
+                fold.line = sc.nextInt();
                 if (sc.hasNextLine()) {
                     sc.nextLine();
                 }
-                instructions.add(instruction);
+                folds.add(fold);
             }
             sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong " + e);
         }
-        return instructions;
+        return folds;
     }
 
     public static Set<Point> foldOnce(Set<Point> points, Fold fold) {
         Set<Point> output = new HashSet<>();
         for (Point point : points) {
-            if (fold.dimension.equals(Dimension.X)) {
+            if (fold.dimension.equals(Axis.X)) {
                 if (point.x > fold.line) {
                     int distance = point.x - fold.line;
                     point.x = fold.line - distance;
                     output.add(point);
-                } else if (point.x < fold.line) {
+                } else {
                     output.add(point);
                 }
             } else {
@@ -95,7 +95,7 @@ public class day13 {
                     int distance = point.y - fold.line;
                     point.y = fold.line - distance;
                     output.add(point);
-                } else if (point.y < fold.line) {
+                } else {
                     output.add(point);
                 }
             }
@@ -112,14 +112,14 @@ public class day13 {
 
     public static void part2() {
         Set<Point> points = readCoordinates("data.txt");
-        ArrayList<Fold> instructions = readFolds("data.txt");
-        for (Fold instruction : instructions) {
-            points = foldOnce(points, instruction);
+        ArrayList<Fold> folds = readFolds("data.txt");
+        for (Fold fold : folds) {
+            points = foldOnce(points, fold);
         }
         System.out.println("\033[2J"); // clears screen
-        for (Point line : points) {
-            int row = line.y + 1;
-            int column = line.x + 1;
+        for (Point point : points) {
+            int row = point.y + 1;
+            int column = point.x + 1;
             System.out.print(String.format("%c[%d;%dH#", 0x1B, row, column));
         }
         System.out.print(String.format("%c[%d;%dH", 0x1B, 8, 0));
