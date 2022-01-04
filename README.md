@@ -31,7 +31,7 @@ Read more on official Advent of Code website: https://adventofcode.com/2021/abou
 | [Seven Segment Search](https://adventofcode.com/2021/day/8) | [8](https://github.com/mtsochacki/advent-of-code/tree/master/2021/day08/day08.java)|
 | [Smoke Basin](https://adventofcode.com/2021/day/9) | [9](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day09/day09.java)|
 | [Syntax Scoring](https://adventofcode.com/2021/day/10) | [10](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day10/day10.java) |
-| [Dumbo Octopus](https://adventofcode.com/2021/day/11) | Under review |
+| [Dumbo Octopus](https://adventofcode.com/2021/day/11) | [11](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day11/day11.java) |
 | [Passage Pathing](https://adventofcode.com/2021/day/12) | not solved |
 | [Transparent Origami](https://adventofcode.com/2021/day/13) | Under review|
 | [Extended Polymerization](https://adventofcode.com/2021/day/14) | [14](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day14/day14.java)|
