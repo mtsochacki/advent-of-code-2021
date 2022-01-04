@@ -5,96 +5,121 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class day13 {
-    public static class Instruction {
-        int line;
-        String dimension;
+    public enum Dimension {
+        X, Y
     }
 
-    public static ArrayList<ArrayList<Integer>> readCoordinates(String filename) {
-        ArrayList<ArrayList<Integer>> coordinates = new ArrayList<>();
-        Scanner sc = null;
+    public static class Fold {
+        int line;
+        Dimension dimension;
+    }
+
+    public static class Point {
+        int x;
+        int y;
+
+        Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            Point newPoint = (Point) o;
+            return x == newPoint.x && y == newPoint.y;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 17;
+            result = 31 * result + x;
+            result = 31 * result + y;
+            return result;
+        }
+    }
+
+    public static Set<Point> readCoordinates(String filename) {
+        Set<Point> coordinates = new HashSet<>();
+        Scanner sc;
         try {
             sc = new Scanner(new File(filename));
             sc.useDelimiter(",|\n");
             while (sc.hasNextInt()) {
-                ArrayList<Integer> line = new ArrayList<>();
-                for (int j = 0; j < 2; j++) {
-                    line.add(sc.nextInt());
-                }
-                coordinates.add(line);
+                Point newPoint = new Point(sc.nextInt(), sc.nextInt());
+                coordinates.add(newPoint);
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong " + e);
-        } finally {
-            sc.close();
         }
         return coordinates;
     }
 
-    public static ArrayList<Instruction> readInstructions(String filename) {
-        ArrayList<Instruction> instructions = new ArrayList<>();
-        Scanner sc = null;
+    public static ArrayList<Fold> readFolds(String filename) {
+        ArrayList<Fold> instructions = new ArrayList<>();
+        Scanner sc;
         try {
             sc = new Scanner(new File(filename));
-            while (sc.nextLine().length() != 0) {
+            while (!sc.nextLine().isEmpty()) {
             }
             sc.useDelimiter("fold along |=|\\n");
             while (sc.hasNextLine()) {
-                Instruction instruction = new Instruction();
-                instruction.dimension = sc.next();
+                Fold instruction = new Fold();
+                instruction.dimension = sc.next().equals("x") ? Dimension.X : Dimension.Y;
                 instruction.line = sc.nextInt();
                 if (sc.hasNextLine()) {
                     sc.nextLine();
                 }
                 instructions.add(instruction);
             }
+            sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong " + e);
-        } finally {
-            sc.close();
         }
         return instructions;
     }
 
-    public static ArrayList<ArrayList<Integer>> foldOnce(
-            ArrayList<ArrayList<Integer>> input, int x, String isX) {
-        ArrayList<ArrayList<Integer>> output = new ArrayList<>();
-        int z = (isX.equals("x")) ? 0 : 1;
-        for (ArrayList<Integer> line : input) {
-            if (line.get(z) > x) {
-                int distance = line.get(z) - x;
-                line.set(z, x - distance);
-                output.add(line);
-            } else if (line.get(z) < x) {
-                output.add(line);
+    public static Set<Point> foldOnce(Set<Point> points, Fold fold) {
+        Set<Point> output = new HashSet<>();
+        for (Point point : points) {
+            if (fold.dimension.equals(Dimension.X)) {
+                if (point.x > fold.line) {
+                    int distance = point.x - fold.line;
+                    point.x = fold.line - distance;
+                    output.add(point);
+                } else if (point.x < fold.line) {
+                    output.add(point);
+                }
+            } else {
+                if (point.y > fold.line) {
+                    int distance = point.y - fold.line;
+                    point.y = fold.line - distance;
+                    output.add(point);
+                } else if (point.y < fold.line) {
+                    output.add(point);
+                }
             }
         }
-
-        Set<ArrayList<Integer>> set = new HashSet<>(output);
-        output.clear();
-        output.addAll(set);
         return output;
     }
 
-    public static void part1() {
-        ArrayList<ArrayList<Integer>> input = readCoordinates("data.txt");
-        ArrayList<Instruction> instructions = readInstructions("data.txt");
-        input = foldOnce(input, instructions.get(0).line,
-                            instructions.get(0).dimension);
-        System.out.println("There are " + input.size()
-                            + " dots visible after the first fold");
+    public static int part1() {
+        Set<Point> points = readCoordinates("data.txt");
+        ArrayList<Fold> folds = readFolds("data.txt");
+        points = foldOnce(points, folds.get(0));
+        return points.size();
     }
 
     public static void part2() {
-        ArrayList<ArrayList<Integer>> input = readCoordinates("data.txt");
-        ArrayList<Instruction> instructions = readInstructions("data.txt");
-        for (Instruction instruction : instructions) {
-            input = foldOnce(input, instruction.line, instruction.dimension);
+        Set<Point> points = readCoordinates("data.txt");
+        ArrayList<Fold> instructions = readFolds("data.txt");
+        for (Fold instruction : instructions) {
+            points = foldOnce(points, instruction);
         }
         System.out.println("\033[2J"); // clears screen
-        for (ArrayList<Integer> line : input) {
-            int row = line.get(1) + 1;
-            int column = line.get(0) + 1;
+        for (Point line : points) {
+            int row = line.y + 1;
+            int column = line.x + 1;
             System.out.print(String.format("%c[%d;%dH#", 0x1B, row, column));
         }
         System.out.print(String.format("%c[%d;%dH", 0x1B, 8, 0));
@@ -102,6 +127,6 @@ public class day13 {
 
     public static void main(String[] args) {
         part2();
-        part1();
+        System.out.println(part1());
     }
 }
