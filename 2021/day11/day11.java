@@ -38,29 +38,12 @@ public class day11 {
 
     public static ArrayList<Point> getNeighbours(int x, int y, int width, int height) {
         ArrayList<Point> neighbours = new ArrayList<>();
-        if (x > 0) {
-            neighbours.add(new Point(x - 1, y));
-            if (y > 0) {
-                neighbours.add(new Point(x - 1, y - 1));
+        for (int nx = Math.max(0, x - 1); nx < Math.min(width, x + 2); ++nx) {
+            for (int ny = Math.max(0, y - 1); ny < Math.min(height, y + 2); ++ny) {
+                if (nx != x || ny != y) {
+                    neighbours.add(new Point(nx, ny));
+                }
             }
-            if (y < height - 1) {
-                neighbours.add(new Point(x - 1, y + 1));
-            }
-        }
-        if (x < width - 1) {
-            neighbours.add(new Point(x + 1, y));
-            if (y > 0) {
-                neighbours.add(new Point(x + 1, y - 1));
-            }
-            if (y < height - 1) {
-                neighbours.add(new Point(x + 1, y + 1));
-            }
-        }
-        if (y > 0) {
-            neighbours.add(new Point(x, y - 1));
-        }
-        if (y < height - 1) {
-            neighbours.add(new Point(x, y + 1));
         }
         return neighbours;
     }
@@ -73,7 +56,7 @@ public class day11 {
         }
     }
 
-    public static void increaseOne(ArrayList<ArrayList<Integer>> octoGrid,
+    public static void increaseUnflashed(ArrayList<ArrayList<Integer>> octoGrid,
             int x, int y) {
         if (octoGrid.get(y).get(x) != 0) {
             octoGrid.get(y).set(x, octoGrid.get(y).get(x) + 1);
@@ -81,12 +64,14 @@ public class day11 {
     }
 
     public static void processFlashes(ArrayList<ArrayList<Integer>> octoGrid) {
+        int width = octoGrid.get(0).size();
+        int height = octoGrid.size();
         for (int j = 0; j < octoGrid.size(); j++) {
             for (int k = 0; k < octoGrid.get(j).size(); k++) {
                 if (octoGrid.get(j).get(k) > 9) {
                     octoGrid.get(j).set(k, 0);
-                    for (Point point : getNeighbours(k, j, octoGrid.size(), octoGrid.size())) {
-                        increaseOne(octoGrid, point.x, point.y);
+                    for (Point point : getNeighbours(k, j, height, width)) {
+                        increaseUnflashed(octoGrid, point.x, point.y);
                     }
                 }
             }
@@ -128,13 +113,11 @@ public class day11 {
     }
 
     public static int processStep(ArrayList<ArrayList<Integer>> octoGrid) {
-        int flashCounter = 0;
         increaseAll(octoGrid);
         while (isFlashReady(octoGrid)) {
             processFlashes(octoGrid);
         }
-        flashCounter += countFlashes(octoGrid);
-        return flashCounter;
+        return countFlashes(octoGrid);
     }
 
     public static int countAllFlashes(int steps) {
