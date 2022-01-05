@@ -11,7 +11,7 @@ public class day13 {
 
     public static class Fold {
         int line;
-        Axis dimension;
+        Axis axis;
     }
 
     public static class Point {
@@ -65,7 +65,7 @@ public class day13 {
             sc.useDelimiter("fold along |=|\\n");
             while (sc.hasNextLine()) {
                 Fold fold = new Fold();
-                fold.dimension = sc.next().equals("x") ? Axis.X : Axis.Y;
+                fold.axis = sc.next().equals("x") ? Axis.X : Axis.Y;
                 fold.line = sc.nextInt();
                 if (sc.hasNextLine()) {
                     sc.nextLine();
@@ -82,7 +82,7 @@ public class day13 {
     public static Set<Point> foldOnce(Set<Point> points, Fold fold) {
         Set<Point> output = new HashSet<>();
         for (Point point : points) {
-            if (fold.dimension.equals(Axis.X)) {
+            if (fold.axis.equals(Axis.X)) {
                 if (point.x > fold.line) {
                     int distance = point.x - fold.line;
                     point.x = fold.line - distance;
