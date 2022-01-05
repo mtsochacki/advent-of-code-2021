@@ -33,7 +33,7 @@ Read more on official Advent of Code website: https://adventofcode.com/2021/abou
 | [Syntax Scoring](https://adventofcode.com/2021/day/10) | [10](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day10/day10.java) |
 | [Dumbo Octopus](https://adventofcode.com/2021/day/11) | [11](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day11/day11.java) |
 | [Passage Pathing](https://adventofcode.com/2021/day/12) | not solved |
-| [Transparent Origami](https://adventofcode.com/2021/day/13) | Under review|
+| [Transparent Origami](https://adventofcode.com/2021/day/13) | [13](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day13/day13.java)|
 | [Extended Polymerization](https://adventofcode.com/2021/day/14) | [14](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day14/day14.java)|
 | [Chiton](https://adventofcode.com/2021/day/15) | Under review |
 | [Packet Decoder](https://adventofcode.com/2021/day/16) | Under review |
