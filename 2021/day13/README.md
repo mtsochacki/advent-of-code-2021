@@ -7,23 +7,20 @@ In the end, only the strongest survived. The strongest and the ones that overrod
 So I did it. And then, when I confirmed that everything works I was tasked with another challenge.
 
 In the pursuit of lightning speed and the neverending race to perfection, three hash functions were brought into the light from the annals of the past. The first one, a classic. Created by the enthusiasts of effective Java, it looked somewhat like this:
-
->   int result = 17;
->
->   result = 31 * result + x;
->
->   result = 31 * result + y;
->
->   return result;
-
+```
+int result = 17;
+result = 31 * result + x;
+result = 31 * result + y;
+return result;
+```
 Then, another solution, very elegant in its simplicity, was called into action and it looked like this:
-
-> return 100000 * x + y
-
+```
+return 100000 * x + y
+```
 Finally, for the fans of fast, furious and brutal, the final contender approached:
-
-> return 0;
-
+```
+return 0;
+```
 The three were tested by the scorching sun on the Sahara desert, by the neverending depths of Mariana Trench, by the frozen wastes of arctic poles and by the howling winds of some famous place where there is a lot of strong winds, but none had the upper hand over the others. To decide this duel of fates it was decided to test all three contenders in the most sophisticated, difficult to comprehend and certainly totally methodologically correct contest (and what I mean by that is running the solution to puzzle 13 in a loop for a 1000 times, calculating and then printing the total running time of the solution, repeat that process 10 times and then, finally, calculate the average).
 
 | method | 17 & 31 | 10000 * x + y| 0 |
