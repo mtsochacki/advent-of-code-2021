@@ -21,7 +21,11 @@ Finally, for the fans of fast, furious and brutal, the final contender approache
 ```java
 return 0;
 ```
-The three were tested by the scorching sun on the Sahara desert, by the neverending depths of Mariana Trench, by the frozen wastes of arctic poles and by the howling winds of some famous place where there is a lot of strong winds, but none had the upper hand over the others. To decide this duel of fates it was decided to test all three contenders in the most sophisticated, difficult to comprehend and certainly totally methodologically correct contest (and what I mean by that is running the solution to puzzle 13 in a loop for a 1000 times, calculating and then printing the total running time of the solution, repeat that process 10 times and then, finally, calculate the average).
+The three were tested by the scorching sun on the Sahara desert, by the neverending depths of Mariana Trench, by the frozen wastes of arctic poles and by the howling winds of...
+
+Hmm...
+
+Of some famous place where often wind is very strong! Unfortunately none of our chosen methods had the upper hand over the others. To decide this duel of fates all three contenders were tested in the most sophisticated, difficult to comprehend and certainly totally methodologically correct contest (and what I mean by that is running the solution to puzzle 13 in a loop for a 1000 times, calculating and then printing the total running time of the solution, repeating that process 10 times and then, finally, calculating the average).
 
 | method | 17 & 31 | 10000 * x + y| 0 |
 | :---: | :---: | :---: | :---: |
@@ -29,4 +33,4 @@ The three were tested by the scorching sun on the Sahara desert, by the neverend
 
 As we can see in the masterfully presented table above, there was no significant difference between the first two methods as they appear to generate reasonably unique values.
 
-When it comes to the *return 0* method, it is considerably slower, which is understandable since all objects appear "the same" for the HashSet and for each of them equals method needs to be called to be able to distinguish specific objects. To decide this duel of fates it was decided to test all three contenders in the most sophisticated, difficult to comprehend and certainly totally methodologically correct contest (and what I mean by that is running the solution to puzzle 13 in a loop for a 1000 times, calculating and then printing the total running time of the solution, repeat that process 10 times and then, finally, calculate the average).
+When it comes to the *return 0* method, it is considerably slower, which is understandable since all objects land in the same "bucket" and for each of them equals method needs to be called to be able to distinguish specific objects.
