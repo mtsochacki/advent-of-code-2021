@@ -5,15 +5,14 @@ import java.io.File;
 public class day17 {
     public static boolean isYInTrench(int yVelocity, int yStart, int yEnd) {
         int y = 0;
-        while (true) {
+        while (!(y >= yEnd && y <= yStart)) {
             y += yVelocity;
-            if (y >= yEnd && y <= yStart) {
-                return true;
-            } else if (y < yEnd) {
+            if (y < yEnd) {
                 return false;
             }
             yVelocity--;
         }
+        return true;
     }
 
     public static int calculateHeight(int yVelocity) {
@@ -27,27 +26,24 @@ public class day17 {
 
     public static boolean isXInTrench(int xVelocity, int xStart, int xEnd) {
         int x = 0;
-        while (true) {
+        while (!(x >= xStart && x <= xEnd)) {
             x += xVelocity;
-            if (x >= xStart && x <= xEnd) {
-                return true;
-            } else if (x > xEnd || xVelocity == 0) {
+            if (x > xEnd || xVelocity == 0) {
                 return false;
             }
             xVelocity--;
         }
+        return true;
     }
 
     public static boolean isInTrench(int xVelocity, int yVelocity,
             int xStart, int xEnd, int yStart, int yEnd) {
         int x = 0;
         int y = 0;
-        while (true) {
+        while (!(x >= xStart && x <= xEnd && y >= yEnd && y <= yStart)) {
             x += xVelocity;
             y += yVelocity;
-            if (x >= xStart && x <= xEnd && y >= yEnd && y <= yStart) {
-                return true;
-            } else if (x < xStart && xVelocity == 0) {
+            if (x < xStart && xVelocity == 0) {
                 return false;
             } else if (x > xEnd || y < yEnd) {
                 return false;
@@ -57,27 +53,32 @@ public class day17 {
             }
             yVelocity--;
         }
+        return true;
     }
 
-    public static void main(String[] args) {
-        int xStart = 0;
-        int xEnd = 0;
-        int yStart = 0;
-        int yEnd = 0;
+    public static int[] readInput(String filename){
+        int[] trenchCoordinates = new int[4];
         try {
-            Scanner sc = new Scanner(new File("data.txt"));
+            Scanner sc = new Scanner(new File(filename));
             String[] newLine = sc.nextLine().split(":")[1].split(",");
             String[] coordinatesX = newLine[0].split("=")[1].split("\\..");
             String[] coordinatesY = newLine[1].split("=")[1].split("\\..");
-            xStart = Integer.parseInt(coordinatesX[0]);
-            xEnd = Integer.parseInt(coordinatesX[1]);
-            yStart = Integer.parseInt(coordinatesY[1]);
-            yEnd = Integer.parseInt(coordinatesY[0]);
+            trenchCoordinates[0] = Integer.parseInt(coordinatesX[0]);
+            trenchCoordinates[1] = Integer.parseInt(coordinatesX[1]);
+            trenchCoordinates[2] = Integer.parseInt(coordinatesY[1]);
+            trenchCoordinates[3] = Integer.parseInt(coordinatesY[0]);
             sc.close();
         } catch (Exception e) {
             System.out.println("There was an error " + e);
         }
-
+        return trenchCoordinates;
+    }
+    public static void main(String[] args) {
+        int[] trenchCoordinates = readInput("data.txt");
+        int xStart = trenchCoordinates[0];
+        int xEnd = trenchCoordinates[1];
+        int yStart = trenchCoordinates[2];
+        int yEnd = trenchCoordinates[3];
         ArrayList<Integer> xVelocities = new ArrayList<>();
         ArrayList<Integer> yVelocities = new ArrayList<>();
         for (int i = -500; i < 500; i++) {
@@ -89,9 +90,9 @@ public class day17 {
             }
         }
         int total = 0;
-        for (Integer x : xVelocities) {
-            for (Integer y : yVelocities) {
-                if (isInTrench(x, y, xStart, xEnd, yStart, yEnd)) {
+        for (Integer xVelocity : xVelocities) {
+            for (Integer yVelocity : yVelocities) {
+                if (isInTrench(xVelocity, yVelocity, xStart, xEnd, yStart, yEnd)) {
                     total++;
                 }
             }
