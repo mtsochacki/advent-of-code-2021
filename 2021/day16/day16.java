@@ -1,7 +1,6 @@
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class day16 {
@@ -13,44 +12,29 @@ public class day16 {
     }
 
     public static String readInput(String filename) {
-        String s = "";
-        String result = "";
+        StringBuilder result = new StringBuilder();
         Scanner sc = null;
         try {
             sc = new Scanner(new File(filename));
-            s = sc.next();
+            String s = sc.next();
             for (char c : s.toCharArray()) {
-                result += hexToBin.get(String.valueOf(c));
+                result.append(hexCharToBinString(c));
             }
         } catch (Exception e) {
             System.out.println("Something went wrong " + e);
         } finally {
             sc.close();
         }
-        return result;
+        return result.toString();
     }
 
-    private static final HashMap<String, String> hexToBin = new HashMap<>();
-    static {
-        hexToBin.put("0", "0000");
-        hexToBin.put("1", "0001");
-        hexToBin.put("2", "0010");
-        hexToBin.put("3", "0011");
-        hexToBin.put("4", "0100");
-        hexToBin.put("5", "0101");
-        hexToBin.put("6", "0110");
-        hexToBin.put("7", "0111");
-        hexToBin.put("8", "1000");
-        hexToBin.put("9", "1001");
-        hexToBin.put("A", "1010");
-        hexToBin.put("B", "1011");
-        hexToBin.put("C", "1100");
-        hexToBin.put("D", "1101");
-        hexToBin.put("E", "1110");
-        hexToBin.put("F", "1111");
+    public static String hexCharToBinString(char c){
+        int decNum = Integer.parseInt(String.valueOf(c), 16);
+        String binString = String.format("%4s", Integer.toBinaryString(decNum));
+        return binString.replace(' ', '0');
     }
 
-    public static Long makeCalculations(int packetType, ArrayList<Long> values) {
+    public static Long calculateTotalSubpacketValue(int packetType, ArrayList<Long> values) {
         switch (packetType) {
             case 0:
                 Long sum = 0L;
@@ -80,22 +64,20 @@ public class day16 {
         }
     }
 
-    public static Packet calculateLiterallValue(Packet packet) {
+    public static Packet calculateLiteralValue(Packet packet) {
         int i = 6;
-        String literallBinValue = "";
-        while (packet.binData.substring(i, i + 1).equals("1")) {
-            literallBinValue += packet.binData.substring(i + 1, i + 5);
+        StringBuilder literalBinValue = new StringBuilder();
+        do{
+            literalBinValue.append(packet.binData.substring(i + 1, i + 5));
             i += 5;
-        }
-        literallBinValue += packet.binData.substring(i + 1, i + 5);
-        i += 5;
+        } while(packet.binData.charAt(i - 5) == '1');
         packet.binData = packet.binData.substring(i);
-        packet.value = Long.parseLong(literallBinValue, 2);
+        packet.value = Long.parseLong(literalBinValue.toString(), 2);
         packet.length = i;
         return packet;
     }
 
-    public static Packet calculateOperatorZero(Packet packet, int packetTypeID) {
+    public static Packet processSubpacketsByLength(Packet packet, int packetTypeID) {
         int subLength = Integer.parseInt(packet.binData.substring(7, 22), 2);
         int packetLength = 22;
         packet.binData = packet.binData.substring(22);
@@ -107,23 +89,22 @@ public class day16 {
             results.add(packet.value);
         }
         packet.length = packetLength;
-        packet.value = makeCalculations(packetTypeID, results);
+        packet.value = calculateTotalSubpacketValue(packetTypeID, results);
         return packet;
     }
 
-    public static Packet calculateOperatorOne(Packet packet, int packetTypeID) {
-        int subAmount = Integer.parseInt(packet.binData.substring(7, 18), 2);
+    public static Packet processSubpakcetsByQuantity(Packet packet, int packetTypeID) {
+        int numberOfPackets = Integer.parseInt(packet.binData.substring(7, 18), 2);
         int packetLength = 18;
         packet.binData = packet.binData.substring(18);
         ArrayList<Long> result = new ArrayList<>();
-
-        for (int j = 0; j < subAmount; j++) {
+        for (int j = 0; j < numberOfPackets; j++) {
             packet = processPacket(packet);
             packetLength += packet.length;
             result.add(packet.value);
         }
         packet.length = packetLength;
-        packet.value = makeCalculations(packetTypeID, result);
+        packet.value = calculateTotalSubpacketValue(packetTypeID, result);
         return packet;
     }
 
@@ -131,12 +112,12 @@ public class day16 {
         packet.versionSum += Integer.parseInt(packet.binData.substring(0, 3),2);
         int packetTypeID = Integer.parseInt(packet.binData.substring(3, 6), 2);
         if (packetTypeID == 4) {
-            return calculateLiterallValue(packet);
+            return calculateLiteralValue(packet);
         } else {
-            if (packet.binData.substring(6, 7).equals("0")) {
-                return calculateOperatorZero(packet, packetTypeID);
+            if (packet.binData.charAt(6) == '0') {
+                return processSubpacketsByLength(packet, packetTypeID);
             } else {
-                return calculateOperatorOne(packet, packetTypeID);
+                return processSubpakcetsByQuantity(packet, packetTypeID);
             }
         }
     }
