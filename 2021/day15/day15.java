@@ -67,8 +67,7 @@ public class day15 {
     public static int getRisk(ArrayList<ArrayList<Integer>> mapOfRisks, int x, int y) {
         int width = mapOfRisks.get(0).size();
         int height = mapOfRisks.size();
-        int tmpRisk = mapOfRisks.get(y % height).get(x % width)
-                + x / width + y / height;
+        int tmpRisk = mapOfRisks.get(y % height).get(x % width) + x / width + y / height;
         if (tmpRisk < 10) {
             return tmpRisk;
         } else {
@@ -104,16 +103,16 @@ public class day15 {
         int x = 0;
         int y = 0;
         int risk = 0;
-        HashSet<Point> isVisited = new HashSet<>();
+        HashSet<Point> visited = new HashSet<>();
         PriorityQueue<Position> positionQueue = new PriorityQueue<>();
         while (x != width - 1 || y != height - 1) {
             for (Point point : getNeighbours(x, y, width, height)) {
-                if (isVisited.contains(point)) {
+                if (visited.contains(point)) {
                     continue;
                 }
                 Position position = new Position(point.x, point.y, risk + getRisk(mapOfRisks, point.x, point.y));
                 positionQueue.add(position);
-                isVisited.add(point);
+                visited.add(point);
             }
             Position currentPosition = positionQueue.poll();
             x = currentPosition.x;
