@@ -16,9 +16,9 @@ public class day16 {
         Scanner sc = null;
         try {
             sc = new Scanner(new File(filename));
-            String s = sc.next();
-            for (char c : s.toCharArray()) {
-                result.append(hexCharToBinString(c));
+            String line = sc.next();
+            for (char c : line.toCharArray()) {
+                result.append(hexDigitToBin(c));
             }
         } catch (Exception e) {
             System.out.println("Something went wrong " + e);
@@ -28,7 +28,7 @@ public class day16 {
         return result.toString();
     }
 
-    public static String hexCharToBinString(char c){
+    public static String hexDigitToBin(char c){
         int decNum = Integer.parseInt(String.valueOf(c), 16);
         String binString = String.format("%4s", Integer.toBinaryString(decNum));
         return binString.replace(' ', '0');
@@ -78,9 +78,9 @@ public class day16 {
     }
 
     public static Packet processSubpacketsByLength(Packet packet, int packetTypeID) {
-        int subLength = Integer.parseInt(packet.binData.substring(7, 22), 2);
         int packetLength = 22;
-        packet.binData = packet.binData.substring(22);
+        int subLength = Integer.parseInt(packet.binData.substring(7, packetLength), 2);
+        packet.binData = packet.binData.substring(packetLength);
         ArrayList<Long> results = new ArrayList<>();
         while (subLength > 0) {
             packet = processPacket(packet);
@@ -94,9 +94,9 @@ public class day16 {
     }
 
     public static Packet processSubpakcetsByQuantity(Packet packet, int packetTypeID) {
-        int numberOfPackets = Integer.parseInt(packet.binData.substring(7, 18), 2);
         int packetLength = 18;
-        packet.binData = packet.binData.substring(18);
+        int numberOfPackets = Integer.parseInt(packet.binData.substring(7, packetLength), 2);
+        packet.binData = packet.binData.substring(packetLength);
         ArrayList<Long> result = new ArrayList<>();
         for (int j = 0; j < numberOfPackets; j++) {
             packet = processPacket(packet);
