@@ -17,7 +17,7 @@ Read more on official Advent of Code website: https://adventofcode.com/2021/abou
 
 ## Current progress:
 ### Puzzles solved
-1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 20
 
 | Puzzle [^1] | Solution |
 |:---:|:---:|
@@ -35,8 +35,13 @@ Read more on official Advent of Code website: https://adventofcode.com/2021/abou
 | [Passage Pathing](https://adventofcode.com/2021/day/12) | not solved |
 | [Transparent Origami](https://adventofcode.com/2021/day/13) | [13](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day13/day13.java)|
 | [Extended Polymerization](https://adventofcode.com/2021/day/14) | [14](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day14/day14.java)|
-| [Chiton](https://adventofcode.com/2021/day/15) | Under review |
-| [Packet Decoder](https://adventofcode.com/2021/day/16) | Under review |
+| [Chiton](https://adventofcode.com/2021/day/15) | [15](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day15/day15.java) |
+| [Packet Decoder](https://adventofcode.com/2021/day/16) | [16](https://github.com/mtsochacki/advent-of-code/blob/master/2021/day16/day16.java) |
+| [Trick Shot](https://adventofcode.com/2021/day/17) | under review |
+| [Snailfish](https://adventofcode.com/2021/day/18) | not solved |
+| [Beacon Scanner](https://adventofcode.com/2021/day/19) | not solved |
+| [Trench Map](https://adventofcode.com/2021/day/20) | solved |
+
 
 [^1]: Puzzle links lead to part 1 of the daily challange. Part 2 is displayed only after user provides correct solution to part 1.
 
