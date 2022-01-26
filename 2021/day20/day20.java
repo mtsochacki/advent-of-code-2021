@@ -4,7 +4,7 @@ import java.io.File;
 
 public class day20 {
     public static String readAlgorithm(String filename) {
-        String algorithm = "";
+        String algorithm = null;
         try {
             Scanner sc = new Scanner(new File(filename));
             algorithm = sc.nextLine();
@@ -23,8 +23,7 @@ public class day20 {
             sc.nextLine();
             sc.useDelimiter("");
             while (sc.hasNextLine()) {
-                ArrayList<Character> line = stringToList(sc.nextLine());
-                image.add(line);
+                image.add(stringToList(sc.nextLine()));
             }
             sc.close();
         } catch (Exception e) {
@@ -35,40 +34,18 @@ public class day20 {
 
     public static ArrayList<ArrayList<Character>> surroundWithDots(ArrayList<ArrayList<Character>> image) {
         ArrayList<ArrayList<Character>> newImage = new ArrayList<>();
-        newImage.add(new ArrayList<Character>());
+        newImage.add(new ArrayList<>());
         for (ArrayList<Character> line : image) {
             ArrayList<Character> newLine = new ArrayList<>();
             newLine.add('.');
-            for (char c : line) {
-                newLine.add(c);
-            }
+            newLine.addAll(line);
             newLine.add('.');
             newImage.add(newLine);
         }
-        newImage.add(new ArrayList<Character>());
+        newImage.add(new ArrayList<>());
         for (int i = 0; i < newImage.get(1).size(); i++) {
             newImage.get(0).add('.');
             newImage.get(newImage.size() - 1).add('.');
-        }
-        return newImage;
-    }
-
-    public static ArrayList<ArrayList<Character>> surroundWithHash(ArrayList<ArrayList<Character>> image) {
-        ArrayList<ArrayList<Character>> newImage = new ArrayList<>();
-        newImage.add(new ArrayList<Character>());
-        for (ArrayList<Character> line : image) {
-            ArrayList<Character> newLine = new ArrayList<>();
-            newLine.add('#');
-            for (char c : line) {
-                newLine.add(c);
-            }
-            newLine.add('#');
-            newImage.add(newLine);
-        }
-        newImage.add(new ArrayList<Character>());
-        for (int i = 0; i < newImage.get(1).size(); i++) {
-            newImage.get(0).add('#');
-            newImage.get(newImage.size() - 1).add('#');
         }
         return newImage;
     }
@@ -81,7 +58,7 @@ public class day20 {
         return result;
     }
 
-    public static int getIndex(ArrayList<ArrayList<Character>> image, int x, int y, String algorithm) {
+    public static int getIndex(ArrayList<ArrayList<Character>> image, int x, int y) {
         StringBuilder stringIndex = new StringBuilder();
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
@@ -92,56 +69,40 @@ public class day20 {
         return Integer.parseInt(binaryString, 2);
     }
 
-    public static void part1() {
-        String algorithm = readAlgorithm("data1.txt");
-        ArrayList<ArrayList<Character>> image = readImage("data1.txt");
-        int var = 101;
+    public static int countPixels(int steps) {
+        String algorithm = readAlgorithm("data.txt");
+        ArrayList<ArrayList<Character>> image = readImage("data.txt");
+        int var = steps * 2;
         for (int i = 0; i < var; i++) {
             image = surroundWithDots(image);
         }
-
-        for (int i = 0; i < 50; i++) {
-            if (i%2==0){
-                image = surroundWithDots(image);
-            } else {
-                image = surroundWithHash(image);
-            }
+        for (int i = 0; i < steps; i++) {
+            image = surroundWithDots(image);
             ArrayList<ArrayList<Character>> tmpImage = new ArrayList<>();
             for (ArrayList<Character> line : image) {
-                ArrayList<Character> tmpLine = new ArrayList<>();
-                for (char c : line){
-                    tmpLine.add(c);
-                }
+                ArrayList<Character> tmpLine = new ArrayList<>(line);
                 tmpImage.add(tmpLine);
             }
             for (int y = 1; y < tmpImage.size() - 1; y++) {
                 for (int x = 1; x < tmpImage.get(0).size() - 1; x++) {
-                    tmpImage.get(y).set(x, algorithm.charAt(getIndex(image, x, y, algorithm)));
+                    tmpImage.get(y).set(x, algorithm.charAt(getIndex(image, x, y)));
                 }
             }
-            //print(tmpImage);
             image = tmpImage;
-            int count = 0;
-            for (int y = var; y < tmpImage.size() - var; y++) {
-                for (int x = var; x < tmpImage.get(0).size() - var; x++) {
-                    if (tmpImage.get(y).get(x) == '#'){
-                        count++;
-                    }
+        }
+        int count = 0;
+        for (int y = var; y < image.size() - var; y++) {
+            for (int x = var; x < image.get(0).size() - var; x++) {
+                if (image.get(y).get(x) == '#') {
+                    count++;
                 }
             }
-            System.out.println(count);
         }
+        return count;
     }
 
-    public static void print(ArrayList<ArrayList<Character>> image){
-        for (ArrayList<Character> line : image) {
-            for (char c : line) {
-                System.out.print(c);
-            }
-            System.out.println("");
-        }
-    }
     public static void main(String[] args) {
-        part1();
+        System.out.println(countPixels(2));
+        System.out.println(countPixels(50));
     }
 }
