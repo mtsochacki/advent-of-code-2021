@@ -58,7 +58,7 @@ public class day20 {
         return result;
     }
 
-    public static int getIndex(ArrayList<ArrayList<Character>> image, int x, int y) {
+    public static int determineOutputPixelIndex(ArrayList<ArrayList<Character>> image, int x, int y) {
         StringBuilder stringIndex = new StringBuilder();
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
@@ -69,11 +69,10 @@ public class day20 {
         return Integer.parseInt(binaryString, 2);
     }
 
-    public static int countPixels(int steps) {
-        String algorithm = readAlgorithm("data.txt");
-        ArrayList<ArrayList<Character>> image = readImage("data.txt");
-        int var = steps * 2;
-        for (int i = 0; i < var; i++) {
+    public static int countLightPixels(int steps) {
+        String algorithm = readAlgorithm("/Users/mateusz/Java/advent-of-code/2021/day20/data.txt");
+        ArrayList<ArrayList<Character>> image = readImage("/Users/mateusz/Java/advent-of-code/2021/day20/data.txt");
+        for (int i = 0; i < steps * 2; i++) {
             image = surroundWithDots(image);
         }
         for (int i = 0; i < steps; i++) {
@@ -85,14 +84,14 @@ public class day20 {
             }
             for (int y = 1; y < tmpImage.size() - 1; y++) {
                 for (int x = 1; x < tmpImage.get(0).size() - 1; x++) {
-                    tmpImage.get(y).set(x, algorithm.charAt(getIndex(image, x, y)));
+                    tmpImage.get(y).set(x, algorithm.charAt(determineOutputPixelIndex(image, x, y)));
                 }
             }
             image = tmpImage;
         }
         int count = 0;
-        for (int y = var; y < image.size() - var; y++) {
-            for (int x = var; x < image.get(0).size() - var; x++) {
+        for (int y = steps * 2; y < image.size() - steps * 2; y++) {
+            for (int x = steps * 2; x < image.get(0).size() - steps * 2; x++) {
                 if (image.get(y).get(x) == '#') {
                     count++;
                 }
@@ -102,7 +101,7 @@ public class day20 {
     }
 
     public static void main(String[] args) {
-        System.out.println(countPixels(2));
-        System.out.println(countPixels(50));
+        System.out.println(countLightPixels(2));
+        System.out.println(countLightPixels(50));
     }
 }
