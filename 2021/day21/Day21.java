@@ -48,14 +48,14 @@ public class Day21 {
         return gameResults;
     }
 
-    static void part2() {
+    static long part2() {
         GameState initialGameState = new GameState(4, 10, 0, 0);
         GameResults gameResults = countWins(initialGameState);
-        System.out.println(gameResults.wins1 + " " + gameResults.wins2);
+        return Math.max(gameResults.wins1, gameResults.wins2);
     }
 
     public static void main(String[] args) {
         System.out.println(part1());
-        part2();
+        System.out.println(part2());
     }
 }
