@@ -43,9 +43,7 @@ public class day17 {
         while (!(x >= xStart && x <= xEnd && y >= yEnd && y <= yStart)) {
             x += xVelocity;
             y += yVelocity;
-            if (x < xStart && xVelocity == 0) {
-                return false;
-            } else if (x > xEnd || y < yEnd) {
+            if (x < xStart && xVelocity == 0 || x > xEnd || y < yEnd) {
                 return false;
             }
             if (xVelocity > 0) {
@@ -74,7 +72,7 @@ public class day17 {
         return trenchCoordinates;
     }
     public static void main(String[] args) {
-        int[] trenchCoordinates = readInput("data.txt");
+        int[] trenchCoordinates = readInput("/Users/mateusz/Java/advent-of-code/2021/day17/data.txt");
         int xStart = trenchCoordinates[0];
         int xEnd = trenchCoordinates[1];
         int yStart = trenchCoordinates[2];
