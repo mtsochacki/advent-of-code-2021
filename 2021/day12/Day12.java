@@ -5,8 +5,8 @@ public class Day12 {
     static Map<String, ArrayList<String>> neighbourCaves = new HashMap<>();
     static Set<String> paths = new HashSet<>();
     static Set<String> pathsPartTwo = new HashSet<>();
-    static HashMap<String, Integer> visitedCaves = new HashMap<>();
-    static HashMap<String, Integer> visitedCavesPartTwo = new HashMap<>();
+    static Set<String> visitedCaves = new HashSet<>();
+    static Set<String> visitedCavesPartTwo = new HashSet<>();
 
     static boolean isSmallCave(String cave) {
         return cave.equals(cave.toLowerCase());
@@ -39,7 +39,7 @@ public class Day12 {
         }
     }
 
-    static void findPath(String currentCave, String currentPath, HashMap<String, Integer> visitedCaves) {
+    static void findPath(String currentCave, String currentPath, Set<String> visitedCaves) {
         currentPath += "," + currentCave;
 
         if (currentCave.equals("end")) {
@@ -48,17 +48,17 @@ public class Day12 {
         }
 
         if (isSmallCave(currentCave)) {
-            visitedCaves.put(currentCave, 1);
+            visitedCaves.add(currentCave);
         }
 
         for (String neighbourCave : neighbourCaves.get(currentCave)) {
-            if (!neighbourCave.equals("start") && !visitedCaves.containsKey(neighbourCave)) {
-                findPath(neighbourCave, currentPath, new HashMap<>(visitedCaves));
+            if (!neighbourCave.equals("start") && !visitedCaves.contains(neighbourCave)) {
+                findPath(neighbourCave, currentPath, new HashSet<>(visitedCaves));
             }
         }
     }
 
-    static void findPathPartTwo(String currentCave, String currentPath, HashMap<String, Integer> visitedCavesPartTwo, boolean wasAnyCaveVisitedTwice) {
+    static void findPathPartTwo(String currentCave, String currentPath, Set<String> visitedCavesPartTwo, boolean wasAnyCaveVisitedTwice) {
         currentPath += "," + currentCave;
 
         if (currentCave.equals("end")) {
@@ -67,26 +67,19 @@ public class Day12 {
         }
 
         if (isSmallCave(currentCave)) {
-            if (visitedCavesPartTwo.containsKey(currentCave)) {
-                visitedCavesPartTwo.put(currentCave, visitedCavesPartTwo.get(currentCave) + 1);
-            } else {
-                visitedCavesPartTwo.put(currentCave, 1);
-            }
-
-            if (visitedCavesPartTwo.get(currentCave) >= 2 && wasAnyCaveVisitedTwice) {
-                return;
-            }
-
-            if (visitedCavesPartTwo.get(currentCave) == 2 && !wasAnyCaveVisitedTwice) {
+            if (visitedCavesPartTwo.contains(currentCave) && !wasAnyCaveVisitedTwice) {
                 wasAnyCaveVisitedTwice = true;
+            } else if (visitedCavesPartTwo.contains(currentCave) && wasAnyCaveVisitedTwice) {
+                return;
+            } else {
+                visitedCavesPartTwo.add(currentCave);
             }
         }
 
         for (String neighbourNode : neighbourCaves.get(currentCave)) {
-            if (!neighbourNode.equals("start") && visitedCavesPartTwo.getOrDefault(neighbourNode, 0) == 0
-                    || visitedCavesPartTwo.getOrDefault(neighbourNode, 1) == 1 && !wasAnyCaveVisitedTwice
-                    && !neighbourNode.equals("start")) {
-                findPathPartTwo(neighbourNode, currentPath, new HashMap<>(visitedCavesPartTwo), wasAnyCaveVisitedTwice);
+            if (!neighbourNode.equals("start") && (!visitedCavesPartTwo.contains(neighbourNode)
+                    || visitedCavesPartTwo.contains(neighbourNode) && !wasAnyCaveVisitedTwice)) {
+                findPathPartTwo(neighbourNode, currentPath, new HashSet<>(visitedCavesPartTwo), wasAnyCaveVisitedTwice);
             }
         }
     }
