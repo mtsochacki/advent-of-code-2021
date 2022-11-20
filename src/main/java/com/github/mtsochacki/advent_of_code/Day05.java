@@ -1,30 +1,29 @@
 package com.github.mtsochacki.advent_of_code;
 
-import java.util.Scanner;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-public class Day05 {
-    public static class LineOfVents {
+public class Day05 implements Day {
+    private static class LineOfVents {
         int xStart;
         int xEnd;
         int yStart;
         int yEnd;
     }
 
-    public static Boolean isVertical(LineOfVents line) {
-        return line.xStart == line.xEnd; 
+    private Boolean isVertical(LineOfVents line) {
+        return line.xStart == line.xEnd;
     }
 
-    public static Boolean isHorizontal(LineOfVents line) {
+    private Boolean isHorizontal(LineOfVents line) {
         return line.yStart == line.yEnd;
     }
 
-    public static ArrayList<LineOfVents> readInput(String filename) {
-        Scanner sc;
+    private List<LineOfVents> readInput(String filename) {
         ArrayList<LineOfVents> input = new ArrayList<>();
-        try {
-            sc = new Scanner(new File(filename));
+        try (Scanner sc = new Scanner(new File(filename))) {
             sc.useDelimiter(",|\\n| -> ");
             while (sc.hasNextInt()) {
                 LineOfVents line = new LineOfVents();
@@ -34,15 +33,14 @@ public class Day05 {
                 line.yEnd = sc.nextInt();
                 input.add(line);
             }
-            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong" + e);
         }
         return input;
     }
 
-    public static int calculateOverlap(Boolean includePart2) {
-        ArrayList<LineOfVents> input = readInput("data.txt");
+    private int calculateOverlap(String filename, Boolean includePart2) {
+        List<LineOfVents> input = readInput(filename);
         int[][] diagram = new int[1000][1000];
         int count = 0;
 
@@ -74,9 +72,9 @@ public class Day05 {
                 }
             }
         }
-        for (int[] line : diagram){
-            for (int cell : line){
-                if (cell >= 2){
+        for (int[] line : diagram) {
+            for (int cell : line) {
+                if (cell >= 2) {
                     count++;
                 }
             }
@@ -84,8 +82,11 @@ public class Day05 {
         return count;
     }
 
-    public static void main(String[] args) {
-        System.out.println(calculateOverlap(false));
-        System.out.println(calculateOverlap(true));
+    public String part1(String filename) {
+        return String.valueOf(calculateOverlap(filename, false));
+    }
+
+    public String part2(String filename) {
+        return String.valueOf(calculateOverlap(filename, true));
     }
 }

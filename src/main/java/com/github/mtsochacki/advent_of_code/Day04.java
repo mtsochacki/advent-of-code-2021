@@ -2,31 +2,27 @@ package com.github.mtsochacki.advent_of_code;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class Day04 {
-    public static ArrayList<Integer> readDrawnNumbers(String filename) {
-        Scanner sc;
+public class Day04 implements Day {
+    private List<Integer> readDrawnNumbers(String filename) {
         ArrayList<Integer> drawnNumbers = new ArrayList<>();
-        try {
-            sc = new Scanner(new File(filename));
-            sc.useDelimiter(",|\n");
+        try (Scanner sc = new Scanner(new File(filename))) {
+            sc.useDelimiter("[,\n]");
             while (sc.hasNextInt()) {
                 drawnNumbers.add(sc.nextInt());
             }
-            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong drawing numbers" + e);
         }
         return drawnNumbers;
     }
 
-    public static ArrayList<ArrayList<ArrayList<Integer>>> readBoards(String filename) {
-        Scanner sc;
+    private List<ArrayList<ArrayList<Integer>>> readBoards(String filename) {
         ArrayList<ArrayList<ArrayList<Integer>>> boards = new ArrayList<>();
         ArrayList<ArrayList<Integer>> board;
-        try {
-            sc = new Scanner(new File(filename));
+        try (Scanner sc = new Scanner(new File(filename))) {
             sc.nextLine();
             while (sc.hasNext()) {
                 sc.nextLine();
@@ -40,14 +36,13 @@ public class Day04 {
                 }
                 boards.add(board);
             }
-            sc.close();
         } catch (Exception e) {
             System.out.println("Something went wrong " + e);
         }
         return boards;
     }
 
-    public static boolean boardHasWon(ArrayList<ArrayList<Integer>> board) {
+    private boolean boardHasWon(List<ArrayList<Integer>> board) {
         for (ArrayList<Integer> row : board) {
             boolean won = true;
             for (int col = 0; col < 5; col++) {
@@ -75,7 +70,7 @@ public class Day04 {
         return false;
     }
 
-    public static int countWin(ArrayList<ArrayList<Integer>> board, ArrayList<Integer> drawn) {
+    private int countWin(List<ArrayList<Integer>> board, List<Integer> drawn) {
         int counter = 0;
         for (int number : drawn) {
             counter++;
@@ -93,19 +88,17 @@ public class Day04 {
         return counter;
     }
 
-    public static int calculateBoard(boolean isWinner) {
-        ArrayList<Integer> drawn = readDrawnNumbers("data.txt");
-        ArrayList<ArrayList<ArrayList<Integer>>> boards = readBoards("data.txt");
+    private int calculateBoard(String filename, boolean isWinner) {
+        List<Integer> drawn = readDrawnNumbers(filename);
+        List<ArrayList<ArrayList<Integer>>> boards = readBoards(filename);
         ArrayList<ArrayList<Integer>> winningBoard = new ArrayList<>();
         int currentCounter;
         int winnersCounter;
         winnersCounter = isWinner ? 999999 : 0;
         for (ArrayList<ArrayList<Integer>> board : boards) {
             currentCounter = countWin(board, drawn);
-            if ((currentCounter < winnersCounter) && isWinner) {
-                winningBoard = board;
-                winnersCounter = currentCounter;
-            } else if ((currentCounter > winnersCounter) && !isWinner) {
+            if ((currentCounter < winnersCounter) && isWinner ||
+                    (currentCounter > winnersCounter) && !isWinner) {
                 winningBoard = board;
                 winnersCounter = currentCounter;
             }
@@ -119,8 +112,11 @@ public class Day04 {
         return score * drawn.get(winnersCounter - 1);
     }
 
-    public static void main(String[] args) {
-        System.out.println("Winning board final score is " + calculateBoard(true));
-        System.out.println("Loosing board final score is " + calculateBoard(false));
+    public String part1(String filename) {
+        return String.valueOf(calculateBoard(filename, true));
+    }
+
+    public String part2(String filename) {
+        return String.valueOf(calculateBoard(filename, false));
     }
 }

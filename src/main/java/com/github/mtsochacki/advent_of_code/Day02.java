@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Day02 {
-    public static class Command {
+public class Day02 implements Day {
+    private static class Command {
         String direction;
         int value;
 
@@ -15,23 +15,20 @@ public class Day02 {
         }
     }
 
-    public static ArrayList<Command> readCommands(String filename) {
-        Scanner sc;
+    private static ArrayList<Command> readCommands(String filename) {
         ArrayList<Command> listOfCommands = new ArrayList<>();
-        try {
-            sc = new Scanner(new File(filename));
+        try (Scanner sc = new Scanner(new File(filename))){
             while (sc.hasNextLine()) {
                 listOfCommands.add(new Command(sc.next(), sc.nextInt()));
             }
-            sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong: " + e);
         }
         return listOfCommands;
     }
 
-    public static int calculatePosition() {
-        ArrayList<Command> commands = readCommands("data.txt");
+    public String part1(String filename) {
+        ArrayList<Command> commands = readCommands(filename);
         int forward = 0;
         int vertical = 0;
 
@@ -40,15 +37,14 @@ public class Day02 {
                 case "forward" -> forward += command.value;
                 case "down" -> vertical += command.value;
                 case "up" -> vertical -= command.value;
-                default -> {
-                }
+                default -> {}
             }
         }
-        return forward * vertical;
+        return String.valueOf(forward * vertical);
     }
 
-    public static int calculateAdvancedPosition() {
-        ArrayList<Command> commands = readCommands("data.txt");
+    public String part2(String filename) {
+        ArrayList<Command> commands = readCommands(filename);
         int forward = 0;
         int aim = 0;
         int depth = 0;
@@ -64,13 +60,6 @@ public class Day02 {
                 default -> {}
             }
         }
-        return forward * depth;
-    }
-
-    public static void main(String[] args) {
-        System.out.println("Position before reading the submarine manual: "
-                + calculatePosition());
-        System.out.println("Position after reading the submarine manual: "
-                + calculateAdvancedPosition());
+        return String.valueOf(forward * depth);
     }
 }

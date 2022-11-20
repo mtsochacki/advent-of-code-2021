@@ -2,26 +2,24 @@ package com.github.mtsochacki.advent_of_code;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class Day03 {
-    public static ArrayList<String> readReport(String filename) {
-        Scanner sc;
+public class Day03 implements Day {
+    private List<String> readReport(String filename) {
         ArrayList<String> diagnosticReport = new ArrayList<>();
 
-        try {
-            sc = new Scanner(new File(filename));
+        try (Scanner sc = new Scanner(new File(filename))) {
             while (sc.hasNext()) {
                 diagnosticReport.add(sc.next());
             }
-            sc.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong: " + e);
         }
         return diagnosticReport;
     }
 
-    public static int binToDec(int[] number) {
+    private int binToDec(int[] number) {
         int dec = 0;
         for (int i = 0; i < number.length; i++) {
             dec += number[i] * Math.pow(2, number.length - i - 1);
@@ -29,8 +27,8 @@ public class Day03 {
         return dec;
     }
 
-    public static int calculatePower() {
-        ArrayList<String> report = readReport("data.txt");
+    private int calculatePower(String filename) {
+        List<String> report = readReport(filename);
         int[] gammaRate = new int[report.get(0).length()];
         int[] epsilonRate = new int[report.get(0).length()];
 
@@ -52,8 +50,8 @@ public class Day03 {
         return binToDec(gammaRate) * binToDec(epsilonRate);
     }
 
-    public static int calculateSupport(boolean isOxygen) {
-        ArrayList<String> report = readReport("data.txt");
+    private int calculateSupport(String filename, boolean isOxygen) {
+        List<String> report = readReport(filename);
         char dominantNumber;
 
         for (int i = 0; i < report.get(0).length(); i++) {
@@ -87,8 +85,12 @@ public class Day03 {
         return Integer.parseInt(report.get(0), 2);
     }
 
-    public static void main(String[] args) {
-        System.out.println(calculatePower());
-        System.out.println(calculateSupport(true) * calculateSupport(false));
+    public String part1(String filename) {
+        return String.valueOf(calculatePower(filename));
+    }
+
+    public String part2(String filename) {
+        return String.valueOf(calculateSupport(filename, true)
+                * calculateSupport(filename, false));
     }
 }
