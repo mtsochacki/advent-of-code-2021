@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 @Slf4j
 public class Day03 implements Day {
-    public static List<String> readReport(String filename) {
+    private List<String> readReport(String filename) {
         List<String> diagnosticReport = new ArrayList<>();
         try (Scanner sc = new Scanner(new File(filename))) {
             while (sc.hasNext()) {
@@ -21,7 +21,7 @@ public class Day03 implements Day {
         return diagnosticReport;
     }
 
-    public static int binToDec(int[] number) {
+    private int binToDec(int[] number) {
         int dec = 0;
         for (int i = 0; i < number.length; i++) {
             dec += number[i] * Math.pow(2, number.length - i - 1);
@@ -56,7 +56,7 @@ public class Day03 implements Day {
         return String.valueOf(calculateSupport(true) * calculateSupport(false));
     }
 
-    public static int calculateSupport(boolean isOxygen) {
+    private int calculateSupport(boolean isOxygen) {
         List<String> report = readReport("data.txt");
         char dominantNumber;
 

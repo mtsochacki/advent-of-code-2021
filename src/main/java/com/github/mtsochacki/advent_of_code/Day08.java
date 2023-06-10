@@ -1,12 +1,15 @@
 package com.github.mtsochacki.advent_of_code;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Day08 {
-    public static class SignalPattern {
+@Slf4j
+public class Day08 implements Day {
+    private static class SignalPattern {
         String zero;
         String one;
         String two;
@@ -19,7 +22,7 @@ public class Day08 {
         String nine;
     }
 
-    public static String[] sortWithinEachWord(String[] line) {
+    private String[] sortWithinEachWord(String[] line) {
         for (int i = 0; i < line.length; i++) {
             char[] ar = line[i].toCharArray();
             Arrays.sort(ar);
@@ -28,74 +31,73 @@ public class Day08 {
         return line;
     }
 
-    public static ArrayList<String[]> readInput(String filename) {
+    private ArrayList<String[]> readInput(String filename) {
         ArrayList<String[]> input = new ArrayList<>();
-
-        Scanner sc;
-        try {
-            sc = new Scanner(new File(filename));
+        try (Scanner sc = new Scanner(new File(filename))) {
             while (sc.hasNextLine()) {
                 String[] line = sc.nextLine().split(" \\Q|\\E | ");
                 input.add(sortWithinEachWord(line));
             }
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went wrong" + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
         return input;
     }
 
-    public static int part1() {
+    public String part1() {
         int counter = 0;
         ArrayList<String[]> input = readInput("data.txt");
         for (String[] strings : input) {
             for (int j = 10; j < input.get(0).length; j++) {
                 if (strings[j].length() == 2 || strings[j].length() == 4 ||
-                    strings[j].length() == 3 || strings[j].length() == 7)
+                        strings[j].length() == 3 || strings[j].length() == 7)
                     counter++;
             }
         }
-        return counter;
+        return String.valueOf(counter);
     }
 
-    public static void deduceOneFourSevenEight(String[] signals, SignalPattern pattern) {
+    private void deduceOneFourSevenEight(String[] signals, SignalPattern pattern) {
         for (String signal : signals) {
             switch (signal.length()) {
                 case 2 -> pattern.one = signal;
                 case 4 -> pattern.four = signal;
                 case 3 -> pattern.seven = signal;
                 case 7 -> pattern.eight = signal;
-                default -> {
-                }
+                default -> log.error("Unexpected signal: {}", signal);
             }
         }
     }
+
     // Zero i 6 segments long and is not a 6 or a 9
-    public static void deduceZero(String[] signals, SignalPattern pattern) {
+    private void deduceZero(String[] signals, SignalPattern pattern) {
         for (int i = 0; i < 10; i++)
             if (signals[i].length() == 6 && signals[i] != pattern.six
-                                         && signals[i] != pattern.nine)
+                    && signals[i] != pattern.nine)
                 pattern.zero = signals[i];
     }
+
     // Two is 5 segments long and is neither 3 nor 5
-    public static void deduceTwo(String[] signals, SignalPattern pattern) {
+    private void deduceTwo(String[] signals, SignalPattern pattern) {
         for (int i = 0; i < 10; i++) {
             if (signals[i].length() == 5 && !signals[i].equals(pattern.three)
-                                         && !signals[i].equals(pattern.five))
+                    && !signals[i].equals(pattern.five))
                 pattern.two = signals[i];
         }
     }
+
     // Three is 5 segments long and contains both segments of 1
-    public static void deduceThree(String[] signals, SignalPattern pattern) {
+    private void deduceThree(String[] signals, SignalPattern pattern) {
         char[] tokens = pattern.one.toCharArray();
         for (int i = 0; i < 10; i++) {
-            if (signals[i].length() == 5 &&signals[i].contains(String.valueOf(tokens[0]))
+            if (signals[i].length() == 5 && signals[i].contains(String.valueOf(tokens[0]))
                     && signals[i].contains(String.valueOf(tokens[1])))
                 pattern.three = signals[i];
         }
     }
+
     // Five is 5 segments long and all its segments are part of 9 and is not 3
-    public static void deduceFive(String[] signals, SignalPattern pattern) {
+    private void deduceFive(String[] signals, SignalPattern pattern) {
         for (int j = 0; j < 10; j++) {
             char[] tokens = signals[j].toCharArray();
             if (signals[j].length() == 5 && pattern.nine.contains(String.valueOf(tokens[0]))
@@ -104,11 +106,12 @@ public class Day08 {
                     && pattern.nine.contains(String.valueOf(tokens[3]))
                     && pattern.nine.contains(String.valueOf(tokens[4])) &&
                     signals[j] != pattern.three)
-                pattern.five = signals[j];  
+                pattern.five = signals[j];
         }
     }
+
     // Six is 6 segments long and contains only one segment of 1
-    public static void deduceSix(String[] signals, SignalPattern pattern) {
+    private void deduceSix(String[] signals, SignalPattern pattern) {
         char[] tokens = pattern.one.toCharArray();
         for (int i = 0; i < 10; i++) {
             if (signals[i].length() == 6 && (!signals[i].contains(String.valueOf(tokens[0]))
@@ -116,8 +119,9 @@ public class Day08 {
                 pattern.six = signals[i];
         }
     }
+
     // Nine is 6 segments long and contains all segments of 3
-    public static void deduceNine(String[] signals, SignalPattern pattern) {
+    private void deduceNine(String[] signals, SignalPattern pattern) {
         char[] tokens = pattern.three.toCharArray();
         for (int i = 0; i < 10; i++) {
             if (signals[i].length() == 6 && signals[i].contains(String.valueOf(tokens[0]))
@@ -129,7 +133,7 @@ public class Day08 {
         }
     }
 
-    public static int calculateOutput(String[] signals, SignalPattern pattern) {
+    private int calculateOutput(String[] signals, SignalPattern pattern) {
         int output = 0;
         int[] digits = new int[4];
 
@@ -162,7 +166,7 @@ public class Day08 {
         return output;
     }
 
-    public static int part2() {
+    public String part2() {
         int result = 0;
         ArrayList<String[]> input = readInput("data.txt");
         for (String[] strings : input) {
@@ -176,11 +180,6 @@ public class Day08 {
             deduceTwo(strings, pattern);
             result += calculateOutput(strings, pattern);
         }
-        return result;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(part1());
-        System.out.println(part2());
+        return String.valueOf(result);
     }
 }

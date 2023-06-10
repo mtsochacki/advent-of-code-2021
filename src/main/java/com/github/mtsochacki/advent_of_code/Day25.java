@@ -1,15 +1,20 @@
+package com.github.mtsochacki.advent_of_code;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Day25 {
-    static ArrayList<ArrayList<String>> deepCopyArrayList(ArrayList<ArrayList<String>> source){
+    static ArrayList<ArrayList<String>> deepCopyArrayList(ArrayList<ArrayList<String>> source) {
         ArrayList<ArrayList<String>> destination = new ArrayList<>();
         for (ArrayList<String> strings : source) {
             destination.add((ArrayList<String>) strings.clone());
         }
         return destination;
     }
+
     static ArrayList<ArrayList<String>> readCucumberMap(String filename) {
         Scanner sc;
         try {

@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 @Slf4j
 public class Day01 implements Day {
-    public static List<Integer> readReport(String filename) {
+    private List<Integer> readReport(String filename) {
         List<Integer> input = new ArrayList<>();
         try (Scanner sc = new Scanner(new File(filename))) {
             while (sc.hasNextInt()) {

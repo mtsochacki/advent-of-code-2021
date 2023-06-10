@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 @Slf4j
 public class Day02 implements Day {
-    public static class Command {
+    private class Command {
         String direction;
         int value;
 
@@ -19,7 +19,7 @@ public class Day02 implements Day {
         }
     }
 
-    public static List<Command> readCommands(String filename) {
+    private List<Command> readCommands(String filename) {
         List<Command> listOfCommands = new ArrayList<>();
         try (Scanner sc = new Scanner(new File(filename))) {
             while (sc.hasNextLine()) {
