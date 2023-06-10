@@ -1,37 +1,38 @@
 package com.github.mtsochacki.advent_of_code;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class Day02 {
+@Slf4j
+public class Day02 implements Day {
     public static class Command {
         String direction;
         int value;
 
-        Command(String d, int v) {
-            direction = d;
-            value = v;
+        Command(String direction, int value) {
+            this.direction = direction;
+            this.value = value;
         }
     }
 
-    public static ArrayList<Command> readCommands(String filename) {
-        Scanner sc;
-        ArrayList<Command> listOfCommands = new ArrayList<>();
-        try {
-            sc = new Scanner(new File(filename));
+    public static List<Command> readCommands(String filename) {
+        List<Command> listOfCommands = new ArrayList<>();
+        try (Scanner sc = new Scanner(new File(filename))) {
             while (sc.hasNextLine()) {
                 listOfCommands.add(new Command(sc.next(), sc.nextInt()));
             }
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went horribly wrong: " + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
         return listOfCommands;
     }
 
-    public static int calculatePosition() {
-        ArrayList<Command> commands = readCommands("data.txt");
+    public String part1() {
+        List<Command> commands = readCommands("data.txt");
         int forward = 0;
         int vertical = 0;
 
@@ -40,15 +41,14 @@ public class Day02 {
                 case "forward" -> forward += command.value;
                 case "down" -> vertical += command.value;
                 case "up" -> vertical -= command.value;
-                default -> {
-                }
+                default -> log.error("Unsupported direction: {}", command.direction);
             }
         }
-        return forward * vertical;
+        return String.valueOf(forward * vertical);
     }
 
-    public static int calculateAdvancedPosition() {
-        ArrayList<Command> commands = readCommands("data.txt");
+    public String part2() {
+        List<Command> commands = readCommands("data.txt");
         int forward = 0;
         int aim = 0;
         int depth = 0;
@@ -61,16 +61,9 @@ public class Day02 {
                 }
                 case "down" -> aim += command.value;
                 case "up" -> aim -= command.value;
-                default -> {}
+                default -> log.error("Unsupported direction: {}", command.direction);
             }
         }
-        return forward * depth;
-    }
-
-    public static void main(String[] args) {
-        System.out.println("Position before reading the submarine manual: "
-                + calculatePosition());
-        System.out.println("Position after reading the submarine manual: "
-                + calculateAdvancedPosition());
+        return String.valueOf(forward * depth);
     }
 }

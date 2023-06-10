@@ -1,22 +1,22 @@
 package com.github.mtsochacki.advent_of_code;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class Day03 {
-    public static ArrayList<String> readReport(String filename) {
-        Scanner sc;
-        ArrayList<String> diagnosticReport = new ArrayList<>();
-
-        try {
-            sc = new Scanner(new File(filename));
+@Slf4j
+public class Day03 implements Day {
+    public static List<String> readReport(String filename) {
+        List<String> diagnosticReport = new ArrayList<>();
+        try (Scanner sc = new Scanner(new File(filename))) {
             while (sc.hasNext()) {
                 diagnosticReport.add(sc.next());
             }
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went horribly wrong: " + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
         return diagnosticReport;
     }
@@ -29,8 +29,8 @@ public class Day03 {
         return dec;
     }
 
-    public static int calculatePower() {
-        ArrayList<String> report = readReport("data.txt");
+    public String part1() {
+        List<String> report = readReport("data.txt");
         int[] gammaRate = new int[report.get(0).length()];
         int[] epsilonRate = new int[report.get(0).length()];
 
@@ -49,11 +49,15 @@ public class Day03 {
                 epsilonRate[i] = 1;
             }
         }
-        return binToDec(gammaRate) * binToDec(epsilonRate);
+        return String.valueOf(binToDec(gammaRate) * binToDec(epsilonRate));
+    }
+
+    public String part2() {
+        return String.valueOf(calculateSupport(true) * calculateSupport(false));
     }
 
     public static int calculateSupport(boolean isOxygen) {
-        ArrayList<String> report = readReport("data.txt");
+        List<String> report = readReport("data.txt");
         char dominantNumber;
 
         for (int i = 0; i < report.get(0).length(); i++) {
@@ -85,10 +89,5 @@ public class Day03 {
             }
         }
         return Integer.parseInt(report.get(0), 2);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(calculatePower());
-        System.out.println(calculateSupport(true) * calculateSupport(false));
     }
 }
