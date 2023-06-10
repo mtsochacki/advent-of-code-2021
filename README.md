@@ -2,21 +2,23 @@
    <img src="https://github.com/mtsochacki/advent-of-code/blob/master/src/main/resources/aoc2021.gif" />
 </p>
 
+
 # Advent of Code 2021
+## What is it all about?
 
-## What is Advent of Code?
-
-> Advent of Code is an Advent calendar of small programming puzzles for a variety of skill sets and skill levels that
-> can be solved in any programming language you like. People use them as a speed contest, interview prep, company
-> training, university coursework, practice problems, or to challenge each other.
+> Advent of Code is an Advent calendar of small programming puzzles for a variety of skill sets and skill levels that can be solved in any programming language you like. People use them as a speed contest, interview prep, company training, university coursework, practice problems, or to challenge each other.
 
 Read more on official Advent of Code website: https://adventofcode.com/2021/about
 
+## Goals:
+1. To have all the puzzles solved by the end January.
+2. To write my own solutions to all the problems (no [/r/adventofcode](https://www.reddit.com/r/adventofcode/) peeking!).
+3. To improve my understanding of Java and Version Control.
+4. Make code as readable and easy to understand as possible.
+
 ## Current progress:
-
 ### Puzzles solved
-
-1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 21, 25
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 21
 
 |                           Puzzle [^1]                           |                                                           Solution                                                           |
 |:---------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------:|
@@ -41,6 +43,11 @@ Read more on official Advent of Code website: https://adventofcode.com/2021/abou
 |     [Beacon Scanner](https://adventofcode.com/2021/day/19)      |                                                          not solved                                                          |
 |       [Trench Map](https://adventofcode.com/2021/day/20)        | [20](https://github.com/mtsochacki/advent-of-code/blob/master/src/main/java/com/github/mtsochacki/advent_of_code/Day20.java) |
 |       [Dirac Dice](https://adventofcode.com/2021/day/21)        | [21](https://github.com/mtsochacki/advent-of-code/blob/master/src/main/java/com/github/mtsochacki/advent_of_code/Day21.java) |
+[^1]: Puzzle links lead to part 1 of the daily challenge. Part 2 is displayed only after user provides correct solution to part 1.
 
-[^1]: Puzzle links lead to part 1 of the daily challenge. Part 2 is displayed only after user provides correct solution
-to part 1.
+
+## Roadmap
+
+- [ ] Solve all puzzles
+- [ ] Review code for all puzzles
+- [ ] Add javadocs

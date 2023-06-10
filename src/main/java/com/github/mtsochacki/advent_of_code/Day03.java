@@ -1,27 +1,27 @@
 package com.github.mtsochacki.advent_of_code;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
-@Slf4j
-public class Day03 implements Day {
-    private List<String> readReport(String filename) {
-        List<String> diagnosticReport = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
+public class Day03 {
+    public static ArrayList<String> readReport(String filename) {
+        Scanner sc;
+        ArrayList<String> diagnosticReport = new ArrayList<>();
+
+        try {
+            sc = new Scanner(new File(filename));
             while (sc.hasNext()) {
                 diagnosticReport.add(sc.next());
             }
+            sc.close();
         } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
+            System.out.println("Something went horribly wrong: " + e);
         }
         return diagnosticReport;
     }
 
-    private int binToDec(int[] number) {
+    public static int binToDec(int[] number) {
         int dec = 0;
         for (int i = 0; i < number.length; i++) {
             dec += number[i] * Math.pow(2, number.length - i - 1);
@@ -29,8 +29,8 @@ public class Day03 implements Day {
         return dec;
     }
 
-    public String part1() {
-        List<String> report = readReport("data.txt");
+    public static int calculatePower() {
+        ArrayList<String> report = readReport("data.txt");
         int[] gammaRate = new int[report.get(0).length()];
         int[] epsilonRate = new int[report.get(0).length()];
 
@@ -49,15 +49,11 @@ public class Day03 implements Day {
                 epsilonRate[i] = 1;
             }
         }
-        return String.valueOf(binToDec(gammaRate) * binToDec(epsilonRate));
+        return binToDec(gammaRate) * binToDec(epsilonRate);
     }
 
-    public String part2() {
-        return String.valueOf(calculateSupport(true) * calculateSupport(false));
-    }
-
-    private int calculateSupport(boolean isOxygen) {
-        List<String> report = readReport("data.txt");
+    public static int calculateSupport(boolean isOxygen) {
+        ArrayList<String> report = readReport("data.txt");
         char dominantNumber;
 
         for (int i = 0; i < report.get(0).length(); i++) {
@@ -89,5 +85,10 @@ public class Day03 implements Day {
             }
         }
         return Integer.parseInt(report.get(0), 2);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(calculatePower());
+        System.out.println(calculateSupport(true) * calculateSupport(false));
     }
 }

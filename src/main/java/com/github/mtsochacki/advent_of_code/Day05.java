@@ -1,40 +1,30 @@
 package com.github.mtsochacki.advent_of_code;
 
-import lombok.extern.slf4j.Slf4j;
-
+import java.util.Scanner;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
-@Slf4j
-public class Day05 implements Day {
-    private static class LineOfVents {
+public class Day05 {
+    public static class LineOfVents {
         int xStart;
         int xEnd;
         int yStart;
         int yEnd;
     }
 
-    public String part1() {
-        return calculateOverlap(false);
+    public static Boolean isVertical(LineOfVents line) {
+        return line.xStart == line.xEnd; 
     }
 
-    public String part2() {
-        return calculateOverlap(true);
-    }
-
-    private boolean isVertical(LineOfVents line) {
-        return line.xStart == line.xEnd;
-    }
-
-    private boolean isHorizontal(LineOfVents line) {
+    public static Boolean isHorizontal(LineOfVents line) {
         return line.yStart == line.yEnd;
     }
 
-    private List<LineOfVents> readInput(String filename) {
-        List<LineOfVents> input = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
+    public static ArrayList<LineOfVents> readInput(String filename) {
+        Scanner sc;
+        ArrayList<LineOfVents> input = new ArrayList<>();
+        try {
+            sc = new Scanner(new File(filename));
             sc.useDelimiter(",|\\n| -> ");
             while (sc.hasNextInt()) {
                 LineOfVents line = new LineOfVents();
@@ -44,14 +34,15 @@ public class Day05 implements Day {
                 line.yEnd = sc.nextInt();
                 input.add(line);
             }
+            sc.close();
         } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
+            System.out.println("Something went wrong" + e);
         }
         return input;
     }
 
-    private String calculateOverlap(boolean includePart2) {
-        List<LineOfVents> input = readInput("data.txt");
+    public static int calculateOverlap(Boolean includePart2) {
+        ArrayList<LineOfVents> input = readInput("data.txt");
         int[][] diagram = new int[1000][1000];
         int count = 0;
 
@@ -83,13 +74,18 @@ public class Day05 implements Day {
                 }
             }
         }
-        for (int[] line : diagram) {
-            for (int cell : line) {
-                if (cell >= 2) {
+        for (int[] line : diagram){
+            for (int cell : line){
+                if (cell >= 2){
                     count++;
                 }
             }
         }
-        return String.valueOf(count);
+        return count;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(calculateOverlap(false));
+        System.out.println(calculateOverlap(true));
     }
 }

@@ -1,31 +1,29 @@
 package com.github.mtsochacki.advent_of_code;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Scanner;
 
-@Slf4j
-public class Day06 implements Day {
-
-    private List<Integer> readInput(String filename) {
-        List<Integer> input = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename)).useDelimiter(",")) {
+public class Day06 {
+    public static ArrayList<Integer> readInput(String filename) {
+        ArrayList<Integer> input = new ArrayList<>();
+        Scanner sc;
+        try {
+            sc = new Scanner(new File(filename)).useDelimiter(",");
             while (sc.hasNextInt()) {
                 input.add(sc.nextInt());
             }
+            sc.close();
         } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
+            System.out.println("Something went horribly wrong" + e);
         }
         return input;
     }
 
-    public long calculatePopulation(int days) {
-        List<Integer> listOfFish = readInput("data.txt");
-        List<Long> popNumbers = new ArrayList<>(Collections.nCopies(9, 0L));
+    public static long calculatePopulation(int days) {
+        ArrayList<Integer> listOfFish = readInput("data.txt");
+        ArrayList<Long> popNumbers = new ArrayList<>(Collections.nCopies(9, 0L));
 
         for (Integer fish : listOfFish) {
             popNumbers.set(fish, popNumbers.get(fish) + 1);
@@ -49,11 +47,8 @@ public class Day06 implements Day {
         return totalPopulation;
     }
 
-    public String part1() {
-        return String.valueOf(calculatePopulation(80));
-    }
-
-    public String part2() {
-        return String.valueOf(calculatePopulation(256));
+    public static void main(String[] args) {
+        System.out.println(calculatePopulation(80));
+        System.out.println(calculatePopulation(256));
     }
 }
