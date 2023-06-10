@@ -1,51 +1,49 @@
 package com.github.mtsochacki.advent_of_code;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
-public class Day07 {
-    public static ArrayList<Integer> readInput(String filename) {
-        ArrayList<Integer> input = new ArrayList<>();
-        Scanner sc;
-        try {
-            sc = new Scanner(new File(filename)).useDelimiter(",");
+@Slf4j
+public class Day07 implements Day {
+    private List<Integer> readInput(String filename) {
+        List<Integer> input = new ArrayList<>();
+        try (Scanner sc = new Scanner(new File(filename)).useDelimiter(",")) {
             while (sc.hasNextInt()) {
                 input.add(sc.nextInt());
             }
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went horribly wrong" + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
         return input;
     }
 
-    public static double arithmeticSequence(double start, double end) {
+    private double arithmeticSequence(double start, double end) {
         return (Math.abs(end - start)) * (Math.abs(end - start) + 1) / 2;
     }
 
-    public static int part1() {
-        ArrayList<Integer> listOfPositions = readInput("data.txt");
+    public String part1() {
+        List<Integer> listOfPositions = readInput("data.txt");
         Collections.sort(listOfPositions);
-        // calculate median
         int median;
         if (listOfPositions.size() % 2 == 0)
             median = (listOfPositions.get((listOfPositions.size()) / 2)
                     + listOfPositions.get(listOfPositions.size() / 2 - 1)) / 2;
         else
             median = listOfPositions.get(listOfPositions.size() / 2);
-        // calculate fuel
         int totalFuel = 0;
         for (Integer position : listOfPositions)
             totalFuel += Math.abs(position - median);
-        return totalFuel;
+        return String.valueOf(totalFuel);
     }
 
-    public static int part2() {
-        ArrayList<Integer> listOfPositions = readInput("data.txt");
+    public String part2() {
+        List<Integer> listOfPositions = readInput("data.txt");
         int fuel = 100000000;
-        // Check each point between min and max of all the positions
         int max = Collections.max(listOfPositions);
         int min = Collections.min(listOfPositions);
         for (int testedAlignment = min; testedAlignment <= max; testedAlignment++) {
@@ -55,11 +53,6 @@ public class Day07 {
             if (currentFuel < fuel)
                 fuel = currentFuel;
         }
-        return fuel;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(part1());
-        System.out.println(part2());
+        return String.valueOf(fuel);
     }
 }
