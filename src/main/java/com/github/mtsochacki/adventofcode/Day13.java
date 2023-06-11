@@ -1,12 +1,17 @@
 package com.github.mtsochacki.adventofcode;
 
+import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-public class Day13 {
+@Slf4j
+public class Day13 implements Day {
     public enum Axis {
         X, Y
     }
@@ -16,6 +21,7 @@ public class Day13 {
         Axis axis;
     }
 
+    @EqualsAndHashCode
     public static class Point {
         int x;
         int y;
@@ -24,45 +30,27 @@ public class Day13 {
             this.x = x;
             this.y = y;
         }
-
-        @Override
-        public boolean equals(Object o) {
-            Point newPoint = (Point) o;
-            return x == newPoint.x && y == newPoint.y;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = 17;
-            result = 31 * result + x;
-            result = 31 * result + y;
-            return result;
-        }
     }
 
-    public static Set<Point> readCoordinates(String filename) {
+    private Set<Point> readCoordinates(String filename) {
         Set<Point> coordinates = new HashSet<>();
-        Scanner sc;
-        try {
-            sc = new Scanner(new File(filename));
+        try (Scanner sc = new Scanner(new File(filename))) {
             sc.useDelimiter(",|\n");
             while (sc.hasNextInt()) {
                 Point newPoint = new Point(sc.nextInt(), sc.nextInt());
                 coordinates.add(newPoint);
             }
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went wrong " + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
         return coordinates;
     }
 
-    public static ArrayList<Fold> readFolds(String filename) {
-        ArrayList<Fold> folds = new ArrayList<>();
-        Scanner sc;
-        try {
-            sc = new Scanner(new File(filename));
+    private List<Fold> readFolds(String filename) {
+        List<Fold> folds = new ArrayList<>();
+        try (Scanner sc = new Scanner(new File(filename))) {
             while (!sc.nextLine().isEmpty()) {
+                // todo check if this is still needed
             }
             sc.useDelimiter("fold along |=|\\n");
             while (sc.hasNextLine()) {
@@ -74,14 +62,13 @@ public class Day13 {
                 }
                 folds.add(fold);
             }
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went horribly wrong " + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
         return folds;
     }
 
-    public static Set<Point> foldOnce(Set<Point> points, Fold fold) {
+    private Set<Point> foldOnce(Set<Point> points, Fold fold) {
         Set<Point> output = new HashSet<>();
         for (Point point : points) {
             if (fold.axis.equals(Axis.X)) {
@@ -105,16 +92,16 @@ public class Day13 {
         return output;
     }
 
-    public static int part1() {
-        Set<Point> points = readCoordinates("data.txt");
-        ArrayList<Fold> folds = readFolds("data.txt");
+    public String part1(String filename) {
+        Set<Point> points = readCoordinates(filename);
+        List<Fold> folds = readFolds(filename);
         points = foldOnce(points, folds.get(0));
-        return points.size();
+        return String.valueOf(points.size());
     }
 
-    public static void part2() {
-        Set<Point> points = readCoordinates("data.txt");
-        ArrayList<Fold> folds = readFolds("data.txt");
+    public String part2(String filename) {
+        Set<Point> points = readCoordinates(filename);
+        List<Fold> folds = readFolds(filename);
         for (Fold fold : folds) {
             points = foldOnce(points, fold);
         }
@@ -125,10 +112,6 @@ public class Day13 {
             System.out.print(String.format("%c[%d;%dH#", 0x1B, row, column));
         }
         System.out.print(String.format("%c[%d;%dH", 0x1B, 8, 0));
-    }
-
-    public static void main(String[] args) {
-        part2();
-        System.out.println(part1());
+        return "Prints message";
     }
 }

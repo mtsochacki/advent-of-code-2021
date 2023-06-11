@@ -1,11 +1,15 @@
 package com.github.mtsochacki.adventofcode;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class Day11 {
-    public static class Point {
+@Slf4j
+public class Day11 implements Day {
+    private static class Point {
         int x;
         int y;
 
@@ -15,11 +19,9 @@ public class Day11 {
         }
     }
 
-    public static ArrayList<ArrayList<Integer>> readInput(String filename) {
-        ArrayList<ArrayList<Integer>> octoGrid = new ArrayList<>();
-        Scanner sc;
-        try {
-            sc = new Scanner(new File(filename));
+    private List<List<Integer>> readInput(String filename) {
+        List<List<Integer>> octoGrid = new ArrayList<>();
+        try (Scanner sc = new Scanner(new File(filename))) {
             sc.useDelimiter("");
             while (sc.hasNextInt()) {
                 ArrayList<Integer> octoRow = new ArrayList<>();
@@ -31,15 +33,14 @@ public class Day11 {
                     sc.nextLine();
                 }
             }
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went wrong " + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
         return octoGrid;
     }
 
-    public static ArrayList<Point> getNeighbours(int x, int y, int width, int height) {
-        ArrayList<Point> neighbours = new ArrayList<>();
+    private List<Point> getNeighbours(int x, int y, int width, int height) {
+        List<Point> neighbours = new ArrayList<>();
         for (int nx = Math.max(0, x - 1); nx < Math.min(width, x + 2); ++nx) {
             for (int ny = Math.max(0, y - 1); ny < Math.min(height, y + 2); ++ny) {
                 if (nx != x || ny != y) {
@@ -50,22 +51,22 @@ public class Day11 {
         return neighbours;
     }
 
-    public static void increaseAll(ArrayList<ArrayList<Integer>> octoGrid) {
-        for (ArrayList<Integer> octoRow : octoGrid) {
+    private void increaseAll(List<List<Integer>> octoGrid) {
+        for (List<Integer> octoRow : octoGrid) {
             for (int i = 0; i < octoRow.size(); i++) {
                 octoRow.set(i, octoRow.get(i) + 1);
             }
         }
     }
 
-    public static void increaseUnflashed(ArrayList<ArrayList<Integer>> octoGrid,
-                                         int x, int y) {
+    private void increaseUnflashed(List<List<Integer>> octoGrid,
+                                   int x, int y) {
         if (octoGrid.get(y).get(x) != 0) {
             octoGrid.get(y).set(x, octoGrid.get(y).get(x) + 1);
         }
     }
 
-    public static void processFlashes(ArrayList<ArrayList<Integer>> octoGrid) {
+    private void processFlashes(List<List<Integer>> octoGrid) {
         int width = octoGrid.get(0).size();
         int height = octoGrid.size();
         for (int j = 0; j < octoGrid.size(); j++) {
@@ -80,8 +81,8 @@ public class Day11 {
         }
     }
 
-    public static boolean isFlashReady(ArrayList<ArrayList<Integer>> octoGrid) {
-        for (ArrayList<Integer> octoRow : octoGrid) {
+    private boolean isFlashReady(List<List<Integer>> octoGrid) {
+        for (List<Integer> octoRow : octoGrid) {
             for (Integer octopus : octoRow) {
                 if (octopus > 9) {
                     return true;
@@ -91,9 +92,9 @@ public class Day11 {
         return false;
     }
 
-    public static int countFlashes(ArrayList<ArrayList<Integer>> octoGrid) {
+    private int countFlashes(List<List<Integer>> octoGrid) {
         int counter = 0;
-        for (ArrayList<Integer> octoRow : octoGrid) {
+        for (List<Integer> octoRow : octoGrid) {
             for (Integer octopus : octoRow) {
                 if (octopus == 0) {
                     counter++;
@@ -103,8 +104,8 @@ public class Day11 {
         return counter;
     }
 
-    public static boolean areAllFlashing(ArrayList<ArrayList<Integer>> octoGrid) {
-        for (ArrayList<Integer> octoRow : octoGrid) {
+    private boolean areAllFlashing(List<List<Integer>> octoGrid) {
+        for (List<Integer> octoRow : octoGrid) {
             for (Integer octopus : octoRow) {
                 if (octopus != 0) {
                     return false;
@@ -114,7 +115,7 @@ public class Day11 {
         return true;
     }
 
-    public static int processStep(ArrayList<ArrayList<Integer>> octoGrid) {
+    private int processStep(List<List<Integer>> octoGrid) {
         increaseAll(octoGrid);
         while (isFlashReady(octoGrid)) {
             processFlashes(octoGrid);
@@ -122,8 +123,8 @@ public class Day11 {
         return countFlashes(octoGrid);
     }
 
-    public static int countAllFlashes(int steps) {
-        ArrayList<ArrayList<Integer>> octoGrid = readInput("data.txt");
+    private int countAllFlashes(int steps, String filename) {
+        List<List<Integer>> octoGrid = readInput(filename);
         int flashes = 0;
         for (int i = 0; i < steps; i++) {
             flashes += processStep(octoGrid);
@@ -131,8 +132,8 @@ public class Day11 {
         return flashes;
     }
 
-    public static int findSyncStep(int steps) {
-        ArrayList<ArrayList<Integer>> octoGrid = readInput("data.txt");
+    private int findSyncStep(int steps, String filename) {
+        List<List<Integer>> octoGrid = readInput(filename);
         for (int i = 0; i < steps; i++) {
             processStep(octoGrid);
             if (areAllFlashing(octoGrid)) {
@@ -142,8 +143,11 @@ public class Day11 {
         return -1;
     }
 
-    public static void main(String[] args) {
-        System.out.println(countAllFlashes(100));
-        System.out.println(findSyncStep(500));
+    public String part1(String filename) {
+        return String.valueOf(countAllFlashes(100, filename));
+    }
+
+    public String part2(String filename) {
+        return String.valueOf(findSyncStep(500, filename));
     }
 }

@@ -1,40 +1,47 @@
 package com.github.mtsochacki.adventofcode;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Day20 {
-    public static String readAlgorithm(String filename) {
+@Slf4j
+public class Day20 implements Day {
+    public String part1(String filename) {
+        return String.valueOf(countLightPixels(2));
+    }
+
+    public String part2(String filename) {
+        return String.valueOf(countLightPixels(50));
+    }
+
+    private String readAlgorithm(String filename) {
         String algorithm = null;
-        try {
-            Scanner sc = new Scanner(new File(filename));
+        try (Scanner sc = new Scanner(new File(filename))) {
             algorithm = sc.nextLine();
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went wrong " + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
         return algorithm;
     }
 
-    public static ArrayList<ArrayList<Character>> readImage(String filename) {
+    private ArrayList<ArrayList<Character>> readImage(String filename) {
         ArrayList<ArrayList<Character>> image = new ArrayList<>();
-        try {
-            Scanner sc = new Scanner(new File(filename));
+        try (Scanner sc = new Scanner(new File(filename))) {
             sc.nextLine();
             sc.nextLine();
             sc.useDelimiter("");
             while (sc.hasNextLine()) {
                 image.add(stringToList(sc.nextLine()));
             }
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went wrong " + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
         return image;
     }
 
-    public static ArrayList<ArrayList<Character>> surroundWithDots(ArrayList<ArrayList<Character>> image) {
+    private ArrayList<ArrayList<Character>> surroundWithDots(ArrayList<ArrayList<Character>> image) {
         ArrayList<ArrayList<Character>> newImage = new ArrayList<>();
         newImage.add(new ArrayList<>());
         for (ArrayList<Character> line : image) {
@@ -52,7 +59,7 @@ public class Day20 {
         return newImage;
     }
 
-    public static ArrayList<Character> stringToList(String line) {
+    private ArrayList<Character> stringToList(String line) {
         ArrayList<Character> result = new ArrayList<>();
         for (int i = 0; i < line.length(); i++) {
             result.add(line.charAt(i));
@@ -60,7 +67,7 @@ public class Day20 {
         return result;
     }
 
-    public static int determineOutputPixelIndex(ArrayList<ArrayList<Character>> image, int x, int y) {
+    private int determineOutputPixelIndex(ArrayList<ArrayList<Character>> image, int x, int y) {
         StringBuilder stringIndex = new StringBuilder();
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
@@ -71,7 +78,7 @@ public class Day20 {
         return Integer.parseInt(binaryString, 2);
     }
 
-    public static int countLightPixels(int steps) {
+    private int countLightPixels(int steps) {
         String algorithm = readAlgorithm("/Users/mateusz/Java/advent-of-code/2021/day20/data.txt");
         ArrayList<ArrayList<Character>> image = readImage("/Users/mateusz/Java/advent-of-code/2021/day20/data.txt");
         for (int i = 0; i < steps * 2; i++) {
@@ -100,10 +107,5 @@ public class Day20 {
             }
         }
         return count;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(countLightPixels(2));
-        System.out.println(countLightPixels(50));
     }
 }

@@ -1,15 +1,24 @@
 package com.github.mtsochacki.adventofcode;
 
-import java.io.File;
-import java.util.*;
+import lombok.extern.slf4j.Slf4j;
 
-public class Day10 {
-    public static class Chunk {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+@Slf4j
+public class Day10 implements Day {
+    private static class Chunk {
         long score;
         boolean isCorrupted;
-        private String lineStr;
+        private final String lineStr;
 
-        private static final HashMap<Character, Integer> openingScores = new HashMap<>();
+        private static final Map<Character, Integer> openingScores = new HashMap<>();
 
         static {
             openingScores.put('(', 1);
@@ -18,7 +27,7 @@ public class Day10 {
             openingScores.put('<', 4);
         }
 
-        private static final HashMap<Character, Integer> closingScores = new HashMap<>();
+        private static final Map<Character, Integer> closingScores = new HashMap<>();
 
         static {
             closingScores.put(')', 3);
@@ -58,34 +67,38 @@ public class Day10 {
         }
     }
 
-    public static ArrayList<String> readLines(String filename) {
-        ArrayList<String> lines = new ArrayList<>();
-        Scanner sc;
-        try {
-            sc = new Scanner(new File(filename));
+    private List<String> readLines(String filename) {
+        List<String> lines = new ArrayList<>();
+        try (Scanner sc = new Scanner(new File(filename))) {
             while (sc.hasNextLine()) {
                 lines.add(sc.nextLine());
             }
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went wrong " + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
         return lines;
     }
 
-    public static void main(String[] args) {
+    public String part1(String filename) {
         long score = 0;
-        ArrayList<Long> incompleteLineScores = new ArrayList<>();
         for (String line : readLines("data.txt")) {
             Chunk chunk = new Chunk(line);
             if (chunk.isCorrupted) {
                 score += chunk.score;
-            } else {
+            }
+        }
+        return String.valueOf(score);
+    }
+
+    public String part2(String filename) {
+        List<Long> incompleteLineScores = new ArrayList<>();
+        for (String line : readLines("data.txt")) {
+            Chunk chunk = new Chunk(line);
+            if (!chunk.isCorrupted) {
                 incompleteLineScores.add(chunk.score);
             }
         }
         Collections.sort(incompleteLineScores);
-        System.out.println(score);
-        System.out.println(incompleteLineScores.get(incompleteLineScores.size() / 2));
+        return String.valueOf(incompleteLineScores.get(incompleteLineScores.size() / 2));
     }
 }
