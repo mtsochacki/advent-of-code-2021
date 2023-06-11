@@ -1,4 +1,4 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +31,7 @@ public class Day02 implements Day {
         return listOfCommands;
     }
 
-    public String part1() {
+    public String part1(String filename) {
         List<Command> commands = readCommands("data.txt");
         int forward = 0;
         int vertical = 0;
@@ -47,7 +47,7 @@ public class Day02 implements Day {
         return String.valueOf(forward * vertical);
     }
 
-    public String part2() {
+    public String part2(String filename) {
         List<Command> commands = readCommands("data.txt");
         int forward = 0;
         int aim = 0;

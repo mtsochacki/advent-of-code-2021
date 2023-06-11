@@ -1,4 +1,4 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class Day16 {
         return result.toString();
     }
 
-    public static String hexDigitToBin(char c){
+    public static String hexDigitToBin(char c) {
         int decNum = Integer.parseInt(String.valueOf(c), 16);
         String binString = String.format("%4s", Integer.toBinaryString(decNum));
         return binString.replace(' ', '0');
@@ -69,10 +69,10 @@ public class Day16 {
     public static Packet calculateLiteralValue(Packet packet) {
         int i = 6;
         StringBuilder literalBinValue = new StringBuilder();
-        do{
+        do {
             literalBinValue.append(packet.binData.substring(i + 1, i + 5));
             i += 5;
-        } while(packet.binData.charAt(i - 5) == '1');
+        } while (packet.binData.charAt(i - 5) == '1');
         packet.binData = packet.binData.substring(i);
         packet.value = Long.parseLong(literalBinValue.toString(), 2);
         packet.length = i;
@@ -111,7 +111,7 @@ public class Day16 {
     }
 
     public static Packet processPacket(Packet packet) {
-        packet.versionSum += Integer.parseInt(packet.binData.substring(0, 3),2);
+        packet.versionSum += Integer.parseInt(packet.binData.substring(0, 3), 2);
         int packetTypeID = Integer.parseInt(packet.binData.substring(3, 6), 2);
         if (packetTypeID == 4) {
             return calculateLiteralValue(packet);

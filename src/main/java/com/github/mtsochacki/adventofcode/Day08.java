@@ -1,4 +1,4 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,7 +44,7 @@ public class Day08 implements Day {
         return input;
     }
 
-    public String part1() {
+    public String part1(String filename) {
         int counter = 0;
         ArrayList<String[]> input = readInput("data.txt");
         for (String[] strings : input) {
@@ -166,7 +166,7 @@ public class Day08 implements Day {
         return output;
     }
 
-    public String part2() {
+    public String part2(String filename) {
         int result = 0;
         ArrayList<String[]> input = readInput("data.txt");
         for (String[] strings : input) {

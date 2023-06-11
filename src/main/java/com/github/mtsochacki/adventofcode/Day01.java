@@ -1,4 +1,4 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,8 +21,8 @@ public class Day01 implements Day {
         return input;
     }
 
-    public String part1() {
-        List<Integer> report = readReport("data.txt");
+    public String part1(String filename) {
+        List<Integer> report = readReport(filename);
         int counter = 0;
         int previousMeasurement = report.get(0);
         for (Integer currentMeasurement : report) {
@@ -34,8 +34,8 @@ public class Day01 implements Day {
         return String.valueOf(counter);
     }
 
-    public String part2() {
-        List<Integer> report = readReport("data.txt");
+    public String part2(String filename) {
+        List<Integer> report = readReport(filename);
         int counter = 0;
         for (int i = 0; i < report.size() - 3; i++) {
             if (report.get(i) < report.get(i + 3)) {

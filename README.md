@@ -1,5 +1,5 @@
 <p align="center">
-   <img src="https://github.com/mtsochacki/advent-of-code/blob/master/src/main/resources/aoc2021.gif" />
+   <img src="https://github.com/mtsochacki/advent-of-code/blob/main/src/main/resources/aoc2021.gif" />
 </p>
 
 # Advent of Code 2021

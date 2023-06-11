@@ -1,4 +1,4 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +26,7 @@ public class Day07 implements Day {
         return (Math.abs(end - start)) * (Math.abs(end - start) + 1) / 2;
     }
 
-    public String part1() {
+    public String part1(String filename) {
         List<Integer> listOfPositions = readInput("data.txt");
         Collections.sort(listOfPositions);
         int median;
@@ -41,7 +41,7 @@ public class Day07 implements Day {
         return String.valueOf(totalFuel);
     }
 
-    public String part2() {
+    public String part2(String filename) {
         List<Integer> listOfPositions = readInput("data.txt");
         int fuel = 100000000;
         int max = Collections.max(listOfPositions);

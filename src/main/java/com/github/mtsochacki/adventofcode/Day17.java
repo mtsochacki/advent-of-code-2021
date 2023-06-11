@@ -1,8 +1,8 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.io.File;
 
 public class Day17 {
     public static boolean isYInTrench(int yVelocity, int yStart, int yEnd) {
@@ -39,7 +39,7 @@ public class Day17 {
     }
 
     public static boolean isInTrench(int xVelocity, int yVelocity,
-            int xStart, int xEnd, int yStart, int yEnd) {
+                                     int xStart, int xEnd, int yStart, int yEnd) {
         int x = 0;
         int y = 0;
         while (!(x >= xStart && x <= xEnd && y >= yEnd && y <= yStart)) {
@@ -56,7 +56,7 @@ public class Day17 {
         return true;
     }
 
-    public static int[] readInput(String filename){
+    public static int[] readInput(String filename) {
         int[] trenchCoordinates = new int[4];
         try {
             Scanner sc = new Scanner(new File(filename));
@@ -73,6 +73,7 @@ public class Day17 {
         }
         return trenchCoordinates;
     }
+
     public static void main(String[] args) {
         int[] trenchCoordinates = readInput("/Users/mateusz/Java/advent-of-code/2021/day17/data.txt");
         int xStart = trenchCoordinates[0];
