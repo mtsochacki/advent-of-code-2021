@@ -1,11 +1,14 @@
 package com.github.mtsochacki.adventofcode;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+@Slf4j
 public class Day25 {
     static ArrayList<ArrayList<String>> deepCopyArrayList(ArrayList<ArrayList<String>> source) {
         ArrayList<ArrayList<String>> destination = new ArrayList<>();
@@ -19,6 +22,7 @@ public class Day25 {
         Scanner sc;
         try {
             sc = new Scanner(new File(filename));
+
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

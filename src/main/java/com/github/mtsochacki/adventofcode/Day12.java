@@ -1,9 +1,19 @@
 package com.github.mtsochacki.adventofcode;
 
-import java.io.File;
-import java.util.*;
+import lombok.extern.slf4j.Slf4j;
 
-public class Day12 {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+
+@Slf4j
+public class Day12 implements Day {
+    public static final String START = "start";
     static Map<String, ArrayList<String>> neighbourCaves = new HashMap<>();
     static Set<String> paths = new HashSet<>();
     static Set<String> pathsPartTwo = new HashSet<>();
@@ -15,9 +25,7 @@ public class Day12 {
     }
 
     static void readInput() {
-        Scanner sc;
-        try {
-            sc = new Scanner(new File("data.txt"));
+        try (Scanner sc = new Scanner(new File("data.txt"))) {
             while (sc.hasNextLine()) {
                 String[] caves = sc.nextLine().split("-");
                 String firstCave = caves[0];
@@ -35,9 +43,8 @@ public class Day12 {
                     neighbourCaves.put(secondCave, new ArrayList<>(List.of(firstCave)));
                 }
             }
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went horribly wrong: " + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
     }
 
@@ -54,7 +61,7 @@ public class Day12 {
         }
 
         for (String neighbourCave : neighbourCaves.get(currentCave)) {
-            if (!neighbourCave.equals("start") && !visitedCaves.contains(neighbourCave)) {
+            if (!neighbourCave.equals(START) && !visitedCaves.contains(neighbourCave)) {
                 findPath(neighbourCave, currentPath, new HashSet<>(visitedCaves));
             }
         }
@@ -79,26 +86,20 @@ public class Day12 {
         }
 
         for (String neighbourNode : neighbourCaves.get(currentCave)) {
-            if (!neighbourNode.equals("start") && (!visitedCavesPartTwo.contains(neighbourNode)
+            if (!neighbourNode.equals(START) && (!visitedCavesPartTwo.contains(neighbourNode)
                     || visitedCavesPartTwo.contains(neighbourNode) && !wasAnyCaveVisitedTwice)) {
                 findPathPartTwo(neighbourNode, currentPath, new HashSet<>(visitedCavesPartTwo), wasAnyCaveVisitedTwice);
             }
         }
     }
 
-    static int partOne() {
-        findPath("start", "", visitedCaves);
-        return paths.size();
+    public String part1(String filename) {
+        findPath(START, "", visitedCaves);
+        return String.valueOf(paths.size());
     }
 
-    static int partTwo() {
-        findPathPartTwo("start", "", visitedCavesPartTwo, false);
-        return pathsPartTwo.size();
-    }
-
-    public static void main(String[] args) {
-        readInput();
-        System.out.println(partOne());
-        System.out.println(partTwo());
+    public String part2(String filename) {
+        findPathPartTwo(START, "", visitedCavesPartTwo, false);
+        return String.valueOf(pathsPartTwo.size());
     }
 }

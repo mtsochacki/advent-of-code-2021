@@ -1,11 +1,14 @@
 package com.github.mtsochacki.adventofcode;
 
+import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
+@Slf4j
 public class Day21 {
-    public static class Dice {
+    private static class Dice {
         int number = -1;
         int rolls = 0;
 
@@ -16,7 +19,7 @@ public class Day21 {
         }
     }
 
-    public static class GameResults {
+    private static class GameResults {
         long wins1;
         long wins2;
 
@@ -31,6 +34,7 @@ public class Day21 {
         }
     }
 
+    @EqualsAndHashCode
     public static class GameState {
         int position1;
         int position2;
@@ -43,24 +47,11 @@ public class Day21 {
             this.score1 = score1;
             this.score2 = score2;
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            GameState gameState = (GameState) o;
-            return position1 == gameState.position1 && position2 == gameState.position2 && score1 == gameState.score1 && score2 == gameState.score2;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(position1, position2, score1, score2);
-        }
     }
 
-    static Map<GameState, GameResults> storedResults = new HashMap<>();
+    private Map<GameState, GameResults> storedResults = new HashMap<>();
 
-    static int part1() {
+    public String part1(String filename) {
         int p1Score = 0;
         int p2Score = 0;
         int p1Position = 4;
@@ -72,15 +63,15 @@ public class Day21 {
             p1Position = (p1Position + dice.roll() + dice.roll() + dice.roll() - 1) % 10 + 1;
             p1Score += p1Position;
             if (p1Score >= 1000)
-                return p2Score * dice.rolls;
+                return String.valueOf(p2Score * dice.rolls);
             p2Position = (p2Position + dice.roll() + dice.roll() + dice.roll() - 1) % 10 + 1;
             p2Score += p2Position;
             if (p2Score >= 1000)
-                return p1Score * dice.rolls;
+                return String.valueOf(p1Score * dice.rolls);
         }
     }
 
-    static GameResults countWins(GameState gameState) {
+    private GameResults countWins(GameState gameState) {
         if (gameState.score1 >= 21)
             return new GameResults(1, 0);
         if (gameState.score2 >= 21)
@@ -103,14 +94,9 @@ public class Day21 {
         return gameResults;
     }
 
-    static long part2() {
+    public String part2(String filename) {
         GameState initialGameState = new GameState(4, 10, 0, 0);
         GameResults gameResults = countWins(initialGameState);
-        return Math.max(gameResults.wins1, gameResults.wins2);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(part1());
-        System.out.println(part2());
+        return String.valueOf(Math.max(gameResults.wins1, gameResults.wins2));
     }
 }

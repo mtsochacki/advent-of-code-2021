@@ -1,26 +1,28 @@
 package com.github.mtsochacki.adventofcode;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
-public class Day09 {
-    public static class Point {
+@Slf4j
+public class Day09 implements Day {
+    private class Point {
         int x;
         int y;
 
-        Point(int hor, int vert) {
-            x = hor;
-            y = vert;
+        Point(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 
-    public static ArrayList<ArrayList<Integer>> readInput(String filename) {
-        ArrayList<ArrayList<Integer>> map = new ArrayList<>();
-        Scanner sc;
-        try {
-            sc = new Scanner(new File(filename));
+    private List<List<Integer>> readInput(String filename) {
+        List<List<Integer>> map = new ArrayList<>();
+        try (Scanner sc = new Scanner(new File(filename))) {
             sc.useDelimiter("");
             while (sc.hasNextLine()) {
                 ArrayList<Integer> line = new ArrayList<>();
@@ -31,15 +33,14 @@ public class Day09 {
                 if (sc.hasNextLine())
                     sc.nextLine();
             }
-            sc.close();
         } catch (Exception e) {
-            System.out.println("Something went wrong" + e);
+            log.error("Something went horribly wrong: {}", e.getMessage());
         }
         return map;
     }
 
-    public static ArrayList<Point> getNeighbours(int x, int y, int width, int height) {
-        ArrayList<Point> neighbours = new ArrayList<>();
+    private List<Point> getNeighbours(int x, int y, int width, int height) {
+        List<Point> neighbours = new ArrayList<>();
         if (x > 0) {
             neighbours.add(new Point(x - 1, y));
         }
@@ -55,7 +56,7 @@ public class Day09 {
         return neighbours;
     }
 
-    public static boolean isLowPoint(ArrayList<ArrayList<Integer>> map, int x, int y) {
+    public boolean isLowPoint(List<List<Integer>> map, int x, int y) {
         for (Point point : getNeighbours(x, y, map.get(y).size(), map.size())) {
             if (map.get(x).get(y) >= map.get(point.x).get(point.y)) {
                 return false;
@@ -64,8 +65,8 @@ public class Day09 {
         return true;
     }
 
-    public static int part1() {
-        ArrayList<ArrayList<Integer>> map = readInput("data.txt");
+    public String part1(String filename) {
+        List<List<Integer>> map = readInput("data.txt");
         int riskLevel = 0;
         for (int i = 0; i < map.size(); i++) {
             for (int j = 0; j < map.get(i).size(); j++) {
@@ -73,10 +74,10 @@ public class Day09 {
                     riskLevel += (map.get(i).get(j) + 1);
             }
         }
-        return riskLevel;
+        return String.valueOf(riskLevel);
     }
 
-    public static int calculateBasin(ArrayList<ArrayList<Integer>> map, int y, int x) {
+    private int calculateBasin(List<List<Integer>> map, int y, int x) {
         int size = 0;
         if (map.get(y).get(x) == 9 || map.get(y).get(x) == -1) {
             return 0;
@@ -90,9 +91,9 @@ public class Day09 {
         return size;
     }
 
-    public static int part2() {
-        ArrayList<ArrayList<Integer>> map = readInput("data.txt");
-        ArrayList<Integer> result = new ArrayList<>();
+    public String part2(String filename) {
+        List<List<Integer>> map = readInput("data.txt");
+        List<Integer> result = new ArrayList<>();
         for (int y = 0; y < map.size(); y++) {
             for (int x = 0; x < map.get(1).size(); x++) {
                 if (map.get(y).get(x) != -1 && map.get(y).get(x) != 9)
@@ -100,11 +101,6 @@ public class Day09 {
             }
         }
         Collections.sort(result);
-        return result.get(result.size() - 1) * result.get(result.size() - 2) * result.get(result.size() - 3);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(part1());
-        System.out.println(part2());
+        return String.valueOf(result.get(result.size() - 1) * result.get(result.size() - 2) * result.get(result.size() - 3));
     }
 }
