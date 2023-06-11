@@ -1,10 +1,10 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
-import java.util.Scanner;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.io.File;
+import java.util.Scanner;
 
 public class Day14 {
     public static class Rule {
@@ -25,11 +25,11 @@ public class Day14 {
         return template;
     }
 
-        /*
-         * Given the name of a file containing a list of rules for creating
-         * new elements in the form of arrow-delimited strings, e.g. "CH -> B",
-         * read and transform them into a list of `Rule`s
-         */
+    /*
+     * Given the name of a file containing a list of rules for creating
+     * new elements in the form of arrow-delimited strings, e.g. "CH -> B",
+     * read and transform them into a list of `Rule`s
+     */
     public static ArrayList<Rule> readRules(String filename) {
         Scanner sc;
         ArrayList<Rule> ruleList = new ArrayList<>();

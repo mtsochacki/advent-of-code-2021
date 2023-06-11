@@ -1,4 +1,4 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class Day11 {
     }
 
     public static void increaseUnflashed(ArrayList<ArrayList<Integer>> octoGrid,
-            int x, int y) {
+                                         int x, int y) {
         if (octoGrid.get(y).get(x) != 0) {
             octoGrid.get(y).set(x, octoGrid.get(y).get(x) + 1);
         }

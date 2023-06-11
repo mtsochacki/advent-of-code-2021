@@ -1,4 +1,4 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +29,7 @@ public class Day03 implements Day {
         return dec;
     }
 
-    public String part1() {
+    public String part1(String filename) {
         List<String> report = readReport("data.txt");
         int[] gammaRate = new int[report.get(0).length()];
         int[] epsilonRate = new int[report.get(0).length()];
@@ -52,7 +52,7 @@ public class Day03 implements Day {
         return String.valueOf(binToDec(gammaRate) * binToDec(epsilonRate));
     }
 
-    public String part2() {
+    public String part2(String filename) {
         return String.valueOf(calculateSupport(true) * calculateSupport(false));
     }
 

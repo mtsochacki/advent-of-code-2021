@@ -1,4 +1,4 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
 import java.io.File;
 import java.io.FileNotFoundException;

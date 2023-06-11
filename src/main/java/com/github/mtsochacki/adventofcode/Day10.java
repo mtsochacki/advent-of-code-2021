@@ -1,11 +1,7 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Day10 {
     public static class Chunk {
@@ -14,6 +10,7 @@ public class Day10 {
         private String lineStr;
 
         private static final HashMap<Character, Integer> openingScores = new HashMap<>();
+
         static {
             openingScores.put('(', 1);
             openingScores.put('[', 2);
@@ -22,6 +19,7 @@ public class Day10 {
         }
 
         private static final HashMap<Character, Integer> closingScores = new HashMap<>();
+
         static {
             closingScores.put(')', 3);
             closingScores.put(']', 57);

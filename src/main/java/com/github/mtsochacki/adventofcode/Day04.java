@@ -1,4 +1,4 @@
-package com.github.mtsochacki.advent_of_code;
+package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,11 +22,11 @@ public class Day04 implements Day {
         return drawnNumbers;
     }
 
-    public String part1() {
+    public String part1(String filename) {
         return calculateBoard(true);
     }
 
-    public String part2() {
+    public String part2(String filename) {
         return calculateBoard(false);
     }
 
