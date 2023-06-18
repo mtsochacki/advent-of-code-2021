@@ -4,14 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.util.AbstractQueue;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 public class Day15 implements Day {
@@ -41,11 +34,14 @@ public class Day15 implements Day {
         }
     }
 
-    public String part1(String filename) {
+
+    @Override
+    public String part1(List<String> input) {
         return String.valueOf(calculateRisk(false));
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         return String.valueOf(calculateRisk(true));
     }
 

@@ -2,27 +2,13 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 @Slf4j
 public class Day01 implements Day {
-    private List<Integer> readReport(String filename) {
-        List<Integer> input = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
-            while (sc.hasNextInt()) {
-                input.add(sc.nextInt());
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return input;
-    }
-
-    public String part1(String filename) {
-        List<Integer> report = readReport(filename);
+    @Override
+    public String part1(List<String> input) {
+        List<Integer> report = transformIntoReport(input);
         int counter = 0;
         int previousMeasurement = report.get(0);
         for (Integer currentMeasurement : report) {
@@ -34,8 +20,9 @@ public class Day01 implements Day {
         return String.valueOf(counter);
     }
 
-    public String part2(String filename) {
-        List<Integer> report = readReport(filename);
+    @Override
+    public String part2(List<String> input) {
+        List<Integer> report = transformIntoReport(input);
         int counter = 0;
         for (int i = 0; i < report.size() - 3; i++) {
             if (report.get(i) < report.get(i + 3)) {
@@ -43,5 +30,11 @@ public class Day01 implements Day {
             }
         }
         return String.valueOf(counter);
+    }
+
+    private List<Integer> transformIntoReport(List<String> input) {
+        return input.stream()
+                .map(Integer::valueOf)
+                .toList();
     }
 }

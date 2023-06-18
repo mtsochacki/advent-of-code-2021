@@ -16,11 +16,13 @@ public class Day05 implements Day {
         int yEnd;
     }
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         return calculateOverlap(false);
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         return calculateOverlap(true);
     }
 

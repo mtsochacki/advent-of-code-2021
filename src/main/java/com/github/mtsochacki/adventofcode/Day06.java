@@ -49,11 +49,13 @@ public class Day06 implements Day {
         return totalPopulation;
     }
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         return String.valueOf(calculatePopulation(80));
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         return String.valueOf(calculatePopulation(256));
     }
 }

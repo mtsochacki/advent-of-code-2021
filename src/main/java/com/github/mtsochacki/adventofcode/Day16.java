@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 @Slf4j
@@ -131,14 +132,16 @@ public class Day16 implements Day {
         }
     }
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         Packet transmission = new Packet();
         transmission.binData = readInput("data.txt");
         transmission = processPacket(transmission);
         return String.valueOf(transmission.versionSum);
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         Packet transmission = new Packet();
         transmission.binData = readInput("data.txt");
         transmission = processPacket(transmission);

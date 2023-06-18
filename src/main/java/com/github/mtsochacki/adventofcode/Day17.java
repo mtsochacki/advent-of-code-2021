@@ -42,7 +42,8 @@ public class Day17 implements Day {
         return true;
     }
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         int[] trenchCoordinates = readInput("/Users/mateusz/Java/advent-of-code/2021/day17/data.txt");
         int xStart = trenchCoordinates[0];
         int xEnd = trenchCoordinates[1];
@@ -61,7 +62,8 @@ public class Day17 implements Day {
         return String.valueOf(calculateHeight(yVelocities.get(yVelocities.size() - 1)));
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         int[] trenchCoordinates = readInput("/Users/mateusz/Java/advent-of-code/2021/day17/data.txt");
         int xStart = trenchCoordinates[0];
         int xEnd = trenchCoordinates[1];

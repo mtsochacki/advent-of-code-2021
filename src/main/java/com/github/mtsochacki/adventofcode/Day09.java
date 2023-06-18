@@ -65,7 +65,8 @@ public class Day09 implements Day {
         return true;
     }
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         List<List<Integer>> map = readInput("data.txt");
         int riskLevel = 0;
         for (int i = 0; i < map.size(); i++) {
@@ -91,7 +92,8 @@ public class Day09 implements Day {
         return size;
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         List<List<Integer>> map = readInput("data.txt");
         List<Integer> result = new ArrayList<>();
         for (int y = 0; y < map.size(); y++) {

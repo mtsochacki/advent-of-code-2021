@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 @Slf4j
@@ -44,11 +45,12 @@ public class Day08 implements Day {
         return input;
     }
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         int counter = 0;
-        ArrayList<String[]> input = readInput("data.txt");
-        for (String[] strings : input) {
-            for (int j = 10; j < input.get(0).length; j++) {
+        ArrayList<String[]> input1 = readInput("data.txt");
+        for (String[] strings : input1) {
+            for (int j = 10; j < input1.get(0).length; j++) {
                 if (strings[j].length() == 2 || strings[j].length() == 4 ||
                         strings[j].length() == 3 || strings[j].length() == 7)
                     counter++;
@@ -166,10 +168,11 @@ public class Day08 implements Day {
         return output;
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         int result = 0;
-        ArrayList<String[]> input = readInput("data.txt");
-        for (String[] strings : input) {
+        ArrayList<String[]> readInp = readInput("data.txt");
+        for (String[] strings : readInp) {
             SignalPattern pattern = new SignalPattern();
             deduceOneFourSevenEight(strings, pattern);
             deduceSix(strings, pattern);

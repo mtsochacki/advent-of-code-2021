@@ -4,11 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 public class Day13 implements Day {
@@ -32,7 +28,8 @@ public class Day13 implements Day {
         }
     }
 
-    private Set<Point> readCoordinates(String filename) {
+    private Set<Point> readCoordinates(List<String> input) {
+        String filename = "";
         Set<Point> coordinates = new HashSet<>();
         try (Scanner sc = new Scanner(new File(filename))) {
             sc.useDelimiter(",|\n");
@@ -46,7 +43,8 @@ public class Day13 implements Day {
         return coordinates;
     }
 
-    private List<Fold> readFolds(String filename) {
+    private List<Fold> readFolds(List<String> input) {
+        String filename = "";
         List<Fold> folds = new ArrayList<>();
         try (Scanner sc = new Scanner(new File(filename))) {
             while (!sc.nextLine().isEmpty()) {
@@ -92,16 +90,18 @@ public class Day13 implements Day {
         return output;
     }
 
-    public String part1(String filename) {
-        Set<Point> points = readCoordinates(filename);
-        List<Fold> folds = readFolds(filename);
+    @Override
+    public String part1(List<String> input) {
+        Set<Point> points = readCoordinates(input);
+        List<Fold> folds = readFolds(input);
         points = foldOnce(points, folds.get(0));
         return String.valueOf(points.size());
     }
 
-    public String part2(String filename) {
-        Set<Point> points = readCoordinates(filename);
-        List<Fold> folds = readFolds(filename);
+    @Override
+    public String part2(List<String> input) {
+        Set<Point> points = readCoordinates(input);
+        List<Fold> folds = readFolds(input);
         for (Fold fold : folds) {
             points = foldOnce(points, fold);
         }

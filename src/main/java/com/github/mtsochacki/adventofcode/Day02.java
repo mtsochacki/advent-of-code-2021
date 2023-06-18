@@ -2,7 +2,6 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,8 +9,8 @@ import java.util.Scanner;
 @Slf4j
 public class Day02 implements Day {
     private class Command {
-        String direction;
-        int value;
+        private final String direction;
+        private final int value;
 
         Command(String direction, int value) {
             this.direction = direction;
@@ -19,20 +18,18 @@ public class Day02 implements Day {
         }
     }
 
-    private List<Command> readCommands(String filename) {
+    private List<Command> readCommands(List<String> input) {
         List<Command> listOfCommands = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
-            while (sc.hasNextLine()) {
-                listOfCommands.add(new Command(sc.next(), sc.nextInt()));
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
+        for (String line : input) {
+            String[] tokens = line.split(" ");
+            listOfCommands.add(new Command(tokens[0], Integer.parseInt(tokens[1])));
         }
         return listOfCommands;
     }
 
-    public String part1(String filename) {
-        List<Command> commands = readCommands("data.txt");
+    @Override
+    public String part1(List<String> input) {
+        List<Command> commands = readCommands(input);
         int forward = 0;
         int vertical = 0;
 
@@ -47,8 +44,9 @@ public class Day02 implements Day {
         return String.valueOf(forward * vertical);
     }
 
-    public String part2(String filename) {
-        List<Command> commands = readCommands("data.txt");
+    @Override
+    public String part2(List<String> input) {
+        List<Command> commands = readCommands(input);
         int forward = 0;
         int aim = 0;
         int depth = 0;
