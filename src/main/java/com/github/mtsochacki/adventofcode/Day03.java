@@ -2,35 +2,13 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 @Slf4j
 public class Day03 implements Day {
-    private List<String> readReport(String filename) {
-        List<String> diagnosticReport = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
-            while (sc.hasNext()) {
-                diagnosticReport.add(sc.next());
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return diagnosticReport;
-    }
-
-    private int binToDec(int[] number) {
-        int dec = 0;
-        for (int i = 0; i < number.length; i++) {
-            dec += number[i] * Math.pow(2, number.length - i - 1);
-        }
-        return dec;
-    }
-
-    public String part1(String filename) {
-        List<String> report = readReport("data.txt");
+    @Override
+    public String part1(List<String> report) {
         int[] gammaRate = new int[report.get(0).length()];
         int[] epsilonRate = new int[report.get(0).length()];
 
@@ -52,12 +30,12 @@ public class Day03 implements Day {
         return String.valueOf(binToDec(gammaRate) * binToDec(epsilonRate));
     }
 
-    public String part2(String filename) {
-        return String.valueOf(calculateSupport(true) * calculateSupport(false));
+    @Override
+    public String part2(List<String> input) {
+        return String.valueOf(calculateSupport(true, input) * calculateSupport(false, input));
     }
 
-    private int calculateSupport(boolean isOxygen) {
-        List<String> report = readReport("data.txt");
+    private int calculateSupport(boolean isOxygen, List<String> report) {
         char dominantNumber;
 
         for (int i = 0; i < report.get(0).length(); i++) {
@@ -89,5 +67,13 @@ public class Day03 implements Day {
             }
         }
         return Integer.parseInt(report.get(0), 2);
+    }
+
+    private int binToDec(int[] number) {
+        int dec = 0;
+        for (int i = 0; i < number.length; i++) {
+            dec += number[i] * Math.pow(2, number.length - i - 1);
+        }
+        return dec;
     }
 }

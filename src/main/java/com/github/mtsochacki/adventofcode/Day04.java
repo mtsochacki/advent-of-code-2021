@@ -22,11 +22,13 @@ public class Day04 implements Day {
         return drawnNumbers;
     }
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         return calculateBoard(true);
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         return calculateBoard(false);
     }
 

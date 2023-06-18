@@ -1,7 +1,9 @@
 package com.github.mtsochacki.adventofcode;
 
-public interface Day {
-    String part1(String filename);
+import java.util.List;
 
-    String part2(String filename);
+public interface Day {
+    String part1(List<String> input);
+
+    String part2(List<String> input);
 }

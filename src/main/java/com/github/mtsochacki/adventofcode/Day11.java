@@ -123,7 +123,8 @@ public class Day11 implements Day {
         return countFlashes(octoGrid);
     }
 
-    private int countAllFlashes(int steps, String filename) {
+    private int countAllFlashes(int steps, List<String> input) {
+        String filename = "";
         List<List<Integer>> octoGrid = readInput(filename);
         int flashes = 0;
         for (int i = 0; i < steps; i++) {
@@ -132,7 +133,8 @@ public class Day11 implements Day {
         return flashes;
     }
 
-    private int findSyncStep(int steps, String filename) {
+    private int findSyncStep(int steps, List<String> input) {
+        String filename = "";
         List<List<Integer>> octoGrid = readInput(filename);
         for (int i = 0; i < steps; i++) {
             processStep(octoGrid);
@@ -143,11 +145,13 @@ public class Day11 implements Day {
         return -1;
     }
 
-    public String part1(String filename) {
-        return String.valueOf(countAllFlashes(100, filename));
+    @Override
+    public String part1(List<String> input) {
+        return String.valueOf(countAllFlashes(100, input));
     }
 
-    public String part2(String filename) {
-        return String.valueOf(findSyncStep(500, filename));
+    @Override
+    public String part2(List<String> input) {
+        return String.valueOf(findSyncStep(500, input));
     }
 }

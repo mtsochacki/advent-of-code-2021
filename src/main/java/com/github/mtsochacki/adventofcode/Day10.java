@@ -3,13 +3,7 @@ package com.github.mtsochacki.adventofcode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @Slf4j
 public class Day10 implements Day {
@@ -79,7 +73,8 @@ public class Day10 implements Day {
         return lines;
     }
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         long score = 0;
         for (String line : readLines("data.txt")) {
             Chunk chunk = new Chunk(line);
@@ -90,7 +85,8 @@ public class Day10 implements Day {
         return String.valueOf(score);
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         List<Long> incompleteLineScores = new ArrayList<>();
         for (String line : readLines("data.txt")) {
             Chunk chunk = new Chunk(line);

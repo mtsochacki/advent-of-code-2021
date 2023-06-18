@@ -4,10 +4,11 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class Day21 {
+public class Day21 implements Day {
     private static class Dice {
         int number = -1;
         int rolls = 0;
@@ -51,7 +52,8 @@ public class Day21 {
 
     private Map<GameState, GameResults> storedResults = new HashMap<>();
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         int p1Score = 0;
         int p2Score = 0;
         int p1Position = 4;
@@ -94,7 +96,8 @@ public class Day21 {
         return gameResults;
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         GameState initialGameState = new GameState(4, 10, 0, 0);
         GameResults gameResults = countWins(initialGameState);
         return String.valueOf(Math.max(gameResults.wins1, gameResults.wins2));

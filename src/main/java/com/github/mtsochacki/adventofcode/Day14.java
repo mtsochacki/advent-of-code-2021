@@ -3,20 +3,17 @@ package com.github.mtsochacki.adventofcode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @Slf4j
 public class Day14 implements Day {
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         return String.valueOf(calculatePolymers(10));
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         return String.valueOf(calculatePolymers(40));
     }
 

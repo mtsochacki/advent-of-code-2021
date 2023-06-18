@@ -3,13 +3,7 @@ package com.github.mtsochacki.adventofcode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 public class Day12 implements Day {
@@ -93,12 +87,14 @@ public class Day12 implements Day {
         }
     }
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         findPath(START, "", visitedCaves);
         return String.valueOf(paths.size());
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         findPathPartTwo(START, "", visitedCavesPartTwo, false);
         return String.valueOf(pathsPartTwo.size());
     }
