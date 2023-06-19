@@ -2,11 +2,9 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 
 @Slf4j
 public class Day16 implements Day {
@@ -17,15 +15,11 @@ public class Day16 implements Day {
         String binData;
     }
 
-    private String readInput(String filename) {
+    private String readInput(List<String> input) {
+        String line = input.get(0);
         StringBuilder result = new StringBuilder();
-        try (Scanner sc = new Scanner(new File(filename))) {
-            String line = sc.next();
-            for (char c : line.toCharArray()) {
-                result.append(hexDigitToBin(c));
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
+        for (char c : line.toCharArray()) {
+            result.append(hexDigitToBin(c));
         }
         return result.toString();
     }
@@ -39,18 +33,14 @@ public class Day16 implements Day {
     private Long calculateTotalSubpacketValue(int packetType, ArrayList<Long> values) {
         switch (packetType) {
             case 0 -> {
-                Long sum = 0L;
-                for (Long num : values) {
-                    sum += num;
-                }
-                return sum;
+                return values.stream()
+                        .mapToLong(Long::longValue)
+                        .sum();
             }
             case 1 -> {
-                Long product = 1L;
-                for (Long num : values) {
-                    product *= num;
-                }
-                return product;
+                return values.stream()
+                        .mapToLong(Long::longValue)
+                        .reduce(1, Math::multiplyExact);
             }
             case 2 -> {
                 return Collections.min(values);
@@ -135,7 +125,7 @@ public class Day16 implements Day {
     @Override
     public String part1(List<String> input) {
         Packet transmission = new Packet();
-        transmission.binData = readInput("data.txt");
+        transmission.binData = readInput(input);
         transmission = processPacket(transmission);
         return String.valueOf(transmission.versionSum);
     }
@@ -143,7 +133,7 @@ public class Day16 implements Day {
     @Override
     public String part2(List<String> input) {
         Packet transmission = new Packet();
-        transmission.binData = readInput("data.txt");
+        transmission.binData = readInput(input);
         transmission = processPacket(transmission);
         return String.valueOf(transmission.value);
     }
