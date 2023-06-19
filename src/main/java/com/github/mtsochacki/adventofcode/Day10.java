@@ -2,8 +2,12 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public class Day10 implements Day {
@@ -61,22 +65,10 @@ public class Day10 implements Day {
         }
     }
 
-    private List<String> readLines(String filename) {
-        List<String> lines = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
-            while (sc.hasNextLine()) {
-                lines.add(sc.nextLine());
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return lines;
-    }
-
     @Override
     public String part1(List<String> input) {
         long score = 0;
-        for (String line : readLines("data.txt")) {
+        for (String line : input) {
             Chunk chunk = new Chunk(line);
             if (chunk.isCorrupted) {
                 score += chunk.score;
@@ -88,7 +80,7 @@ public class Day10 implements Day {
     @Override
     public String part2(List<String> input) {
         List<Long> incompleteLineScores = new ArrayList<>();
-        for (String line : readLines("data.txt")) {
+        for (String line : input) {
             Chunk chunk = new Chunk(line);
             if (!chunk.isCorrupted) {
                 incompleteLineScores.add(chunk.score);
