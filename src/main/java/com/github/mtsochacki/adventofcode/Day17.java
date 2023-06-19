@@ -2,10 +2,8 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 @Slf4j
 public class Day17 implements Day {
@@ -44,17 +42,11 @@ public class Day17 implements Day {
 
     @Override
     public String part1(List<String> input) {
-        int[] trenchCoordinates = readInput("/Users/mateusz/Java/advent-of-code/2021/day17/data.txt");
-        int xStart = trenchCoordinates[0];
-        int xEnd = trenchCoordinates[1];
+        int[] trenchCoordinates = readInput(input);
         int yStart = trenchCoordinates[2];
         int yEnd = trenchCoordinates[3];
-        List<Integer> xVelocities = new ArrayList<>();
         List<Integer> yVelocities = new ArrayList<>();
         for (int i = -500; i < 500; i++) {
-            if (isXInTrench(i, xStart, xEnd)) {
-                xVelocities.add(i);
-            }
             if (isYInTrench(i, yStart, yEnd)) {
                 yVelocities.add(i);
             }
@@ -64,7 +56,7 @@ public class Day17 implements Day {
 
     @Override
     public String part2(List<String> input) {
-        int[] trenchCoordinates = readInput("/Users/mateusz/Java/advent-of-code/2021/day17/data.txt");
+        int[] trenchCoordinates = readInput(input);
         int xStart = trenchCoordinates[0];
         int xEnd = trenchCoordinates[1];
         int yStart = trenchCoordinates[2];
@@ -90,8 +82,7 @@ public class Day17 implements Day {
         return String.valueOf(total);
     }
 
-    private boolean isInTrench(int xVelocity, int yVelocity,
-                               int xStart, int xEnd, int yStart, int yEnd) {
+    private boolean isInTrench(int xVelocity, int yVelocity, int xStart, int xEnd, int yStart, int yEnd) {
         int x = 0;
         int y = 0;
         while (!(x >= xStart && x <= xEnd && y >= yEnd && y <= yStart)) {
@@ -108,19 +99,11 @@ public class Day17 implements Day {
         return true;
     }
 
-    private int[] readInput(String filename) {
-        int[] trenchCoordinates = new int[4];
-        try (Scanner sc = new Scanner(new File(filename))) {
-            String[] newLine = sc.nextLine().split(":")[1].split(",");
-            String[] coordinatesX = newLine[0].split("=")[1].split("\\..");
-            String[] coordinatesY = newLine[1].split("=")[1].split("\\..");
-            trenchCoordinates[0] = Integer.parseInt(coordinatesX[0]);
-            trenchCoordinates[1] = Integer.parseInt(coordinatesX[1]);
-            trenchCoordinates[2] = Integer.parseInt(coordinatesY[1]);
-            trenchCoordinates[3] = Integer.parseInt(coordinatesY[0]);
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return trenchCoordinates;
+    private int[] readInput(List<String> input) {
+        String line = input.get(0);
+        String[] newLine = line.split(":")[1].split(",");
+        String[] coordinatesX = newLine[0].split("=")[1].split("\\..");
+        String[] coordinatesY = newLine[1].split("=")[1].split("\\..");
+        return new int[]{Integer.parseInt(coordinatesX[0]), Integer.parseInt(coordinatesX[1]), Integer.parseInt(coordinatesY[1]), Integer.parseInt(coordinatesY[0])};
     }
 }
