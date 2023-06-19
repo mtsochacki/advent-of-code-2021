@@ -2,10 +2,10 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class Day11 implements Day {
@@ -19,24 +19,13 @@ public class Day11 implements Day {
         }
     }
 
-    private List<List<Integer>> readInput(String filename) {
-        List<List<Integer>> octoGrid = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
-            sc.useDelimiter("");
-            while (sc.hasNextInt()) {
-                ArrayList<Integer> octoRow = new ArrayList<>();
-                while (sc.hasNextInt()) {
-                    octoRow.add(sc.nextInt());
-                }
-                octoGrid.add(octoRow);
-                if (sc.hasNextLine()) {
-                    sc.nextLine();
-                }
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return octoGrid;
+    private List<List<Integer>> readInput(List<String> input) {
+        return input.stream()
+                .map(line -> {
+                    String[] strings = line.split("");
+                    return Arrays.stream(strings).map(Integer::parseInt).collect(Collectors.toList());
+                })
+                .toList();
     }
 
     private List<Point> getNeighbours(int x, int y, int width, int height) {
@@ -124,8 +113,7 @@ public class Day11 implements Day {
     }
 
     private int countAllFlashes(int steps, List<String> input) {
-        String filename = "";
-        List<List<Integer>> octoGrid = readInput(filename);
+        List<List<Integer>> octoGrid = readInput(input);
         int flashes = 0;
         for (int i = 0; i < steps; i++) {
             flashes += processStep(octoGrid);
@@ -134,8 +122,7 @@ public class Day11 implements Day {
     }
 
     private int findSyncStep(int steps, List<String> input) {
-        String filename = "";
-        List<List<Integer>> octoGrid = readInput(filename);
+        List<List<Integer>> octoGrid = readInput(input);
         for (int i = 0; i < steps; i++) {
             processStep(octoGrid);
             if (areAllFlashing(octoGrid)) {
