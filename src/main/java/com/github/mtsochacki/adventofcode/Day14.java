@@ -1,38 +1,33 @@
 package com.github.mtsochacki.adventofcode;
 
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 @Slf4j
 public class Day14 implements Day {
-    public String part1(String filename) {
-        return String.valueOf(calculatePolymers(10));
+    @Override
+    public String part1(List<String> input) {
+        return String.valueOf(calculatePolymers(10, input));
     }
 
-    public String part2(String filename) {
-        return String.valueOf(calculatePolymers(40));
+    @Override
+    public String part2(List<String> input) {
+        return String.valueOf(calculatePolymers(40, input));
     }
 
+    @Builder
     private static class Rule {
-        String pair;
-        String outcome;
+        private String pair;
+        private String outcome;
     }
 
-    private String readTemplate(String filename) {
-        String template = null;
-        try (Scanner sc = new Scanner(new File(filename))) {
-            template = sc.next();
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return template;
+    private String readTemplate(List<String> input) {
+        return input.get(0);
     }
 
     /*
@@ -40,20 +35,17 @@ public class Day14 implements Day {
      * new elements in the form of arrow-delimited strings, e.g. "CH -> B",
      * read and transform them into a list of `Rule`s
      */
-    private List<Rule> readRules(String filename) {
-        List<Rule> ruleList = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
-            sc.useDelimiter("\\n| -> ");
-            while (sc.hasNext()) {
-                Rule rule = new Rule();
-                rule.pair = sc.next();
-                rule.outcome = sc.next();
-                ruleList.add(rule);
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return ruleList;
+    private List<Rule> readRules(List<String> input) {
+        return input.stream()
+                .skip(2)
+                .map(line -> {
+                    String[] tokens = line.split(" -> ");
+                    return Rule.builder()
+                            .pair(tokens[0])
+                            .outcome(tokens[1])
+                            .build();
+                })
+                .toList();
     }
 
     /*
@@ -90,9 +82,9 @@ public class Day14 implements Day {
         return lettersCount;
     }
 
-    private Long calculatePolymers(int steps) {
-        String template = readTemplate("data.txt");
-        List<Rule> ruleList = readRules("data.txt");
+    private Long calculatePolymers(int steps, List<String> input) {
+        String template = readTemplate(input);
+        List<Rule> ruleList = readRules(input);
         Map<String, Long> chunks = splitToChunks(template);
         Map<String, Long> letters = countLetters(template);
         for (int i = 0; i < steps; i++) {

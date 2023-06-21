@@ -2,53 +2,47 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 
 @Slf4j
 public class Day12 implements Day {
-    public static final String START = "start";
-    static Map<String, ArrayList<String>> neighbourCaves = new HashMap<>();
-    static Set<String> paths = new HashSet<>();
-    static Set<String> pathsPartTwo = new HashSet<>();
-    static Set<String> visitedCaves = new HashSet<>();
-    static Set<String> visitedCavesPartTwo = new HashSet<>();
+    private static final String START = "start";
+    private static Map<String, ArrayList<String>> neighbourCaves = new HashMap<>();
+    private static Set<String> paths = new HashSet<>();
+    private static Set<String> pathsPartTwo = new HashSet<>();
+    private static Set<String> visitedCaves = new HashSet<>();
+    private static Set<String> visitedCavesPartTwo = new HashSet<>();
 
-    static boolean isSmallCave(String cave) {
+    private boolean isSmallCave(String cave) {
         return cave.equals(cave.toLowerCase());
     }
 
-    static void readInput() {
-        try (Scanner sc = new Scanner(new File("data.txt"))) {
-            while (sc.hasNextLine()) {
-                String[] caves = sc.nextLine().split("-");
-                String firstCave = caves[0];
-                String secondCave = caves[1];
+    private void readInput(List<String> input) {
+        input.forEach(line -> {
+            String[] caves = line.split("-");
+            String firstCave = caves[0];
+            String secondCave = caves[1];
 
-                if (neighbourCaves.containsKey(firstCave)) {
-                    neighbourCaves.get(firstCave).add(secondCave);
-                } else {
-                    neighbourCaves.put(firstCave, new ArrayList<>(List.of(secondCave)));
-                }
-
-                if (neighbourCaves.containsKey(secondCave)) {
-                    neighbourCaves.get(secondCave).add(firstCave);
-                } else {
-                    neighbourCaves.put(secondCave, new ArrayList<>(List.of(firstCave)));
-                }
+            if (neighbourCaves.containsKey(firstCave)) {
+                neighbourCaves.get(firstCave).add(secondCave);
+            } else {
+                neighbourCaves.put(firstCave, new ArrayList<>(List.of(secondCave)));
             }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
+
+            if (neighbourCaves.containsKey(secondCave)) {
+                neighbourCaves.get(secondCave).add(firstCave);
+            } else {
+                neighbourCaves.put(secondCave, new ArrayList<>(List.of(firstCave)));
+            }
+        });
     }
 
-    static void findPath(String currentCave, String currentPath, Set<String> visitedCaves) {
+    private void findPath(String currentCave, String currentPath, Set<String> visitedCaves) {
         currentPath += "," + currentCave;
 
         if (currentCave.equals("end")) {
@@ -67,7 +61,7 @@ public class Day12 implements Day {
         }
     }
 
-    static void findPathPartTwo(String currentCave, String currentPath, Set<String> visitedCavesPartTwo, boolean wasAnyCaveVisitedTwice) {
+    private void findPathPartTwo(String currentCave, String currentPath, Set<String> visitedCavesPartTwo, boolean wasAnyCaveVisitedTwice) {
         currentPath += "," + currentCave;
 
         if (currentCave.equals("end")) {
@@ -93,12 +87,16 @@ public class Day12 implements Day {
         }
     }
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
+        readInput(input);
         findPath(START, "", visitedCaves);
         return String.valueOf(paths.size());
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
+        readInput(input);
         findPathPartTwo(START, "", visitedCavesPartTwo, false);
         return String.valueOf(pathsPartTwo.size());
     }

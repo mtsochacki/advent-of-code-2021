@@ -3,14 +3,12 @@ package com.github.mtsochacki.adventofcode;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.util.AbstractQueue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Scanner;
 import java.util.Set;
 
 @Slf4j
@@ -41,32 +39,24 @@ public class Day15 implements Day {
         }
     }
 
-    public String part1(String filename) {
-        return String.valueOf(calculateRisk(false));
+
+    @Override
+    public String part1(List<String> input) {
+        return String.valueOf(calculateRisk(false, input));
     }
 
-    public String part2(String filename) {
-        return String.valueOf(calculateRisk(true));
+    @Override
+    public String part2(List<String> input) {
+        return String.valueOf(calculateRisk(true, input));
     }
 
-    private List<List<Integer>> readInput(String filename) {
-        List<List<Integer>> mapOfRisks = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
-            while (sc.hasNextLine()) {
-                mapOfRisks.add(splitRow(sc.nextLine()));
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return mapOfRisks;
-    }
-
-    private List<Integer> splitRow(String row) {
-        List<Integer> rowOfRisks = new ArrayList<>();
-        for (String s : new ArrayList<String>(Arrays.asList(row.split("")))) {
-            rowOfRisks.add(Integer.parseInt(s));
-        }
-        return rowOfRisks;
+    private List<List<Integer>> readInput(List<String> input) {
+        return input.stream()
+                .map(line -> {
+                    String[] strings = line.split("");
+                    return Arrays.stream(strings).map(Integer::parseInt).toList();
+                })
+                .toList();
     }
 
     private int getRisk(List<List<Integer>> mapOfRisks, int x, int y) {
@@ -97,8 +87,8 @@ public class Day15 implements Day {
         return neighbours;
     }
 
-    private int calculateRisk(boolean isPart2) {
-        List<List<Integer>> mapOfRisks = readInput("data.txt");
+    private int calculateRisk(boolean isPart2, List<String> input) {
+        List<List<Integer>> mapOfRisks = readInput(input);
         int height = mapOfRisks.size();
         int width = mapOfRisks.get(0).size();
         if (isPart2) {

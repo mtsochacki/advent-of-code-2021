@@ -2,79 +2,58 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class Day04 implements Day {
-    private List<Integer> readDrawnNumbers(String filename) {
-        List<Integer> drawnNumbers = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
-            sc.useDelimiter(",|\n");
-            while (sc.hasNextInt()) {
-                drawnNumbers.add(sc.nextInt());
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return drawnNumbers;
+
+    @Override
+    public String part1(List<String> input) {
+        return calculateBoard(true, input);
     }
 
-    public String part1(String filename) {
-        return calculateBoard(true);
+    @Override
+    public String part2(List<String> input) {
+        return calculateBoard(false, input);
     }
 
-    public String part2(String filename) {
-        return calculateBoard(false);
+    private List<List<List<Integer>>> readBoards(List<String> input) {
+        final AtomicInteger counter = new AtomicInteger();
+        return input.stream()
+                .skip(1)
+                .filter(it -> !it.isEmpty())
+                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / 5))
+                .values()
+                .stream()
+                .map(this::transformIntoBoard)
+                .toList();
     }
 
-    private List<List<List<Integer>>> readBoards(String filename) {
-        List<List<List<Integer>>> boards = new ArrayList<>();
-        List<List<Integer>> board;
-        try (Scanner sc = new Scanner(new File(filename))) {
-            sc.nextLine();
-            while (sc.hasNext()) {
-                sc.nextLine();
-                board = new ArrayList<>();
-                for (int i = 0; i < 5; i++) {
-                    ArrayList<Integer> row = new ArrayList<>();
-                    for (int j = 0; j < 5; j++) {
-                        row.add(sc.nextInt());
-                    }
-                    board.add(row);
-                }
-                boards.add(board);
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return boards;
+    private List<List<Integer>> transformIntoBoard(List<String> list) {
+        return list.stream()
+                .map(this::transformLineIntoNumbers)
+                .toList();
     }
 
     private boolean boardHasWon(List<List<Integer>> board) {
         for (List<Integer> row : board) {
-            boolean won = true;
-            for (int col = 0; col < 5; col++) {
-                if (row.get(col) != 0) {
-                    won = false;
-                    break;
-                }
-            }
-            if (won) {
+            Set<Integer> rowValues = new HashSet<>(row);
+            if (rowValues.size() == 1) {
                 return true;
             }
         }
         for (int col = 0; col < 5; col++) {
-            boolean won = true;
+            Set<Integer> columnValues = new HashSet<>();
             for (List<Integer> row : board) {
-                if (row.get(col) != 0) {
-                    won = false;
-                    break;
-                }
+                columnValues.add(row.get(col));
             }
-            if (won) {
+            if (columnValues.size() == 1) {
                 return true;
             }
         }
@@ -99,9 +78,9 @@ public class Day04 implements Day {
         return counter;
     }
 
-    private String calculateBoard(boolean isWinner) {
-        List<Integer> drawn = readDrawnNumbers("data.txt");
-        List<List<List<Integer>>> boards = readBoards("data.txt");
+    private String calculateBoard(boolean isWinner, List<String> input) {
+        List<Integer> drawn = readDrawnNumbers(input);
+        List<List<List<Integer>>> boards = readBoards(input);
         List<List<Integer>> winningBoard = new ArrayList<>();
         int currentCounter;
         int winnersCounter;
@@ -121,5 +100,15 @@ public class Day04 implements Day {
             }
         }
         return String.valueOf(score * drawn.get(winnersCounter - 1));
+    }
+
+    private List<Integer> readDrawnNumbers(List<String> input) {
+        String firstLine = input.get(0);
+        return transformLineIntoNumbers(firstLine);
+    }
+
+    private List<Integer> transformLineIntoNumbers(String line) {
+        String[] numbers = line.split("\\s+|,");
+        return Arrays.stream(numbers).map(Integer::valueOf).collect(Collectors.toList());
     }
 }

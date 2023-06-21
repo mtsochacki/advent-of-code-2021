@@ -1,14 +1,13 @@
 package com.github.mtsochacki.adventofcode;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 @Slf4j
 public class Day05 implements Day {
+    @AllArgsConstructor
     private static class LineOfVents {
         int xStart;
         int xEnd;
@@ -16,12 +15,14 @@ public class Day05 implements Day {
         int yEnd;
     }
 
-    public String part1(String filename) {
-        return calculateOverlap(false);
+    @Override
+    public String part1(List<String> input) {
+        return calculateOverlap(false, input);
     }
 
-    public String part2(String filename) {
-        return calculateOverlap(true);
+    @Override
+    public String part2(List<String> input) {
+        return calculateOverlap(true, input);
     }
 
     private boolean isVertical(LineOfVents line) {
@@ -32,30 +33,21 @@ public class Day05 implements Day {
         return line.yStart == line.yEnd;
     }
 
-    private List<LineOfVents> readInput(String filename) {
-        List<LineOfVents> input = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
-            sc.useDelimiter(",|\\n| -> ");
-            while (sc.hasNextInt()) {
-                LineOfVents line = new LineOfVents();
-                line.xStart = sc.nextInt();
-                line.yStart = sc.nextInt();
-                line.xEnd = sc.nextInt();
-                line.yEnd = sc.nextInt();
-                input.add(line);
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return input;
+    private List<LineOfVents> readInput(List<String> input) {
+        return input.stream()
+                .map(line -> {
+                    String[] tokens = line.split(",| -> ");
+                    return new LineOfVents(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[2]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[3]));
+                })
+                .toList();
     }
 
-    private String calculateOverlap(boolean includePart2) {
-        List<LineOfVents> input = readInput("data.txt");
-        int[][] diagram = new int[1000][1000];
+    private String calculateOverlap(boolean includePart2, List<String> input) {
+        List<LineOfVents> vents = readInput(input);
+        int[][] diagram = new int[10][10];
         int count = 0;
 
-        for (LineOfVents lineOfVents : input) {
+        for (LineOfVents lineOfVents : vents) {
             if (isVertical(lineOfVents)) {
                 for (int j = Integer.min(lineOfVents.yStart, lineOfVents.yEnd); j <= Integer.max(lineOfVents.yStart,
                         lineOfVents.yEnd); j++) {

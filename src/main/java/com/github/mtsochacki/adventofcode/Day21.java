@@ -1,13 +1,17 @@
 package com.github.mtsochacki.adventofcode;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class Day21 {
+public class Day21 implements Day {
     private static class Dice {
         int number = -1;
         int rolls = 0;
@@ -19,14 +23,10 @@ public class Day21 {
         }
     }
 
+    @AllArgsConstructor
     private static class GameResults {
         long wins1;
         long wins2;
-
-        public GameResults(long wins1, long wins2) {
-            this.wins1 = wins1;
-            this.wins2 = wins2;
-        }
 
         public void setBothWins(long wins1, long wins2) {
             this.wins1 = wins1;
@@ -35,27 +35,25 @@ public class Day21 {
     }
 
     @EqualsAndHashCode
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Setter
     public static class GameState {
-        int position1;
-        int position2;
-        int score1;
-        int score2;
-
-        public GameState(int position1, int position2, int score1, int score2) {
-            this.position1 = position1;
-            this.position2 = position2;
-            this.score1 = score1;
-            this.score2 = score2;
-        }
+        private int position1;
+        private int position2;
+        private int score1;
+        private int score2;
     }
 
-    private Map<GameState, GameResults> storedResults = new HashMap<>();
+    private final Map<GameState, GameResults> storedResults = new HashMap<>();
 
-    public String part1(String filename) {
-        int p1Score = 0;
-        int p2Score = 0;
-        int p1Position = 4;
-        int p2Position = 10;
+    @Override
+    public String part1(List<String> input) {
+        GameState initialGameState = parseGameState(input);
+        int p1Score = initialGameState.score1;
+        int p2Score = initialGameState.score2;
+        int p1Position = initialGameState.position1;
+        int p2Position = initialGameState.position2;
 
         Dice dice = new Dice();
 
@@ -94,9 +92,25 @@ public class Day21 {
         return gameResults;
     }
 
-    public String part2(String filename) {
-        GameState initialGameState = new GameState(4, 10, 0, 0);
+    @Override
+    public String part2(List<String> input) {
+        GameState initialGameState = parseGameState(input);
         GameResults gameResults = countWins(initialGameState);
         return String.valueOf(Math.max(gameResults.wins1, gameResults.wins2));
+    }
+
+    private GameState parseGameState(List<String> input) {
+        GameState gameState = new GameState();
+        input.forEach(
+                line -> {
+                    String[] tokens = line.replaceAll("[a-zA-Z]|\\s", "").split(":");
+                    if (tokens[0].equals("1")) {
+                        gameState.setPosition1(Integer.parseInt(tokens[1]));
+                    } else {
+                        gameState.setPosition2(Integer.parseInt(tokens[1]));
+                    }
+                }
+        );
+        return gameState;
     }
 }

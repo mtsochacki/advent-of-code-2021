@@ -2,74 +2,72 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.List;
 
 @Slf4j
-public class Day25 {
-    static ArrayList<ArrayList<String>> deepCopyArrayList(ArrayList<ArrayList<String>> source) {
-        ArrayList<ArrayList<String>> destination = new ArrayList<>();
-        for (ArrayList<String> strings : source) {
-            destination.add((ArrayList<String>) strings.clone());
-        }
-        return destination;
-    }
+public class Day25 implements Day {
 
-    static ArrayList<ArrayList<String>> readCucumberMap(String filename) {
-        Scanner sc;
-        try {
-            sc = new Scanner(new File(filename));
+    public static final String EMPTY_SPACE = ".";
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        ArrayList<String> cucumberLines = new ArrayList<>();
-        while (sc.hasNextLine()) {
-            cucumberLines.add(sc.nextLine());
-        }
-        sc.close();
-        ArrayList<ArrayList<String>> cucumberMap = new ArrayList<>();
-        for (String line : cucumberLines) {
-            ArrayList<String> splitCucumbers = new ArrayList<>(Arrays.asList(line.split("")));
-            cucumberMap.add(splitCucumbers);
-        }
-        return cucumberMap;
-    }
-
-    public static void main(String[] args) {
-        ArrayList<ArrayList<String>> firstMap = readCucumberMap("/Users/mateusz/Java/advent-of-code/2021/day25/data.txt");
-        int mapLength = firstMap.size();
-        int lineLength = firstMap.get(0).size();
+    @Override
+    public String part1(List<String> input) {
+        List<List<String>> cucumberMap = readCucumberMap(input);
+        int mapLength = cucumberMap.size();
+        int lineLength = cucumberMap.get(0).size();
         int steps = 0;
-        boolean hasMoved = true;
-        while (hasMoved) {
-            ArrayList<ArrayList<String>> secondMap = deepCopyArrayList(firstMap);
+        boolean hasMoved;
+        do {
+            List<List<String>> mapAfterMovingEase = deepCopyArrayList(cucumberMap);
             hasMoved = false;
             steps++;
-            for (int r = 0; r < mapLength; r++) {
-                for (int c = 0; c < lineLength; c++) {
-                    if (firstMap.get(r).get(c).equals(">") && firstMap.get(r).get((c + 1) % lineLength).equals(".")) {
-                        secondMap.get(r).set(c, ".");
-                        secondMap.get(r).set((c + 1) % lineLength, ">");
+            for (int y = 0; y < mapLength; y++) {
+                for (int x = 0; x < lineLength; x++) {
+                    if (canMoveEast(cucumberMap, lineLength, y, x)) {
+                        mapAfterMovingEase.get(y).set(x, EMPTY_SPACE);
+                        mapAfterMovingEase.get(y).set((x + 1) % lineLength, ">");
                         hasMoved = true;
                     }
                 }
             }
-            ArrayList<ArrayList<String>> thirdMap = deepCopyArrayList(secondMap);
-            for (int r = 0; r < mapLength; r++) {
-                for (int c = 0; c < lineLength; c++) {
-                    if (secondMap.get(r).get(c).equals("v") && secondMap.get((r + 1) % mapLength).get(c).equals(".")) {
-                        thirdMap.get((r + 1) % mapLength).set(c, "v");
-                        thirdMap.get(r).set(c, ".");
+            List<List<String>> mapAfterMovingSouth = deepCopyArrayList(mapAfterMovingEase);
+            for (int y = 0; y < mapLength; y++) {
+                for (int x = 0; x < lineLength; x++) {
+                    if (canMoveSouth(mapLength, mapAfterMovingEase, y, x)) {
+                        mapAfterMovingSouth.get((y + 1) % mapLength).set(x, "v");
+                        mapAfterMovingSouth.get(y).set(x, EMPTY_SPACE);
                         hasMoved = true;
                     }
                 }
             }
-            firstMap = thirdMap;
+            cucumberMap = mapAfterMovingSouth;
+        } while (hasMoved);
+        return String.valueOf(steps);
+    }
+
+    private boolean canMoveSouth(int mapLength, List<List<String>> mapAfterMovingEase, int y, int x) {
+        return "v".equals(mapAfterMovingEase.get(y).get(x)) && EMPTY_SPACE.equals(mapAfterMovingEase.get((y + 1) % mapLength).get(x));
+    }
+
+    private boolean canMoveEast(List<List<String>> firstMap, int lineLength, int y, int x) {
+        return ">".equals(firstMap.get(y).get(x)) && EMPTY_SPACE.equals(firstMap.get(y).get((x + 1) % lineLength));
+    }
+
+    @Override
+    public String part2(List<String> input) {
+        return "There is no part2 for day 25.";
+    }
+
+    private List<List<String>> readCucumberMap(List<String> input) {
+        return input.stream().map(line -> Arrays.stream(line.split("")).toList()).toList();
+    }
+
+    private List<List<String>> deepCopyArrayList(List<List<String>> source) {
+        List<List<String>> destination = new ArrayList<>();
+        for (List<String> sourceLine : source) {
+            destination.add(new ArrayList<>(sourceLine));
         }
-        System.out.println(steps);
+        return destination;
     }
 }

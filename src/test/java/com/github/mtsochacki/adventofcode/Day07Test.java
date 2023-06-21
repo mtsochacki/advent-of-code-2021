@@ -6,14 +6,13 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class Day01Test {
-
-    private final Day01 underTest = new Day01();
-    private static final List<String> INPUT = List.of("199", "200", "208", "210", "200", "207", "240", "269", "260", "263");
+class Day07Test {
+    private final Day07 underTest = new Day07();
+    private static final List<String> INPUT = List.of("16,1,2,0,4,2,7,1,2,14");
 
     @Test
-    void testCalculatingPart1() {
-        String expected = "7";
+    void test1() {
+        String expected = "37";
 
         String result = underTest.part1(INPUT);
 
@@ -21,8 +20,8 @@ class Day01Test {
     }
 
     @Test
-    void testCalculatingPart2() {
-        String expected = "5";
+    void test2() {
+        String expected = "168";
 
         String result = underTest.part2(INPUT);
 

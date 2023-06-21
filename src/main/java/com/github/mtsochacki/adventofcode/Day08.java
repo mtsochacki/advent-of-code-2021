@@ -2,10 +2,8 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.List;
 
 @Slf4j
 public class Day08 implements Day {
@@ -31,24 +29,20 @@ public class Day08 implements Day {
         return line;
     }
 
-    private ArrayList<String[]> readInput(String filename) {
-        ArrayList<String[]> input = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File(filename))) {
-            while (sc.hasNextLine()) {
-                String[] line = sc.nextLine().split(" \\Q|\\E | ");
-                input.add(sortWithinEachWord(line));
-            }
-        } catch (Exception e) {
-            log.error("Something went horribly wrong: {}", e.getMessage());
-        }
-        return input;
+    private List<String[]> readInput(List<String> input) {
+        return input.stream().map(line -> {
+            String[] splittedLine = line.split(" \\Q|\\E | ");
+            return sortWithinEachWord(splittedLine);
+        }).toList();
+
     }
 
-    public String part1(String filename) {
+    @Override
+    public String part1(List<String> input) {
         int counter = 0;
-        ArrayList<String[]> input = readInput("data.txt");
-        for (String[] strings : input) {
-            for (int j = 10; j < input.get(0).length; j++) {
+        List<String[]> input1 = readInput(input);
+        for (String[] strings : input1) {
+            for (int j = 10; j < input1.get(0).length; j++) {
                 if (strings[j].length() == 2 || strings[j].length() == 4 ||
                         strings[j].length() == 3 || strings[j].length() == 7)
                     counter++;
@@ -59,12 +53,14 @@ public class Day08 implements Day {
 
     private void deduceOneFourSevenEight(String[] signals, SignalPattern pattern) {
         for (String signal : signals) {
-            switch (signal.length()) {
-                case 2 -> pattern.one = signal;
-                case 4 -> pattern.four = signal;
-                case 3 -> pattern.seven = signal;
-                case 7 -> pattern.eight = signal;
-                default -> log.error("Unexpected signal: {}", signal);
+            if (signal.length() == 2) {
+                pattern.one = signal;
+            } else if (signal.length() == 4) {
+                pattern.four = signal;
+            } else if (signal.length() == 3) {
+                pattern.seven = signal;
+            } else if (signal.length() == 7) {
+                pattern.eight = signal;
             }
         }
     }
@@ -72,8 +68,8 @@ public class Day08 implements Day {
     // Zero i 6 segments long and is not a 6 or a 9
     private void deduceZero(String[] signals, SignalPattern pattern) {
         for (int i = 0; i < 10; i++)
-            if (signals[i].length() == 6 && signals[i] != pattern.six
-                    && signals[i] != pattern.nine)
+            if (signals[i].length() == 6 && !signals[i].equals(pattern.six)
+                    && !signals[i].equals(pattern.nine))
                 pattern.zero = signals[i];
     }
 
@@ -105,7 +101,7 @@ public class Day08 implements Day {
                     && pattern.nine.contains(String.valueOf(tokens[2]))
                     && pattern.nine.contains(String.valueOf(tokens[3]))
                     && pattern.nine.contains(String.valueOf(tokens[4])) &&
-                    signals[j] != pattern.three)
+                    !signals[j].equals(pattern.three))
                 pattern.five = signals[j];
         }
     }
@@ -166,10 +162,11 @@ public class Day08 implements Day {
         return output;
     }
 
-    public String part2(String filename) {
+    @Override
+    public String part2(List<String> input) {
         int result = 0;
-        ArrayList<String[]> input = readInput("data.txt");
-        for (String[] strings : input) {
+        List<String[]> readInp = readInput(input);
+        for (String[] strings : readInp) {
             SignalPattern pattern = new SignalPattern();
             deduceOneFourSevenEight(strings, pattern);
             deduceSix(strings, pattern);
