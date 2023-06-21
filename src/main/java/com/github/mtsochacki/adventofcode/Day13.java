@@ -11,20 +11,29 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class Day13 implements Day {
-    public enum Axis {
-        X, Y
+    @Override
+    public String part1(List<String> input) {
+        Set<Point> points = readCoordinates(input);
+        List<Fold> folds = readFolds(input);
+        points = foldOnce(points, folds.get(0));
+        return String.valueOf(points.size());
     }
 
-    public static class Fold {
-        int line;
-        Axis axis;
-    }
-
-    @EqualsAndHashCode
-    @AllArgsConstructor
-    public static class Point {
-        int x;
-        int y;
+    @Override
+    public String part2(List<String> input) {
+        Set<Point> points = readCoordinates(input);
+        List<Fold> folds = readFolds(input);
+        for (Fold fold : folds) {
+            points = foldOnce(points, fold);
+        }
+        System.out.println("\033[2J"); // clears screen
+        for (Point point : points) {
+            int row = point.y + 1;
+            int column = point.x + 1;
+            System.out.print(String.format("%c[%d;%dH#", 0x1B, row, column));
+        }
+        System.out.print(String.format("%c[%d;%dH", 0x1B, 8, 0));
+        return "The answer to this puzzle can only be printed to the terminal";
     }
 
     private Set<Point> readCoordinates(List<String> input) {
@@ -74,28 +83,19 @@ public class Day13 implements Day {
         return output;
     }
 
-    @Override
-    public String part1(List<String> input) {
-        Set<Point> points = readCoordinates(input);
-        List<Fold> folds = readFolds(input);
-        points = foldOnce(points, folds.get(0));
-        return String.valueOf(points.size());
+    public enum Axis {
+        X, Y
     }
 
-    @Override
-    public String part2(List<String> input) {
-        Set<Point> points = readCoordinates(input);
-        List<Fold> folds = readFolds(input);
-        for (Fold fold : folds) {
-            points = foldOnce(points, fold);
-        }
-        System.out.println("\033[2J"); // clears screen
-        for (Point point : points) {
-            int row = point.y + 1;
-            int column = point.x + 1;
-            System.out.print(String.format("%c[%d;%dH#", 0x1B, row, column));
-        }
-        System.out.print(String.format("%c[%d;%dH", 0x1B, 8, 0));
-        return "The answer to this puzzle can only be printed to the terminal";
+    public static class Fold {
+        int line;
+        Axis axis;
+    }
+
+    @EqualsAndHashCode
+    @AllArgsConstructor
+    public static class Point {
+        int x;
+        int y;
     }
 }

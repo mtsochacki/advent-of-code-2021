@@ -8,15 +8,6 @@ import java.util.List;
 
 @Slf4j
 public class Day07 implements Day {
-    private List<Integer> readInput(List<String> input) {
-        String[] numbers = input.get(0).split(",");
-        return Arrays.stream(numbers).map(Integer::valueOf).sorted().toList();
-    }
-
-    private double arithmeticSequence(double start, double end) {
-        return (Math.abs(end - start)) * (Math.abs(end - start) + 1) / 2;
-    }
-
     @Override
     public String part1(List<String> input) {
         List<Integer> listOfPositions = readInput(input);
@@ -49,5 +40,14 @@ public class Day07 implements Day {
             }
         }
         return String.valueOf(fuel);
+    }
+
+    private List<Integer> readInput(List<String> input) {
+        String[] numbers = input.get(0).split(",");
+        return Arrays.stream(numbers).map(Integer::valueOf).sorted().toList();
+    }
+
+    private double arithmeticSequence(double start, double end) {
+        return (Math.abs(end - start)) * (Math.abs(end - start) + 1) / 2;
     }
 }

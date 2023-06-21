@@ -7,14 +7,6 @@ import java.util.List;
 
 @Slf4j
 public class Day05 implements Day {
-    @AllArgsConstructor
-    private static class LineOfVents {
-        int xStart;
-        int xEnd;
-        int yStart;
-        int yEnd;
-    }
-
     @Override
     public String part1(List<String> input) {
         return calculateOverlap(false, input);
@@ -23,23 +15,6 @@ public class Day05 implements Day {
     @Override
     public String part2(List<String> input) {
         return calculateOverlap(true, input);
-    }
-
-    private boolean isVertical(LineOfVents line) {
-        return line.xStart == line.xEnd;
-    }
-
-    private boolean isHorizontal(LineOfVents line) {
-        return line.yStart == line.yEnd;
-    }
-
-    private List<LineOfVents> readInput(List<String> input) {
-        return input.stream()
-                .map(line -> {
-                    String[] tokens = line.split(",| -> ");
-                    return new LineOfVents(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[2]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[3]));
-                })
-                .toList();
     }
 
     private String calculateOverlap(boolean includePart2, List<String> input) {
@@ -83,5 +58,30 @@ public class Day05 implements Day {
             }
         }
         return String.valueOf(count);
+    }
+
+    private List<LineOfVents> readInput(List<String> input) {
+        return input.stream()
+                .map(line -> {
+                    String[] tokens = line.split(",| -> ");
+                    return new LineOfVents(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[2]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[3]));
+                })
+                .toList();
+    }
+
+    private boolean isVertical(LineOfVents line) {
+        return line.xStart == line.xEnd;
+    }
+
+    private boolean isHorizontal(LineOfVents line) {
+        return line.yStart == line.yEnd;
+    }
+
+    @AllArgsConstructor
+    private static class LineOfVents {
+        int xStart;
+        int xEnd;
+        int yStart;
+        int yEnd;
     }
 }

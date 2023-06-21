@@ -8,11 +8,20 @@ import java.util.List;
 
 @Slf4j
 public class Day16 implements Day {
-    private static class Packet {
-        Long value;
-        int length;
-        int versionSum;
-        String binData;
+    @Override
+    public String part1(List<String> input) {
+        Packet transmission = new Packet();
+        transmission.binData = readInput(input);
+        transmission = processPacket(transmission);
+        return String.valueOf(transmission.versionSum);
+    }
+
+    @Override
+    public String part2(List<String> input) {
+        Packet transmission = new Packet();
+        transmission.binData = readInput(input);
+        transmission = processPacket(transmission);
+        return String.valueOf(transmission.value);
     }
 
     private String readInput(List<String> input) {
@@ -122,19 +131,10 @@ public class Day16 implements Day {
         }
     }
 
-    @Override
-    public String part1(List<String> input) {
-        Packet transmission = new Packet();
-        transmission.binData = readInput(input);
-        transmission = processPacket(transmission);
-        return String.valueOf(transmission.versionSum);
-    }
-
-    @Override
-    public String part2(List<String> input) {
-        Packet transmission = new Packet();
-        transmission.binData = readInput(input);
-        transmission = processPacket(transmission);
-        return String.valueOf(transmission.value);
+    private static class Packet {
+        Long value;
+        int length;
+        int versionSum;
+        String binData;
     }
 }

@@ -9,14 +9,23 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class Day11 implements Day {
-    private static class Point {
-        int x;
-        int y;
+    @Override
+    public String part1(List<String> input) {
+        return String.valueOf(countAllFlashes(100, input));
+    }
 
-        Point(int horizontal, int vertical) {
-            x = horizontal;
-            y = vertical;
+    @Override
+    public String part2(List<String> input) {
+        return String.valueOf(findSyncStep(500, input));
+    }
+
+    private int countAllFlashes(int steps, List<String> input) {
+        List<List<Integer>> octoGrid = readInput(input);
+        int flashes = 0;
+        for (int i = 0; i < steps; i++) {
+            flashes += processStep(octoGrid);
         }
+        return flashes;
     }
 
     private List<List<Integer>> readInput(List<String> input) {
@@ -28,16 +37,12 @@ public class Day11 implements Day {
                 .toList();
     }
 
-    private List<Point> getNeighbours(int x, int y, int width, int height) {
-        List<Point> neighbours = new ArrayList<>();
-        for (int nx = Math.max(0, x - 1); nx < Math.min(width, x + 2); ++nx) {
-            for (int ny = Math.max(0, y - 1); ny < Math.min(height, y + 2); ++ny) {
-                if (nx != x || ny != y) {
-                    neighbours.add(new Point(nx, ny));
-                }
-            }
+    private int processStep(List<List<Integer>> octoGrid) {
+        increaseAll(octoGrid);
+        while (isFlashReady(octoGrid)) {
+            processFlashes(octoGrid);
         }
-        return neighbours;
+        return countFlashes(octoGrid);
     }
 
     private void increaseAll(List<List<Integer>> octoGrid) {
@@ -48,11 +53,15 @@ public class Day11 implements Day {
         }
     }
 
-    private void increaseUnflashed(List<List<Integer>> octoGrid,
-                                   int x, int y) {
-        if (octoGrid.get(y).get(x) != 0) {
-            octoGrid.get(y).set(x, octoGrid.get(y).get(x) + 1);
+    private boolean isFlashReady(List<List<Integer>> octoGrid) {
+        for (List<Integer> octoRow : octoGrid) {
+            for (Integer octopus : octoRow) {
+                if (octopus > 9) {
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
     private void processFlashes(List<List<Integer>> octoGrid) {
@@ -70,17 +79,6 @@ public class Day11 implements Day {
         }
     }
 
-    private boolean isFlashReady(List<List<Integer>> octoGrid) {
-        for (List<Integer> octoRow : octoGrid) {
-            for (Integer octopus : octoRow) {
-                if (octopus > 9) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     private int countFlashes(List<List<Integer>> octoGrid) {
         int counter = 0;
         for (List<Integer> octoRow : octoGrid) {
@@ -93,32 +91,23 @@ public class Day11 implements Day {
         return counter;
     }
 
-    private boolean areAllFlashing(List<List<Integer>> octoGrid) {
-        for (List<Integer> octoRow : octoGrid) {
-            for (Integer octopus : octoRow) {
-                if (octopus != 0) {
-                    return false;
+    private List<Point> getNeighbours(int x, int y, int width, int height) {
+        List<Point> neighbours = new ArrayList<>();
+        for (int nx = Math.max(0, x - 1); nx < Math.min(width, x + 2); ++nx) {
+            for (int ny = Math.max(0, y - 1); ny < Math.min(height, y + 2); ++ny) {
+                if (nx != x || ny != y) {
+                    neighbours.add(new Point(nx, ny));
                 }
             }
         }
-        return true;
+        return neighbours;
     }
 
-    private int processStep(List<List<Integer>> octoGrid) {
-        increaseAll(octoGrid);
-        while (isFlashReady(octoGrid)) {
-            processFlashes(octoGrid);
+    private void increaseUnflashed(List<List<Integer>> octoGrid,
+                                   int x, int y) {
+        if (octoGrid.get(y).get(x) != 0) {
+            octoGrid.get(y).set(x, octoGrid.get(y).get(x) + 1);
         }
-        return countFlashes(octoGrid);
-    }
-
-    private int countAllFlashes(int steps, List<String> input) {
-        List<List<Integer>> octoGrid = readInput(input);
-        int flashes = 0;
-        for (int i = 0; i < steps; i++) {
-            flashes += processStep(octoGrid);
-        }
-        return flashes;
     }
 
     private int findSyncStep(int steps, List<String> input) {
@@ -132,13 +121,24 @@ public class Day11 implements Day {
         return -1;
     }
 
-    @Override
-    public String part1(List<String> input) {
-        return String.valueOf(countAllFlashes(100, input));
+    private boolean areAllFlashing(List<List<Integer>> octoGrid) {
+        for (List<Integer> octoRow : octoGrid) {
+            for (Integer octopus : octoRow) {
+                if (octopus != 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
-    @Override
-    public String part2(List<String> input) {
-        return String.valueOf(findSyncStep(500, input));
+    private static class Point {
+        int x;
+        int y;
+
+        Point(int horizontal, int vertical) {
+            x = horizontal;
+            y = vertical;
+        }
     }
 }

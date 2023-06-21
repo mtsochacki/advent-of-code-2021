@@ -20,10 +20,25 @@ public class Day14 implements Day {
         return String.valueOf(calculatePolymers(40, input));
     }
 
-    @Builder
-    private static class Rule {
-        private String pair;
-        private String outcome;
+    private Long calculatePolymers(int steps, List<String> input) {
+        String template = readTemplate(input);
+        List<Rule> ruleList = readRules(input);
+        Map<String, Long> chunks = splitToChunks(template);
+        Map<String, Long> letters = countLetters(template);
+        for (int i = 0; i < steps; i++) {
+            Map<String, Long> newChunks = new HashMap<>();
+            for (Rule rule : ruleList) {
+                if (chunks.containsKey(rule.pair)) {
+                    letters.merge(rule.outcome, chunks.get(rule.pair), Long::sum);
+                    String leftPair = rule.pair.charAt(0) + rule.outcome;
+                    String rightPair = rule.outcome + rule.pair.charAt(1);
+                    newChunks.merge(leftPair, chunks.get(rule.pair), Long::sum);
+                    newChunks.merge(rightPair, chunks.get(rule.pair), Long::sum);
+                }
+            }
+            chunks = newChunks;
+        }
+        return Collections.max(letters.values()) - Collections.min(letters.values());
     }
 
     private String readTemplate(List<String> input) {
@@ -82,24 +97,9 @@ public class Day14 implements Day {
         return lettersCount;
     }
 
-    private Long calculatePolymers(int steps, List<String> input) {
-        String template = readTemplate(input);
-        List<Rule> ruleList = readRules(input);
-        Map<String, Long> chunks = splitToChunks(template);
-        Map<String, Long> letters = countLetters(template);
-        for (int i = 0; i < steps; i++) {
-            Map<String, Long> newChunks = new HashMap<>();
-            for (Rule rule : ruleList) {
-                if (chunks.containsKey(rule.pair)) {
-                    letters.merge(rule.outcome, chunks.get(rule.pair), Long::sum);
-                    String leftPair = rule.pair.charAt(0) + rule.outcome;
-                    String rightPair = rule.outcome + rule.pair.charAt(1);
-                    newChunks.merge(leftPair, chunks.get(rule.pair), Long::sum);
-                    newChunks.merge(rightPair, chunks.get(rule.pair), Long::sum);
-                }
-            }
-            chunks = newChunks;
-        }
-        return Collections.max(letters.values()) - Collections.min(letters.values());
+    @Builder
+    private static class Rule {
+        private String pair;
+        private String outcome;
     }
 }

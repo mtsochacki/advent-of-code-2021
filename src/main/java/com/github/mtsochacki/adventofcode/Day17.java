@@ -7,39 +7,6 @@ import java.util.List;
 
 @Slf4j
 public class Day17 implements Day {
-    private boolean isYInTrench(int yVelocity, int yStart, int yEnd) {
-        int y = 0;
-        while (!(y >= yEnd && y <= yStart)) {
-            y += yVelocity;
-            if (y < yEnd) {
-                return false;
-            }
-            yVelocity--;
-        }
-        return true;
-    }
-
-    private int calculateHeight(int yVelocity) {
-        int y = 0;
-        while (yVelocity > 0) {
-            y += yVelocity;
-            yVelocity--;
-        }
-        return y;
-    }
-
-    private boolean isXInTrench(int xVelocity, int xStart, int xEnd) {
-        int x = 0;
-        while (!(x >= xStart && x <= xEnd)) {
-            x += xVelocity;
-            if (x > xEnd || xVelocity == 0) {
-                return false;
-            }
-            xVelocity--;
-        }
-        return true;
-    }
-
     @Override
     public String part1(List<String> input) {
         int[] trenchCoordinates = readInput(input);
@@ -82,6 +49,18 @@ public class Day17 implements Day {
         return String.valueOf(total);
     }
 
+    private boolean isXInTrench(int xVelocity, int xStart, int xEnd) {
+        int x = 0;
+        while (!(x >= xStart && x <= xEnd)) {
+            x += xVelocity;
+            if (x > xEnd || xVelocity == 0) {
+                return false;
+            }
+            xVelocity--;
+        }
+        return true;
+    }
+
     private boolean isInTrench(int xVelocity, int yVelocity, int xStart, int xEnd, int yStart, int yEnd) {
         int x = 0;
         int y = 0;
@@ -105,5 +84,26 @@ public class Day17 implements Day {
         String[] coordinatesX = newLine[0].split("=")[1].split("\\..");
         String[] coordinatesY = newLine[1].split("=")[1].split("\\..");
         return new int[]{Integer.parseInt(coordinatesX[0]), Integer.parseInt(coordinatesX[1]), Integer.parseInt(coordinatesY[1]), Integer.parseInt(coordinatesY[0])};
+    }
+
+    private boolean isYInTrench(int yVelocity, int yStart, int yEnd) {
+        int y = 0;
+        while (!(y >= yEnd && y <= yStart)) {
+            y += yVelocity;
+            if (y < yEnd) {
+                return false;
+            }
+            yVelocity--;
+        }
+        return true;
+    }
+
+    private int calculateHeight(int yVelocity) {
+        int y = 0;
+        while (yVelocity > 0) {
+            y += yVelocity;
+            yVelocity--;
+        }
+        return y;
     }
 }

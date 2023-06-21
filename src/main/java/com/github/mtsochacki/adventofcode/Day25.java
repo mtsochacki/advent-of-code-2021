@@ -46,14 +46,6 @@ public class Day25 implements Day {
         return String.valueOf(steps);
     }
 
-    private boolean canMoveSouth(int mapLength, List<List<String>> mapAfterMovingEase, int y, int x) {
-        return "v".equals(mapAfterMovingEase.get(y).get(x)) && EMPTY_SPACE.equals(mapAfterMovingEase.get((y + 1) % mapLength).get(x));
-    }
-
-    private boolean canMoveEast(List<List<String>> firstMap, int lineLength, int y, int x) {
-        return ">".equals(firstMap.get(y).get(x)) && EMPTY_SPACE.equals(firstMap.get(y).get((x + 1) % lineLength));
-    }
-
     @Override
     public String part2(List<String> input) {
         return "There is no part2 for day 25.";
@@ -69,5 +61,13 @@ public class Day25 implements Day {
             destination.add(new ArrayList<>(sourceLine));
         }
         return destination;
+    }
+
+    private boolean canMoveEast(List<List<String>> firstMap, int lineLength, int y, int x) {
+        return ">".equals(firstMap.get(y).get(x)) && EMPTY_SPACE.equals(firstMap.get(y).get((x + 1) % lineLength));
+    }
+
+    private boolean canMoveSouth(int mapLength, List<List<String>> mapAfterMovingEase, int y, int x) {
+        return "v".equals(mapAfterMovingEase.get(y).get(x)) && EMPTY_SPACE.equals(mapAfterMovingEase.get((y + 1) % mapLength).get(x));
     }
 }

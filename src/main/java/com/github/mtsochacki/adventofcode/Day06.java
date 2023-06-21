@@ -9,11 +9,14 @@ import java.util.List;
 
 @Slf4j
 public class Day06 implements Day {
-    private List<Integer> readInput(List<String> input) {
-        String[] numbers = input.get(0).split(",");
-        return Arrays.stream(numbers)
-                .map(Integer::valueOf)
-                .toList();
+    @Override
+    public String part1(List<String> input) {
+        return String.valueOf(calculatePopulation(80, input));
+    }
+
+    @Override
+    public String part2(List<String> input) {
+        return String.valueOf(calculatePopulation(256, input));
     }
 
     public long calculatePopulation(int days, List<String> input) {
@@ -42,13 +45,10 @@ public class Day06 implements Day {
         return totalPopulation;
     }
 
-    @Override
-    public String part1(List<String> input) {
-        return String.valueOf(calculatePopulation(80, input));
-    }
-
-    @Override
-    public String part2(List<String> input) {
-        return String.valueOf(calculatePopulation(256, input));
+    private List<Integer> readInput(List<String> input) {
+        String[] numbers = input.get(0).split(",");
+        return Arrays.stream(numbers)
+                .map(Integer::valueOf)
+                .toList();
     }
 }

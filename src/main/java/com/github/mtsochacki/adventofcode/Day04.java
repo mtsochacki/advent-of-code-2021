@@ -23,61 +23,6 @@ public class Day04 implements Day {
         return calculateBoard(false, input);
     }
 
-    private List<List<List<Integer>>> readBoards(List<String> input) {
-        final AtomicInteger counter = new AtomicInteger();
-        return input.stream()
-                .skip(1)
-                .filter(it -> !it.isEmpty())
-                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / 5))
-                .values()
-                .stream()
-                .map(this::transformIntoBoard)
-                .toList();
-    }
-
-    private List<List<Integer>> transformIntoBoard(List<String> list) {
-        return list.stream()
-                .map(this::transformLineIntoNumbers)
-                .toList();
-    }
-
-    private boolean boardHasWon(List<List<Integer>> board) {
-        for (List<Integer> row : board) {
-            Set<Integer> rowValues = new HashSet<>(row);
-            if (rowValues.size() == 1) {
-                return true;
-            }
-        }
-        for (int col = 0; col < 5; col++) {
-            Set<Integer> columnValues = new HashSet<>();
-            for (List<Integer> row : board) {
-                columnValues.add(row.get(col));
-            }
-            if (columnValues.size() == 1) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private int countWin(List<List<Integer>> board, List<Integer> drawn) {
-        int counter = 0;
-        for (int number : drawn) {
-            counter++;
-            for (int row = 0; row < 5; ++row) {
-                for (int col = 0; col < 5; ++col) {
-                    if (board.get(col).get(row) == number) {
-                        board.get(col).set(row, 0);
-                    }
-                }
-            }
-            if (boardHasWon(board)) {
-                break;
-            }
-        }
-        return counter;
-    }
-
     private String calculateBoard(boolean isWinner, List<String> input) {
         List<Integer> drawn = readDrawnNumbers(input);
         List<List<List<Integer>>> boards = readBoards(input);
@@ -107,8 +52,63 @@ public class Day04 implements Day {
         return transformLineIntoNumbers(firstLine);
     }
 
+    private List<List<List<Integer>>> readBoards(List<String> input) {
+        final AtomicInteger counter = new AtomicInteger();
+        return input.stream()
+                .skip(1)
+                .filter(it -> !it.isEmpty())
+                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / 5))
+                .values()
+                .stream()
+                .map(this::transformIntoBoard)
+                .toList();
+    }
+
+    private int countWin(List<List<Integer>> board, List<Integer> drawn) {
+        int counter = 0;
+        for (int number : drawn) {
+            counter++;
+            for (int row = 0; row < 5; ++row) {
+                for (int col = 0; col < 5; ++col) {
+                    if (board.get(col).get(row) == number) {
+                        board.get(col).set(row, 0);
+                    }
+                }
+            }
+            if (boardHasWon(board)) {
+                break;
+            }
+        }
+        return counter;
+    }
+
     private List<Integer> transformLineIntoNumbers(String line) {
         String[] numbers = line.split("\\s+|,");
         return Arrays.stream(numbers).map(Integer::valueOf).collect(Collectors.toList());
+    }
+
+    private List<List<Integer>> transformIntoBoard(List<String> list) {
+        return list.stream()
+                .map(this::transformLineIntoNumbers)
+                .toList();
+    }
+
+    private boolean boardHasWon(List<List<Integer>> board) {
+        for (List<Integer> row : board) {
+            Set<Integer> rowValues = new HashSet<>(row);
+            if (rowValues.size() == 1) {
+                return true;
+            }
+        }
+        for (int col = 0; col < 5; col++) {
+            Set<Integer> columnValues = new HashSet<>();
+            for (List<Integer> row : board) {
+                columnValues.add(row.get(col));
+            }
+            if (columnValues.size() == 1) {
+                return true;
+            }
+        }
+        return false;
     }
 }

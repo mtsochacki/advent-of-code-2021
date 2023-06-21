@@ -18,6 +18,20 @@ public class Day12 implements Day {
     private static Set<String> visitedCaves = new HashSet<>();
     private static Set<String> visitedCavesPartTwo = new HashSet<>();
 
+    @Override
+    public String part1(List<String> input) {
+        readInput(input);
+        findPath(START, "", visitedCaves);
+        return String.valueOf(paths.size());
+    }
+
+    @Override
+    public String part2(List<String> input) {
+        readInput(input);
+        findPathPartTwo(START, "", visitedCavesPartTwo, false);
+        return String.valueOf(pathsPartTwo.size());
+    }
+
     private boolean isSmallCave(String cave) {
         return cave.equals(cave.toLowerCase());
     }
@@ -85,19 +99,5 @@ public class Day12 implements Day {
                 findPathPartTwo(neighbourNode, currentPath, new HashSet<>(visitedCavesPartTwo), wasAnyCaveVisitedTwice);
             }
         }
-    }
-
-    @Override
-    public String part1(List<String> input) {
-        readInput(input);
-        findPath(START, "", visitedCaves);
-        return String.valueOf(paths.size());
-    }
-
-    @Override
-    public String part2(List<String> input) {
-        readInput(input);
-        findPathPartTwo(START, "", visitedCavesPartTwo, false);
-        return String.valueOf(pathsPartTwo.size());
     }
 }
