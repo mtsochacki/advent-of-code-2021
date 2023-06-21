@@ -18,6 +18,7 @@ class Day03Test {
 
         assertThat(result).isEqualTo(expected);
     }
+
     @Test
     void test2() {
         String expected = "230";
