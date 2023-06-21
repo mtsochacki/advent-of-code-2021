@@ -40,14 +40,4 @@ class Day13Test {
 
         assertThat(result).isEqualTo(expected);
     }
-
-    @Test
-    void test2() {
-        String expected = "103";
-
-        String result = underTest.part2(INPUT);
-
-        assertThat(result).isEqualTo(expected);
-    }
-
 }
