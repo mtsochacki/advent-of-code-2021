@@ -2,8 +2,8 @@ package com.github.mtsochacki.adventofcode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class Day03 implements Day {
@@ -32,15 +32,16 @@ public class Day03 implements Day {
 
     @Override
     public String part2(List<String> input) {
-        return String.valueOf(calculateSupport(true, input) * calculateSupport(false, input));
+        return String.valueOf(calculateSupport(input, true) * calculateSupport(input, false));
     }
 
-    private int calculateSupport(boolean isOxygen, List<String> report) {
-        char dominantNumber;
+    private int calculateSupport(List<String> report, boolean isOxygen) {
+        StringBuilder beginningSequence = new StringBuilder();
 
-        for (int i = 0; i < report.get(0).length(); i++) {
+        for (int i = 0; report.size() > 1; i++) {
             int amountOfOnes = 0;
             int amountOfZeros = 0;
+
             for (String number : report) {
                 if (number.charAt(i) == '1') {
                     amountOfOnes++;
@@ -49,22 +50,15 @@ public class Day03 implements Day {
                 }
             }
 
-            if (amountOfOnes >= amountOfZeros) {
-                dominantNumber = isOxygen ? '1' : '0';
+            if (isOxygen) {
+                beginningSequence.append(amountOfOnes >= amountOfZeros ? "1" : "0");
             } else {
-                dominantNumber = isOxygen ? '0' : '1';
+                beginningSequence.append(amountOfOnes >= amountOfZeros ? "0" : "1");
             }
 
-            ArrayList<String> tmpReport = new ArrayList<>();
-            for (String number : report) {
-                if (number.charAt(i) == dominantNumber) {
-                    tmpReport.add(number);
-                }
-            }
-            report = tmpReport;
-            if (report.size() == 1) {
-                break;
-            }
+            report = report.stream()
+                    .filter(line -> line.startsWith(beginningSequence.toString()))
+                    .collect(Collectors.toList());
         }
         return Integer.parseInt(report.get(0), 2);
     }
@@ -72,7 +66,7 @@ public class Day03 implements Day {
     private int binToDec(int[] number) {
         int dec = 0;
         for (int i = 0; i < number.length; i++) {
-            dec += number[i] * Math.pow(2, number.length - i - 1);
+            dec += number[i] << number.length - i - 1;
         }
         return dec;
     }

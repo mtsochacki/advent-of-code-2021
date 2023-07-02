@@ -66,8 +66,8 @@ public class Day04 implements Day {
             counter++;
             for (int row = 0; row < 5; ++row) {
                 for (int col = 0; col < 5; ++col) {
-                    if (board.get(col).get(row) == number) {
-                        board.get(col).set(row, 0);
+                    if (board.get(row).get(col) == number) {
+                        board.get(row).set(col, 0);
                     }
                 }
             }
@@ -93,13 +93,14 @@ public class Day04 implements Day {
                 winnersCounter = currentCounter;
             }
         }
-        int score = 0;
-        for (List<Integer> row : winningBoard) {
-            for (int i = 0; i < 5; i++) {
-                score += row.get(i);
-            }
-        }
+        int score = calculateScore(winningBoard);
         return String.valueOf(score * drawn.get(winnersCounter - 1));
+    }
+
+    private int calculateScore(List<List<Integer>> board) {
+        return board.stream()
+                .map(row -> row.stream().reduce(0, Integer::sum))
+                .reduce(0, Integer::sum);
     }
 
     private List<Integer> readDrawnNumbers(List<String> input) {
