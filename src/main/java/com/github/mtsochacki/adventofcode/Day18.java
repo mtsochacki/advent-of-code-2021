@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 public class Day18 implements Day {
     @Data
@@ -33,12 +35,12 @@ public class Day18 implements Day {
 
     @Override
     public String part1(List<String> input) {
-        Integer slugMagnitude = input.stream()
+        Integer finalSumMagnitude = input.stream()
                 .map(this::transformIntoSnailfishNumber)
                 .reduce(this::reduceSnailfishNumber)
                 .map(this::calculateMagnitude)
                 .orElseThrow(() -> new RuntimeException("Error processing SnailFish"));
-        return String.valueOf(slugMagnitude);
+        return String.valueOf(finalSumMagnitude);
     }
 
     @Override
@@ -46,8 +48,8 @@ public class Day18 implements Day {
         List<List<RegularNumber>> snailfishNumbers = input.stream()
                 .map(this::transformIntoSnailfishNumber)
                 .toList();
-        int max = findHighestMagnitude(snailfishNumbers);
-        return String.valueOf(max);
+        int highestMagnitude = findHighestMagnitude(snailfishNumbers);
+        return String.valueOf(highestMagnitude);
     }
 
     private int findHighestMagnitude(List<List<RegularNumber>> snailfishNumbers) {
@@ -57,14 +59,10 @@ public class Day18 implements Day {
                 if (i == j) {
                     continue;
                 }
-                List<RegularNumber> firstSlug = copySnailfishNumber(snailfishNumbers.get(i));
-                List<RegularNumber> copyFirstSlug = copySnailfishNumber(snailfishNumbers.get(i));
-                List<RegularNumber> secondSlug = copySnailfishNumber(snailfishNumbers.get(j));
-                List<RegularNumber> copySecondSlug = copySnailfishNumber(snailfishNumbers.get(j));
-                List<RegularNumber> firstResult = reduceSnailfishNumber(firstSlug, secondSlug);
-                List<RegularNumber> secondResult = reduceSnailfishNumber(copySecondSlug, copyFirstSlug);
-                int newMax = Math.max(calculateMagnitude(firstResult), calculateMagnitude(secondResult));
-                max = Math.max(newMax, max);
+                List<RegularNumber> firstSnailfish = copySnailfishNumber(snailfishNumbers.get(i));
+                List<RegularNumber> secondSnailfish = copySnailfishNumber(snailfishNumbers.get(j));
+                List<RegularNumber> result = reduceSnailfishNumber(firstSnailfish, secondSnailfish);
+                max = Math.max(calculateMagnitude(result), max);
             }
         }
         return max;
@@ -108,64 +106,62 @@ public class Day18 implements Day {
 
     private List<RegularNumber> reduceSlug(List<RegularNumber> snailfishNumber) {
         List<RegularNumber> reducedSnailfish = copySnailfishNumber(snailfishNumber);
-        while (isInNeedOfExplosion(reducedSnailfish) || isInNeedOfSplit(reducedSnailfish)) {
-            if (isInNeedOfExplosion(reducedSnailfish)) {
-                explode(reducedSnailfish);
-            } else if (isInNeedOfSplit(reducedSnailfish)) {
-                split(reducedSnailfish);
+
+        OptionalInt indexToExplode = findIndexToExplode(reducedSnailfish);
+        OptionalInt indexToSplit = findIndexToSplit(reducedSnailfish);
+
+        while (true) {
+            if (indexToExplode.isPresent()) {
+                explode(reducedSnailfish, indexToExplode.getAsInt());
+            } else if (indexToSplit.isPresent()) {
+                split(reducedSnailfish, indexToSplit.getAsInt());
+            } else {
+                break;
             }
+            indexToExplode = findIndexToExplode(reducedSnailfish);
+            indexToSplit = findIndexToSplit(reducedSnailfish);
         }
+
         return reducedSnailfish;
     }
 
-    private boolean isInNeedOfExplosion(List<RegularNumber> snailfishNumber) {
-        return snailfishNumber.stream()
-                .anyMatch(regularNumber -> regularNumber.getLevel() > 4);
+    private OptionalInt findIndexToExplode(List<RegularNumber> snailfishNumber) {
+        return IntStream.range(0, snailfishNumber.size())
+                .filter(i -> snailfishNumber.get(i).getLevel() > 4)
+                .findFirst();
     }
 
-    private boolean isInNeedOfSplit(List<RegularNumber> snailfishNumber) {
-        return snailfishNumber.stream()
-                .anyMatch(regularNumber -> regularNumber.getValue() > 9);
+    private OptionalInt findIndexToSplit(List<RegularNumber> snailfishNumber) {
+        return IntStream.range(0, snailfishNumber.size())
+                .filter(i -> snailfishNumber.get(i).getValue() > 9)
+                .findFirst();
     }
 
-    private void explode(List<RegularNumber> snailfishNumber) {
-        for (int i = 0; i < snailfishNumber.size(); i++) {
-            if (snailfishNumber.get(i).getLevel() >= 5) {
-                if (i == 0) {
-                    snailfishNumber.get(i).setValue(0);
-                    snailfishNumber.get(i).decrementLevel();
-                    snailfishNumber.get(i + 2).increaseValue(snailfishNumber.get(i + 1).getValue());
-                    snailfishNumber.remove(i + 1);
-                } else if (i + 2 >= snailfishNumber.size()) {
-                    snailfishNumber.get(i - 1).increaseValue(snailfishNumber.get(i).getValue());
-                    snailfishNumber.get(i).setValue(0);
-                    snailfishNumber.get(i).decrementLevel();
-                    snailfishNumber.remove(i + 1);
-                } else {
-                    snailfishNumber.get(i - 1).increaseValue(snailfishNumber.get(i).getValue());
-                    snailfishNumber.get(i + 2).increaseValue(snailfishNumber.get(i + 1).getValue());
-                    snailfishNumber.get(i + 1).setValue(0);
-                    snailfishNumber.get(i + 1).decrementLevel();
-                    snailfishNumber.remove(i);
-                }
-                break;
-            }
+    private void explode(List<RegularNumber> snailfishNumber, int indexToExplode) {
+        if (indexToExplode == 0) {
+            snailfishNumber.get(indexToExplode).setValue(0);
+            snailfishNumber.get(indexToExplode).decrementLevel();
+            snailfishNumber.get(indexToExplode + 2).increaseValue(snailfishNumber.get(indexToExplode + 1).getValue());
+            snailfishNumber.remove(indexToExplode + 1);
+        } else if (indexToExplode + 2 >= snailfishNumber.size()) {
+            snailfishNumber.get(indexToExplode - 1).increaseValue(snailfishNumber.get(indexToExplode).getValue());
+            snailfishNumber.get(indexToExplode).setValue(0);
+            snailfishNumber.get(indexToExplode).decrementLevel();
+            snailfishNumber.remove(indexToExplode + 1);
+        } else {
+            snailfishNumber.get(indexToExplode - 1).increaseValue(snailfishNumber.get(indexToExplode).getValue());
+            snailfishNumber.get(indexToExplode + 2).increaseValue(snailfishNumber.get(indexToExplode + 1).getValue());
+            snailfishNumber.set(indexToExplode, new RegularNumber(4, 0));
+            snailfishNumber.remove(indexToExplode + 1);
         }
     }
 
-    private void split(List<RegularNumber> snailfishNumber) {
-        for (int i = 0; i < snailfishNumber.size(); i++) {
-            if (snailfishNumber.get(i).getValue() > 9) {
-                int value = snailfishNumber.get(i).getValue();
-                int level = snailfishNumber.get(i).getLevel() + 1;
-                snailfishNumber.remove(i);
-                snailfishNumber.add(i, new RegularNumber(level, value / 2));
-                snailfishNumber.add(i + 1, new RegularNumber(level, (int) Math.ceil((double) value / 2)));
-                break;
-            }
-        }
+    private void split(List<RegularNumber> snailfishNumber, int indexToSplit) {
+        int value = snailfishNumber.get(indexToSplit).getValue();
+        int level = snailfishNumber.get(indexToSplit).getLevel() + 1;
+        snailfishNumber.set(indexToSplit, new RegularNumber(level, value / 2));
+        snailfishNumber.add(indexToSplit + 1, new RegularNumber(level, (int) Math.ceil((double) value / 2)));
     }
-
 
     private Integer calculateMagnitude(List<RegularNumber> snailfishNumber) {
         List<Integer> snailfishNumberValues = snailfishNumber.stream()
